@@ -8,10 +8,14 @@
 # Java class files
 *.class
 
+# IDE preferences
+.idea/
+
 # Generated files
 bin/
 gen/
 out/
+doc/
 
 # Gradle files
 .gradle/
