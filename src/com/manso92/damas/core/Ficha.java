@@ -27,7 +27,7 @@ public class Ficha {
     /**
      * Color de la ficha
      */
-    private Color color;
+    public Color color;
 
     /**
      * Crea una nueva ficha en el tablero

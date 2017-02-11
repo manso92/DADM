@@ -114,7 +114,7 @@ public class Casilla {
      */
     public String toString(){
         return (char)27 + "[" +  ((row + col)%2==0 ? "40" : "47") + "m" +
-            (this.ficha == null ? " " : this.getFicha().toString()) + + (char)27 + "[0m";
+            (this.ficha == null ? " " : this.getFicha().toString()) + (char)27 + "[0m";
     }
 
 }
