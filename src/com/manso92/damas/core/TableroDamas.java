@@ -71,6 +71,16 @@ public class TableroDamas extends Tablero {
     /**
 
     /**
+     * Comprueba si un movimiento es válido mirando si está en la lista de movimientos
+     * @param m Movimiento a comprobar si es válido o no
+     * @return Nos indica la validez o no de un movimiento
+     */
+    @Override
+    public boolean esValido(Movimiento m) {
+        return movimientosValidos.indexOf(m) != -1;
+    }
+
+    /**
      * Exporta una partida para que se pueda jugar en otro momento. Ésta será cargada por
      * el método {@link TableroDamas#stringToTablero(String)}
      * @return String que contiene la partida
