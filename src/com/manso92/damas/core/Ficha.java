@@ -20,11 +20,6 @@ public class Ficha {
     public enum Color { BLANCA, NEGRA}
 
     /**
-     * Jugador propietario de la ficha
-     */
-    private Jugador jugador;
-
-    /**
      * Tipo de la ficha
      */
     private Tipo tipo;
@@ -36,21 +31,12 @@ public class Ficha {
 
     /**
      * Crea una nueva ficha en el tablero
-     * @param jugador {@link es.uam.eps.multij.Jugador} propietario de la ficha
-     * @param tipo Tipo de la ficha, Reina o Dama normal
      * @param color Color de la ficha con el que será pintado en el tablero
      */
-    public Ficha (Jugador jugador, Tipo tipo, Color color){
-        this.jugador = jugador;
-        this.tipo = tipo;
+    public Ficha (Color color){
+        this.tipo = Tipo.DAMA;
         this.color = color;
     }
-
-    /**
-     * Devuelve el {@link es.uam.eps.multij.Jugador} al que pertenece esta ficha
-     * @return {@link es.uam.eps.multij.Jugador} al que pertenece la ficha
-     */
-    public Jugador getJugador() { return jugador; }
 
     /**
      * Devuelve el Tipo de la ficha, Reina o Dama
