@@ -33,6 +33,7 @@ public class JugadorHumano implements Jugador {
         switch (evento.getTipo()) {
             // Si hay un cambio en el juego imprimimos el tablero para que se vea el cambio
             case Evento.EVENTO_CAMBIO:
+                System.out.println(evento.getPartida().getTablero().toString());
                 break;
 
             // Si nos llega un evento que confirmar, preguntamos al usuario y enviamos una confirmación positiva
@@ -82,6 +83,7 @@ public class JugadorHumano implements Jugador {
                     // Decimos a la partida que queremos hacer el movmiento
                     evento.getPartida().realizaAccion(new AccionMover(
                             this, movimiento));
+                    System.out.println(evento.getPartida().getTablero().toString());
                 }
                 catch(Exception e) {
                     // Si no es posible ejecutar el movimiento, pues volvemos a preguntar
