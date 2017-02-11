@@ -69,6 +69,20 @@ public class TableroDamas extends Tablero {
     }
 
     /**
+     * Ejecuta un movimiento en el tablero
+     * @param m Movimiento a realizar
+     * @throws ExcepcionJuego Se lanzará esta excepción en caso de no poder ejecutar el movmiento
+     */
+    @Override
+    protected void mueve(Movimiento m) throws ExcepcionJuego {
+        if (!this.esValido(m))
+            throw new ExcepcionJuego("No se puede realizar el movimiento que quieres;");
+
+        this.ejecutaMovimiento(m);
+        this.numJugadas++;
+        this.cambiaTurno();
+        this.movimientosValidos = this.movimientosValidos();
+    }
 
     /**
      * Comprueba si un movimiento es válido mirando si está en la lista de movimientos
@@ -78,6 +92,18 @@ public class TableroDamas extends Tablero {
     @Override
     public boolean esValido(Movimiento m) {
         return movimientosValidos.indexOf(m) != -1;
+    }
+
+    @Override
+    public ArrayList<Movimiento> movimientosValidos() {
+        ArrayList<Movimiento> movmientos = new ArrayList<Movimiento>();
+        Ficha.Color color = this.getTurno() == 0 ? Ficha.Color.BLANCA : Ficha.Color.NEGRA ;
+        for(int i=0 ; i<this.casillas.length ; i++)
+            for(int j=0 ; j<this.casillas[i].length ; j++)
+                if (this.casillas[i][j].tieneFicha() &&
+                    this.casillas[i][j].getFicha().color == color)
+                    this.movimientosValidos(this.casillas[i][j], movmientos);
+        return movmientos;
     }
 
     /**
