@@ -85,6 +85,32 @@ public class TableroDamas extends Tablero {
     }
 
     /**
+     * Hace los cambios en tablero de un movmiento definido.
+     * Se presupone eque el movimiento que se le pasa a la función ha debido pasar por la función es válido
+     * @param m Movimiento a realizar
+     */
+    private void ejecutaMovimiento(Movimiento m){
+        Casilla origen  = ((MovimientoDamas) m).getOrigen();
+        Casilla destino = ((MovimientoDamas) m).getDestino();
+
+        // Si el movmiento tiene distancia 1, es un movimiento simple, y simplemente movemos la ficha
+        if (((MovimientoDamas) m).distancia() == 1)
+            this.casillas[destino.row()][destino.col()].ponFicha(this.casillas[origen.row()][origen.col()].quitaFicha());
+
+        // Si el movimiento tiene distancia , implica que hemos comido una ficha
+        // Movemos nuestra ficha al destino y nos comemos la ficha que hay en medio
+        if (((MovimientoDamas) m).distancia() == 2){
+            this.casillas[destino.row()][destino.col()].ponFicha(this.casillas[origen.row()][origen.col()].quitaFicha());
+            this.casillas[(destino.row() + origen.row())/2][(destino.col() + origen.col())/2].quitaFicha();
+        }
+
+        // Si el movmiento es encadenado, ejecutamos el siguiente movimiento
+        if (((MovimientoDamas) m).issetProximoMovimiento())
+            this.ejecutaMovimiento(((MovimientoDamas) m).getProximoMovimiento());
+
+    }
+
+    /**
      * Comprueba si un movimiento es válido mirando si está en la lista de movimientos
      * @param m Movimiento a comprobar si es válido o no
      * @return Nos indica la validez o no de un movimiento
