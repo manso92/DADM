@@ -169,10 +169,13 @@ public class TableroDamas extends Tablero {
     public ArrayList<Movimiento> movimientosValidosCasilla(Casilla casilla, int sentido, boolean sencillo) {
         ArrayList<Movimiento> movimientos = new ArrayList<Movimiento>();
 
+        // Si es un primer movimiento, puede ser un movimiento sencillo, pero si ya hemos comido, solo podemos volver a comer
         if (sencillo) {
+        	// Movimientos sencillos, moviéndonos un cuadro delante o detrás
             for (Movimiento m : this.movimientosValidosCasillaDireccion(casilla, sentido, 1)) movimientos.add(m);
             for (Movimiento m : this.movimientosValidosCasillaDireccion(casilla, sentido, -1)) movimientos.add(m);
         }
+        // Movimientos de distancia dos, lo que implica comer la ficha del enemigo que esté en medio
         for (Movimiento m : this.movimientosValidosCasillaDireccion(casilla,2*sentido,2)) movimientos.add(m);
         for (Movimiento m : this.movimientosValidosCasillaDireccion(casilla,2*sentido,-2)) movimientos.add(m);
 
@@ -180,18 +183,32 @@ public class TableroDamas extends Tablero {
         return movimientos;
     }
 
+    /**
+     * Nos devuelve los movimientos válidos que hay con una dirección inicial dada
+     * @param origen Casilla de origen del movimiento
+     * @param sentido Si el movimiento es ascenten o descendente
+     * @param salto La distancia a la que se realizará el salto
+     * @return Movimientos válidos
+     */
     public ArrayList<Movimiento> movimientosValidosCasillaDireccion(Casilla origen, int sentido, int salto){
         ArrayList<Movimiento> movimientos = new ArrayList<Movimiento>();
         ArrayList<Movimiento> movimientosaux;
 
+        // Si la casilla destino no está en el tablero, no hay movimiento válido
         if ((new Casilla(origen, sentido, salto)).enTablero()) {
             Casilla destino = this.getCasilla(new Casilla(origen, sentido, salto)).clone();
+            // Comprobamos si el movimiento directo es válido
             if (this.comrpuebaMovimiento(new MovimientoDamas(origen, destino))) {
+            	// Lo añadimos a devolver
                 movimientos.add(new MovimientoDamas(origen, destino));
+                
+                // Si hemos comido una ficha, vemos si podemos hacer un nuevo movimiento
                 if (Math.abs(salto) > 1) {
                     destino.ponFicha(origen.getFicha());
+                    // Obtenemos movimientos iterados
                     movimientosaux = this.movimientosValidosCasilla(destino, sentido / Math.abs(sentido), false);
 
+                    // Encadenamos los movimientos
                     for (Movimiento mov : movimientosaux) {
                         MovimientoDamas aux = new MovimientoDamas(origen, destino);
                         aux.setProximoMovimiento((MovimientoDamas) mov);
@@ -200,6 +217,8 @@ public class TableroDamas extends Tablero {
                 }
             }
         }
+        
+        // Devolvemos los movimientos
         return movimientos;
     }
 

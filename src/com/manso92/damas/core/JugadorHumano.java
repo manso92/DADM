@@ -36,7 +36,7 @@ public class JugadorHumano implements Jugador {
         switch (evento.getTipo()) {
             // Si hay un cambio en el juego imprimimos el tablero para que se vea el cambio
             case Evento.EVENTO_CAMBIO:
-                System.out.print(evento.getPartida().getTablero());
+                System.out.print(evento.getPartida().getTablero().toString());
                 break;
 
             // Si nos llega un evento que confirmar, preguntamos al usuario y enviamos una confirmación positiva
