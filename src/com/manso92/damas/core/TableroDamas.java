@@ -8,7 +8,7 @@ import java.util.StringTokenizer;
  * Tablero describe el tablero de las damas y evalúa los movimientos que se pueden o no hacer, las jugadas,
  * las fichas y todo lo relativo al teclado
  * @author Pablo Manso
- * @version 10/02/2017
+ * @version 12/02/2017
  */
 public class TableroDamas extends Tablero {
 
@@ -66,6 +66,9 @@ public class TableroDamas extends Tablero {
             for (int j = 0; j < TABLEROSIZE; j++)
                 if ((i + j) % 2 == 1)
                     this.casillas[i][j].ponFicha(new Ficha(Ficha.Color.NEGRA));
+
+        // Actualizamos los vmovimientos válidos
+        this.movimientos = this.movimientosValidos();
     }
 
     /**
@@ -76,7 +79,7 @@ public class TableroDamas extends Tablero {
     @Override
     protected void mueve(Movimiento m) throws ExcepcionJuego {
         if (!this.esValido(m))
-            throw new ExcepcionJuego("No se puede realizar el movimiento que quieres;");
+            throw new ExcepcionJuego("El movimiento indicado no es un movimiento válido.");
 
         this.ejecutaMovimiento(m);
         this.numJugadas++;
@@ -104,6 +107,11 @@ public class TableroDamas extends Tablero {
             this.casillas[(destino.row() + origen.row())/2][(destino.col() + origen.col())/2].quitaFicha();
         }
 
+        // Si la ficha llega al final de donde debe llegar, lo convertimos en reina
+        if (((this.getCasilla(destino.row(), destino.col()).getFicha().color == Ficha.Color.BLANCA) && (destino.row() == 7)) ||
+                ((this.getCasilla(destino.row(), destino.col()).getFicha().color == Ficha.Color.NEGRA) && (destino.row() == 0)))
+            this.getCasilla(destino.row(), destino.col()).getFicha().reina();
+
         // Si el movmiento es encadenado, ejecutamos el siguiente movimiento
         if (((MovimientoDamas) m).issetProximoMovimiento())
             this.ejecutaMovimiento(((MovimientoDamas) m).getProximoMovimiento());
@@ -116,20 +124,99 @@ public class TableroDamas extends Tablero {
      * @return Nos indica la validez o no de un movimiento
      */
     @Override
-    public boolean esValido(Movimiento m) {
-        return movimientosValidos.indexOf(m) != -1;
-    }
+    public boolean esValido(Movimiento m) { return this.movimientos.indexOf(m) != -1;  }
 
+    /**
+     * Genera una lista de movimientos válidos para el turno en el que se invoca la función
+     * @return Lista de movimientos válidos
+     */
     @Override
     public ArrayList<Movimiento> movimientosValidos() {
-        ArrayList<Movimiento> movmientos = new ArrayList<Movimiento>();
+        ArrayList<ArrayList> movimientos = new ArrayList<ArrayList>();
         Ficha.Color color = this.getTurno() == 0 ? Ficha.Color.BLANCA : Ficha.Color.NEGRA ;
+
+        // Recorremos todas las casillas para ver cuales de las fichas pertenecen al turno
         for(int i=0 ; i<this.casillas.length ; i++)
             for(int j=0 ; j<this.casillas[i].length ; j++)
-                if (this.casillas[i][j].tieneFicha() &&
-                    this.casillas[i][j].getFicha().color == color)
-                    this.movimientosValidos(this.casillas[i][j], movmientos);
-        return movmientos;
+                if (this.getCasilla(i,j).tieneFicha() && this.getCasilla(i,j).getFicha().color == color){
+                    // Cogemos los movimientos de las fichas avanzando
+                    movimientos.add(this.movimientosValidos(this.getCasilla(i,j), this.getSentidoDelJuego()));
+
+                    // Añadimos también, si es una reina, los movimientos de volver
+                    if (this.getCasilla(i,j).getFicha().getTipo() == Ficha.Tipo.REINA)
+                        movimientos.add(this.movimientosValidos(this.getCasilla(i,j), -this.getSentidoDelJuego()));
+
+                }
+
+        // Cargamos todos los movimientos en un solo array para devolverlos
+        ArrayList<Movimiento> devolverMovimientos = new ArrayList<Movimiento>();
+        for (ArrayList<Movimiento> armov:  movimientos)
+            for (Movimiento m : armov)
+                devolverMovimientos.add(m);
+
+        return devolverMovimientos;
+    }
+
+    /**
+     * Coge los movimientos válidos de una casilla
+     * @param casilla Casilla desde la que mirar
+     */
+    public ArrayList<Movimiento> movimientosValidos(Casilla casilla, int sentido) {
+        ArrayList<Movimiento> movimientos = new ArrayList<Movimiento>();
+
+        // Comprobamos los movimientos simples de avanzar y de comer
+        Casilla c = new Casilla(casilla, sentido, 1);
+        if (c.enTablero() &&
+                this.comrpuebaMovimiento(new MovimientoDamas(casilla, this.getCasilla(c))))
+            movimientos.add(new MovimientoDamas(casilla, c));
+
+        c = new Casilla(casilla, sentido, -1);
+        if (c.enTablero() &&
+                this.comrpuebaMovimiento(new MovimientoDamas(casilla, this.getCasilla(c))))
+            movimientos.add(new MovimientoDamas(casilla, c));
+
+        c = new Casilla(casilla, 2*sentido, 2);
+        if (c.enTablero() &&
+                this.comrpuebaMovimiento(new MovimientoDamas(casilla, this.getCasilla(c))))
+            movimientos.add(new MovimientoDamas(casilla, c));
+
+        c = new Casilla(casilla, 2*sentido, -2);
+        if (c.enTablero() &&
+                this.comrpuebaMovimiento(new MovimientoDamas(casilla, this.getCasilla(c))))
+            movimientos.add(new MovimientoDamas(casilla, c));
+
+        // Si alguno de los movimientos es válido, lo devolvemos
+        return movimientos;
+    }
+
+    /**
+     * Nos indica si un movimiento es bueno para este turno. A diferencia de {@link TableroDamas#esValido(Movimiento)}
+     * este es de uso interno y para añadir movimientos a la lista de movimientos válidos. Sin embargo {@link TableroDamas#esValido(Movimiento)}
+     * simplemente nos devuelve si el movimiento está entre los válidos.
+     * @param m Movimiento a comprobar
+     * @return Si el movimiento es bueno o no
+     */
+    private boolean comrpuebaMovimiento(MovimientoDamas m){
+        Casilla origen  = ((MovimientoDamas) m).getOrigen();
+        Casilla destino = ((MovimientoDamas) m).getDestino();
+
+        // Comprobamos que el destino sea una casilla del tablero
+        if (!destino.enTablero()) return false;
+
+        // Si el movmiento tiene distancia 1, es un movimiento simple, y simplemente comprobamos si el destino está vacío
+        if (m.distancia() == 1)
+            return (!destino.tieneFicha());
+
+        // Si el movimiento es de distancia 2
+        if (m.distancia() == 2){
+            // Si no hay una ficha en medio no podemos mover
+            Casilla media = this.getCasilla((destino.row() + origen.row())/2,(destino.col() + origen.col())/2);
+            if (!media.tieneFicha()) return false;
+
+            // Si la fecha de en medio es un enemigo y donde queremos ir está libre, adelante
+            return (origen.getFicha().color != media.getFicha().color) && !destino.tieneFicha();
+        }
+        return false;
     }
 
     /**
@@ -189,7 +276,6 @@ public class TableroDamas extends Tablero {
             throw new ExcepcionJuego("String no válido para un TableroDamas");
 
 
-
         for (int i = 0; i < tablero.length(); i+=4) {
             // Por cada 4, cogemos los parámetros y comprobamos que estén entre los valores adecuados
             int color = Character.getNumericValue(tablero.charAt(i));
@@ -211,8 +297,8 @@ public class TableroDamas extends Tablero {
         this.numJugadas = jugadas;
         if ((this.numJugadas % 2) == 1) this.turno = 1; else this.turno = 0;
         this.casillas = casillas;
+        this.movimientos = this.movimientosValidos();
     }
-
 
     /**
      * Convierte el tablero en algo que un humano pueda entender para poder jugar la partida de forma gráfica
@@ -236,8 +322,6 @@ public class TableroDamas extends Tablero {
         return tablero + "\n";
     }
 
-
-
     /**
      * Limpia el tablero de la partida actual y coloca las fichas para una partida nueva
      * @return true
@@ -245,6 +329,7 @@ public class TableroDamas extends Tablero {
     @Override
     public boolean reset(){
         this.numJugadas = 0;
+        this.limpiaTablero();
         this.colocaFichas();
         return true;
     }
@@ -255,16 +340,19 @@ public class TableroDamas extends Tablero {
      * @param y Posición y del tablero
      * @return Contenido de la casilla
      */
-    public Casilla getCasilla(int x, int y) {
-        return this.casillas[x][y];
-    }
+    public Casilla getCasilla(int x, int y) { return this.casillas[x][y]; }
 
     /**
      * Devuelve el contenido de una casilla del tablero
      * @param casilla Casilla de la que mirar el contenido
      * @return Contenido de la casilla
      */
-    public Casilla getCasilla(Casilla casilla) {
-        return this.casillas[casilla.row()][casilla.col()];
+    public Casilla getCasilla(Casilla casilla) { return this.getCasilla(casilla.row(), casilla.col());
     }
+
+    /**
+     * Nos indica el sentido del juego 1 si el jugador juega de arriba a abajo, -1 si el jugador juega de abajo a arriba
+     * @return Sentido del juego
+     */
+    public int getSentidoDelJuego(){ return (this.getTurno() == 0) ? 1 : -1; }
 }
