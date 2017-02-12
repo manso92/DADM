@@ -148,4 +148,15 @@ public class MovimientoDamas extends Movimiento {
             return true;
         return false;
     }
+
+    /**
+     * Clona el objeto para que no haya errores de modificaciones de punteros
+     * @return Objeto clonado
+     */
+    @Override
+    public MovimientoDamas clone(){
+        MovimientoDamas m = new MovimientoDamas(this.getOrigen().clone(), this.getDestino().clone());
+        if (issetProximoMovimiento()) m.setProximoMovimiento(this.getProximoMovimiento().clone());
+        return m;
+    }
 }

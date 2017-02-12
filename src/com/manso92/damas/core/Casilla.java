@@ -143,12 +143,22 @@ public class Casilla {
     }
 
     /**
-     * Nos devuelve el identificador de la casilla. De este modo la casilla en la posición (0,0) será devuelta como "A1"
+     * Nos devuelve la reprresentación para pintar de la casilla
+     * @return Cadena para pintar
+     */
+    public String string(){
+        return (char)27 + "[" +  ((row + col)%2==0 ? "40" : "47") + "m" +
+                (this.ficha == null ? " " : this.getFicha().toString()) + (char)27 + "[0m";
+    }
+
+    /**
+     * Nos devuelve la posición de la casilla
      * @return Cadena con el identificador
      */
+    @Override
     public String toString(){
         return (char)27 + "[" +  ((row + col)%2==0 ? "40" : "47") + "m" +
-            (this.ficha == null ? " " : this.getFicha().toString()) + (char)27 + "[0m";
+                (this.ficha == null ? " " : this.getFicha().toString()) + (char)27 + "[0m";
     }
 
     /**
@@ -159,6 +169,17 @@ public class Casilla {
     @Override
     public boolean equals (Object o){
         return (this.row() == ((Casilla)o).row()) && this.col() == ((Casilla)o).col();
+    }
+
+    /**
+     * Clona el objeto para que no haya errores de modificaciones de punteros
+     * @return Objeto clonado
+     */
+    @Override
+    public Casilla clone(){
+        Casilla c = new Casilla(this.row(),this.col());
+        c.ponFicha(this.getFicha().clone());
+        return c;
     }
 
 }
