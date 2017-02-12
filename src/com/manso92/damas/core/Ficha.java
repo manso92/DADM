@@ -61,7 +61,7 @@ public class Ficha {
      */
     @Override
     public String toString() {
-        return (this.tipo == Tipo.REINA ? "R" : "D");
+        return (this.tipo == Tipo.REINA ? "R" : "D") + (this.color == Color.BLANCA ? "B" : "R");
     }
 
     /**

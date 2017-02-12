@@ -11,6 +11,12 @@ import java.util.StringTokenizer;
  * @version 12/02/2017
  */
 public class TableroDamas extends Tablero {
+	
+	/**
+	 * Esta constante nos indica si está siendo compilado con ECLIPSE o no
+	 * para activar o desactivar el esquema de colores
+	 */
+	public final static boolean ECLIPSE = true;
 
     /**
      * Tamaño que tiene el tablero
@@ -37,7 +43,6 @@ public class TableroDamas extends Tablero {
         this.numJugadas=0;
         this.numJugadores=2;
         this.estado=EN_CURSO;
-        this.movimientos = this.movimientosValidos();
     }
 
     /**
@@ -82,7 +87,6 @@ public class TableroDamas extends Tablero {
             throw new ExcepcionJuego("El movimiento indicado no es un movimiento válido.");
 
         this.ejecutaMovimiento(m);
-        this.numJugadas++;
         this.cambiaTurno();
         this.movimientos = this.movimientosValidos();
     }
@@ -102,9 +106,10 @@ public class TableroDamas extends Tablero {
 
         // Si el movimiento tiene distancia , implica que hemos comido una ficha
         // Movemos nuestra ficha al destino y nos comemos la ficha que hay en medio
-        if (((MovimientoDamas) m).distancia() == 2){
-            this.casillas[destino.row()][destino.col()].ponFicha(this.casillas[origen.row()][origen.col()].quitaFicha());
-            this.casillas[(destino.row() + origen.row())/2][(destino.col() + origen.col())/2].quitaFicha();
+        else {
+            this.getCasilla(destino.row(),destino.col()).ponFicha(this.getCasilla(origen.row(),origen.col()).quitaFicha());
+            ((MovimientoDamas) m).casillaAnterior(this).quitaFicha();
+            //this.casillas[(destino.row() + origen.row())/2][(destino.col() + origen.col())/2].quitaFicha();
         }
 
         // Si la ficha llega al final de donde debe llegar, lo convertimos en reina
@@ -140,11 +145,11 @@ public class TableroDamas extends Tablero {
             for(int j=0 ; j<this.casillas[i].length ; j++)
                 if (this.getCasilla(i,j).tieneFicha() && this.getCasilla(i,j).getFicha().color == color){
                     // Cogemos los movimientos de las fichas avanzando
-                    movimientos.add(this.movimientosValidos(this.getCasilla(i,j), this.getSentidoDelJuego()));
+                    movimientos.add(this.movimientosValidosCasilla(this.getCasilla(i,j).clone(), this.getSentidoDelJuego(), true));
 
                     // Añadimos también, si es una reina, los movimientos de volver
                     if (this.getCasilla(i,j).getFicha().getTipo() == Ficha.Tipo.REINA)
-                        movimientos.add(this.movimientosValidos(this.getCasilla(i,j), -this.getSentidoDelJuego()));
+                        movimientos.add(this.movimientosValidosCasilla(this.getCasilla(i,j).clone(), -this.getSentidoDelJuego(),true));
 
                 }
 
@@ -161,31 +166,40 @@ public class TableroDamas extends Tablero {
      * Coge los movimientos válidos de una casilla
      * @param casilla Casilla desde la que mirar
      */
-    public ArrayList<Movimiento> movimientosValidos(Casilla casilla, int sentido) {
+    public ArrayList<Movimiento> movimientosValidosCasilla(Casilla casilla, int sentido, boolean sencillo) {
         ArrayList<Movimiento> movimientos = new ArrayList<Movimiento>();
 
-        // Comprobamos los movimientos simples de avanzar y de comer
-        Casilla c = new Casilla(casilla, sentido, 1);
-        if (c.enTablero() &&
-                this.comrpuebaMovimiento(new MovimientoDamas(casilla, this.getCasilla(c))))
-            movimientos.add(new MovimientoDamas(casilla, c));
-
-        c = new Casilla(casilla, sentido, -1);
-        if (c.enTablero() &&
-                this.comrpuebaMovimiento(new MovimientoDamas(casilla, this.getCasilla(c))))
-            movimientos.add(new MovimientoDamas(casilla, c));
-
-        c = new Casilla(casilla, 2*sentido, 2);
-        if (c.enTablero() &&
-                this.comrpuebaMovimiento(new MovimientoDamas(casilla, this.getCasilla(c))))
-            movimientos.add(new MovimientoDamas(casilla, c));
-
-        c = new Casilla(casilla, 2*sentido, -2);
-        if (c.enTablero() &&
-                this.comrpuebaMovimiento(new MovimientoDamas(casilla, this.getCasilla(c))))
-            movimientos.add(new MovimientoDamas(casilla, c));
+        if (sencillo) {
+            for (Movimiento m : this.movimientosValidosCasillaDireccion(casilla, sentido, 1)) movimientos.add(m);
+            for (Movimiento m : this.movimientosValidosCasillaDireccion(casilla, sentido, -1)) movimientos.add(m);
+        }
+        for (Movimiento m : this.movimientosValidosCasillaDireccion(casilla,2*sentido,2)) movimientos.add(m);
+        for (Movimiento m : this.movimientosValidosCasillaDireccion(casilla,2*sentido,-2)) movimientos.add(m);
 
         // Si alguno de los movimientos es válido, lo devolvemos
+        return movimientos;
+    }
+
+    public ArrayList<Movimiento> movimientosValidosCasillaDireccion(Casilla origen, int sentido, int salto){
+        ArrayList<Movimiento> movimientos = new ArrayList<Movimiento>();
+        ArrayList<Movimiento> movimientosaux;
+
+        if ((new Casilla(origen, sentido, salto)).enTablero()) {
+            Casilla destino = this.getCasilla(new Casilla(origen, sentido, salto)).clone();
+            if (this.comrpuebaMovimiento(new MovimientoDamas(origen, destino))) {
+                movimientos.add(new MovimientoDamas(origen, destino));
+                if (Math.abs(salto) > 1) {
+                    destino.ponFicha(origen.getFicha());
+                    movimientosaux = this.movimientosValidosCasilla(destino, sentido / Math.abs(sentido), false);
+
+                    for (Movimiento mov : movimientosaux) {
+                        MovimientoDamas aux = new MovimientoDamas(origen, destino);
+                        aux.setProximoMovimiento((MovimientoDamas) mov);
+                        movimientos.add(aux);
+                    }
+                }
+            }
+        }
         return movimientos;
     }
 
@@ -208,9 +222,9 @@ public class TableroDamas extends Tablero {
             return (!destino.tieneFicha());
 
         // Si el movimiento es de distancia 2
-        if (m.distancia() == 2){
+        if (m.distancia() > 1){
             // Si no hay una ficha en medio no podemos mover
-            Casilla media = this.getCasilla((destino.row() + origen.row())/2,(destino.col() + origen.col())/2);
+            Casilla media = this.getCasilla(m.casillaAnterior(this));
             if (!media.tieneFicha()) return false;
 
             // Si la fecha de en medio es un enemigo y donde queremos ir está libre, adelante
@@ -297,6 +311,7 @@ public class TableroDamas extends Tablero {
         this.numJugadas = jugadas;
         if ((this.numJugadas % 2) == 1) this.turno = 1; else this.turno = 0;
         this.casillas = casillas;
+        System.out.println(this.toString());
         this.movimientos = this.movimientosValidos();
     }
 
@@ -306,6 +321,39 @@ public class TableroDamas extends Tablero {
      */
     @Override
     public String toString() {
+        if(this.ECLIPSE)
+        	return toStringPlain();
+        return toStringColor();
+    }
+
+    /**
+     * Imprime el tablero de forma plana, sin colores
+     * @return String con la partida a pintar
+     */
+    public String toStringPlain() {
+        String tablero = "";
+
+        // Colocamos el nombre de las columnas
+        tablero += "  |1 |2 |3 |4 |5 |6 |7 |8 |\n";
+        // Por cada fila
+        for(int i=0; i<this.casillas.length; i++) {
+            // Pintamos el nombre de la fila
+        	tablero += "  -------------------------\n";
+            tablero += Character.toString((char) (i+'A')) + " ";
+            // Imprimimos cada una de las casillas
+            for(int j=0; j<this.casillas[i].length; j++)
+                tablero += "|" + this.casillas[i][j].string();
+            tablero += "|\n";
+        }
+    	tablero += "  -------------------------\n";
+        return tablero + "\n";
+    }
+
+    /**
+     * Imprime el tablero con códigos de colores
+     * @return String con la partida a pintar
+     */
+    public String toStringColor() {
         String tablero = "";
 
         // Colocamos el nombre de las columnas
@@ -316,7 +364,7 @@ public class TableroDamas extends Tablero {
             tablero += Character.toString((char) (i+'A')) + " ";
             // Imprimimos cada una de las casillas
             for(int j=0; j<this.casillas[i].length; j++)
-                tablero += this.casillas[i][j].toString();
+                tablero += this.casillas[i][j].string();
             tablero += "\n";
         }
         return tablero + "\n";

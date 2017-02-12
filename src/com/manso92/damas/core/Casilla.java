@@ -147,8 +147,10 @@ public class Casilla {
      * @return Cadena para pintar
      */
     public String string(){
-        return (char)27 + "[" +  ((row + col)%2==0 ? "40" : "47") + "m" +
-                (this.ficha == null ? " " : this.getFicha().toString()) + (char)27 + "[0m";
+    	if(TableroDamas.ECLIPSE)
+    		return (this.ficha == null ? "  " : this.getFicha().toString());
+		return "\033[" +  ((row + col)%2==0 ? "40" : "47") + "m" +
+        	(this.ficha == null ? " " : this.getFicha().string()) + (char)27 + "[0m";
     }
 
     /**
@@ -157,8 +159,7 @@ public class Casilla {
      */
     @Override
     public String toString(){
-        return (char)27 + "[" +  ((row + col)%2==0 ? "40" : "47") + "m" +
-                (this.ficha == null ? " " : this.getFicha().toString()) + (char)27 + "[0m";
+        return Character.toString((char) (this.row() + 'A')) + Character.toString((char) (this.col() + '1'));
     }
 
     /**
@@ -178,7 +179,7 @@ public class Casilla {
     @Override
     public Casilla clone(){
         Casilla c = new Casilla(this.row(),this.col());
-        c.ponFicha(this.getFicha().clone());
+        if (this.tieneFicha()) c.ponFicha(this.getFicha().clone());
         return c;
     }
 

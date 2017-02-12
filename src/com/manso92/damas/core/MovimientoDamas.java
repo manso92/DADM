@@ -143,7 +143,6 @@ public class MovimientoDamas extends Movimiento {
         return movimiento;
     }
 
-    // TODO habría que realizar un JUNIT de ésto, pues no sé yo muy bien como está
     /**
      * Compara si son dos movimientos iguales o no
      * @param o Movimiento a comparar
