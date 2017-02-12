@@ -47,6 +47,26 @@ public class MovimientoDamas extends Movimiento {
     }
 
     /**
+     * Devuelve la casilla anterior al destino del movimiento, que presumiblemente será la que se coma la ficha
+     * @param t Tablero del que coger la casilla
+     * @return Casilla seleccionada
+     */
+    public Casilla casillaAnterior(TableroDamas t){
+        int colFactor = (this.getOrigen().col() - this.getDestino().col()) / Math.abs((this.getOrigen().col() - this.getDestino().col()));
+        int rowFactor = (this.getOrigen().row() - this.getDestino().row()) / Math.abs((this.getOrigen().row() - this.getDestino().row()));
+        return t.getCasilla(this.getDestino().row() + rowFactor , this.getDestino().col() + colFactor);
+    }
+
+    /**
+     * Comprueba si un movimiento es igual a otro pero a la inversa
+     * @param m Movimiento a comprobar
+     * @return Si los movimientos son simétricos o no
+     */
+    public boolean esSimétrico(MovimientoDamas m){
+        return m.getOrigen().equals(this.getDestino()) && m.getDestino().equals(this.getOrigen());
+    }
+
+    /**
      * Distancia máxima entre dos casillas, de modo que si entre la casilla de origen y la de fin hay dos columnas y
      * tres filas, devolverá tres
      * @return Máxima distancia
