@@ -9,7 +9,7 @@ import java.io.InputStreamReader;
 /**
  * Jugador que juega según las entradas que el usuario vaya haciendo por teclado
  * @author Pablo Manso
- * @version 10/02/2017
+ * @version 12/02/2017
  */
 public class JugadorHumano implements Jugador {
 
@@ -80,12 +80,11 @@ public class JugadorHumano implements Jugador {
                     }
 
                     // Decimos a la partida que queremos hacer el movmiento
-                    evento.getPartida().realizaAccion(new AccionMover(
-                            this, movimiento));
+                    evento.getPartida().realizaAccion(new AccionMover(this, movimiento));
                 }
                 catch(Exception e) {
                     // Si no es posible ejecutar el movimiento, pues volvemos a preguntar
-                    System.out.print(e.getMessage());
+                    System.out.print(e.getMessage()+ "\n");
                     this.onCambioEnPartida(evento);
                 }
                 break;
