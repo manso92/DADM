@@ -47,6 +47,13 @@ public class MovimientoDamas extends Movimiento {
     }
 
     /**
+     * Distancia máxima entre dos casillas, de modo que si entre la casilla de origen y la de fin hay dos columnas y
+     * tres filas, devolverá tres
+     * @return Máxima distancia
+     */
+    public int distancia(){ return Math.max(Math.abs(this.destino.getCol() - this.origen.getCol()), Math.abs(this.destino.getCol() - this.origen.getCol()));}
+
+    /**
      * Nos devuelve la {@link com.manso92.damas.core.Casilla} en la que se origina el movimiento
      * @return {@link com.manso92.damas.core.Casilla} de origen
      */

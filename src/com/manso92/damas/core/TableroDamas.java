@@ -239,6 +239,6 @@ public class TableroDamas extends Tablero {
      * @return Contenido de la casilla
      */
     public Casilla getCasilla(Casilla casilla) {
-        return this.casillas[casilla.getRow()][casilla.getCol()];
+        return this.casillas[casilla.row()][casilla.col()];
     }
 }

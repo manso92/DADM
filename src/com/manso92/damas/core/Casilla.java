@@ -50,7 +50,7 @@ public class Casilla {
      * Nos devuelve la fila en la que se encuentra la casilla
      * @return Posición de la fila
      */
-    public int getRow() {
+    public int row() {
         return row;
     }
 
@@ -58,7 +58,7 @@ public class Casilla {
      * Cambia la fila en la que se encuentra la casilla
      * @param row Posición de la fila
      */
-    public void setRow(int row) {
+    public void row(int row) {
         this.row = row;
     }
 
@@ -66,7 +66,7 @@ public class Casilla {
      * Nos devuelve la columna en la que se encuentra la casilla
      * @return Posición de la columna
      */
-    public int getCol() {
+    public int col() {
         return col;
     }
 
@@ -74,7 +74,7 @@ public class Casilla {
      * Cambia la columna en la que se encuentra la casilla
      * @param col Posición de la columna
      */
-    public void setCol(int col) {
+    public void col(int col) {
         this.col = col;
     }
 
