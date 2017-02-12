@@ -4,7 +4,7 @@ package com.manso92.damas.core;
  * Casilla es la unidad básica para cualquier juego de tablero en cuadrícula. El tablero para el que está implementada
  * esta clase es un tablero del tipo Ajedrez/Damas en el cual son cuadrículas con casillas blancas y y negragas.
  * @author Pablo Manso
- * @version 10/02/2017
+ * @version 12/02/2017
  */
 public class Casilla {
 
@@ -44,6 +44,40 @@ public class Casilla {
         this.row = row;
         this.col = col;
         this.ficha = ficha;
+    }
+
+    /**
+     * Constructor de Casilla en el que le indicamos la posición de la casilla y colocamos una ficha
+     * @param origen Casilla de origen sobre la que calcular la nueva posición
+     * @param row Filas a desplazar desde la casilla de origen
+     * @param col Columnas a desplazar desde la casilla de destino
+     */
+    public Casilla(Casilla origen, int row, int col) {
+        this.row = origen.row() + row;
+        this.col = origen.col() + col;
+        this.ficha = null;
+    }
+
+    /**
+     * Constructor de Casilla en el que le indicamos la posición de la casilla y colocamos una ficha
+     * @param origen Casilla de origen sobre la que calcular la nueva posición
+     * @param row Filas a desplazar desde la casilla de origen
+     * @param col Columnas a desplazar desde la casilla de destino
+     * @param ficha Ficha que está en la casilla
+     */
+    public Casilla(Casilla origen, int row, int col, Ficha ficha) {
+        this.row = origen.row() + row;
+        this.col = origen.col() + col;
+        this.ficha = ficha;
+    }
+
+    /**
+     * Comprueba si la casilla que hemos creado está entre los límites del tablero
+     * @return Si la casilla está o no en el tablero
+     */
+    public boolean enTablero(){
+        return ((this.col() >= 0) && (this.col() < TableroDamas.TABLEROSIZE) &&
+                (this.row() >= 0) && (this.row() < TableroDamas.TABLEROSIZE) );
     }
 
     /**
@@ -115,6 +149,16 @@ public class Casilla {
     public String toString(){
         return (char)27 + "[" +  ((row + col)%2==0 ? "40" : "47") + "m" +
             (this.ficha == null ? " " : this.getFicha().toString()) + (char)27 + "[0m";
+    }
+
+    /**
+     * Comprueba si dos casillas están ubicadas en la misma posición
+     * @param o Casilla a comparar
+     * @return Si son la misma casilla o no
+     */
+    @Override
+    public boolean equals (Object o){
+        return (this.row() == ((Casilla)o).row()) && this.col() == ((Casilla)o).col();
     }
 
 }
