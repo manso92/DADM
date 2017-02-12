@@ -25,7 +25,7 @@ public class TableroDamas extends Tablero {
     /**
      * Registra una lista con los movimientos validos en cada turno
      */
-    ArrayList<Movimiento> movimientosValidos = null;
+    ArrayList<Movimiento> movimientos = null;
 
     /**
      * Construye el tablero para jugar a las damas
@@ -37,7 +37,7 @@ public class TableroDamas extends Tablero {
         this.numJugadas=0;
         this.numJugadores=2;
         this.estado=EN_CURSO;
-        movimientosValidos = this.movimientosValidos();
+        this.movimientos = this.movimientosValidos();
     }
 
     /**
@@ -81,7 +81,7 @@ public class TableroDamas extends Tablero {
         this.ejecutaMovimiento(m);
         this.numJugadas++;
         this.cambiaTurno();
-        this.movimientosValidos = this.movimientosValidos();
+        this.movimientos = this.movimientosValidos();
     }
 
     /**

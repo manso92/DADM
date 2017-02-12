@@ -51,7 +51,7 @@ public class MovimientoDamas extends Movimiento {
      * tres filas, devolverá tres
      * @return Máxima distancia
      */
-    public int distancia(){ return Math.max(Math.abs(this.destino.getCol() - this.origen.getCol()), Math.abs(this.destino.getCol() - this.origen.getCol()));}
+    public int distancia(){ return Math.max(Math.abs(this.destino.col() - this.origen.col()), Math.abs(this.destino.col() - this.origen.col()));}
 
     /**
      * Nos devuelve la {@link com.manso92.damas.core.Casilla} en la que se origina el movimiento
@@ -103,10 +103,10 @@ public class MovimientoDamas extends Movimiento {
 
     /**
      * Cambia el {@link com.manso92.damas.core.MovimientoDamas} que hay que realizar después de éste
-     * @param proximoMoivmiento {@link com.manso92.damas.core.MovimientoDamas} a realizar después
+     * @param proximoMovimiento {@link com.manso92.damas.core.MovimientoDamas} a realizar después
      * @return {@link com.manso92.damas.core.MovimientoDamas} a realizar después
      */
-    public MovimientoDamas setProximoMovimiento(MovimientoDamas proximoMoivmiento) {
+    public MovimientoDamas setProximoMovimiento(MovimientoDamas proximoMovimiento) {
         this.proximoMovimiento = proximoMovimiento;
         return this.proximoMovimiento;
     }
