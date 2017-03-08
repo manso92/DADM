@@ -1,4 +1,4 @@
-package com.manso92.damas.core;
+package es.uam.eps.dadm.core;
 
 /**
  * Ficha de las damas, que puede ser una dama o una reina

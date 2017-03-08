@@ -1,0 +1,43 @@
+// Top-level build file where you can add configuration options common to all sub-projects/modules.
+
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:2.3.0'
+
+        // NOTE: Do not place your application dependencies here; they belong
+        // in the individual module build.gradle files
+    }
+}
+
+allprojects {
+    repositories {
+        jcenter()
+    }
+}
+
+task clean(type: Delete) {
+    delete rootProject.buildDir
+}
+
+
+ext {
+    versionCode = 10
+    versionName = '0.0.0.0.10'
+
+    minSdkVersion = 15
+    targetSdkVersion = 24
+    compileSdkVersion = 24
+    buildToolsVersion = '24.0.0'
+
+    supportLibreryVersion =  '25.2.0'
+    firebaseversion = '9.0.2'
+
+    circleImageViewVersion = '2.0.0'
+    butterknifeVersion = '7.0.1'
+    eventbusVersion = '3.0.0'
+    glideVersion = '3.6.1'
+    jsoupVersion = '1.9.2'
+}
