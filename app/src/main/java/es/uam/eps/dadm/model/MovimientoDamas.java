@@ -1,4 +1,4 @@
-package es.uam.eps.dadm.core;
+package es.uam.eps.dadm.model;
 
 import es.uam.eps.multij.*;
 

@@ -1,4 +1,4 @@
-package es.uam.eps.dadm.core;
+package es.uam.eps.dadm.model;
 
 /**
  * Casilla es la unidad básica para cualquier juego de tablero en cuadrícula. El tablero para el que está implementada

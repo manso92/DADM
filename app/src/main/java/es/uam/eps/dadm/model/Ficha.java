@@ -1,4 +1,4 @@
-package es.uam.eps.dadm.core;
+package es.uam.eps.dadm.model;
 
 /**
  * Ficha de las damas, que puede ser una dama o una reina
@@ -61,7 +61,7 @@ public class Ficha {
      */
     @Override
     public String toString() {
-        return (this.tipo == Tipo.REINA ? "R" : "D") + (this.color == Color.BLANCA ? "B" : "R");
+        return (this.tipo == Tipo.REINA ? (this.color == Color.BLANCA ? "O" : "X") : (this.color == Color.BLANCA ? "o" : "x"));
     }
 
     /**

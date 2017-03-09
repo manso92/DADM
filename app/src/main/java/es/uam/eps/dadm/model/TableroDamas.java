@@ -1,4 +1,4 @@
-package es.uam.eps.dadm.core;
+package es.uam.eps.dadm.model;
 
 import es.uam.eps.multij.*;
 import java.util.ArrayList;
@@ -40,6 +40,7 @@ public class TableroDamas extends Tablero {
         super();
         this.casillas = new Casilla[TABLEROSIZE][TABLEROSIZE];
         this.limpiaTablero();
+        this.colocaFichas();
         this.numJugadas=0;
         this.numJugadores=2;
         this.estado=EN_CURSO;
@@ -352,19 +353,13 @@ public class TableroDamas extends Tablero {
     public String toStringPlain() {
         String tablero = "";
 
-        // Colocamos el nombre de las columnas
-        tablero += "  |1 |2 |3 |4 |5 |6 |7 |8 |\n";
-        // Por cada fila
         for(int i=0; i<this.casillas.length; i++) {
             // Pintamos el nombre de la fila
-        	tablero += "  -------------------------\n";
-            tablero += Character.toString((char) (i+'A')) + " ";
             // Imprimimos cada una de las casillas
             for(int j=0; j<this.casillas[i].length; j++)
                 tablero += "|" + this.casillas[i][j].string();
             tablero += "|\n";
         }
-    	tablero += "  -------------------------\n";
         return tablero + "\n";
     }
 

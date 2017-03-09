@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/tableroLinearLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center_horizontal"
+    android:orientation="vertical">
+    <ImageButton
+        android:id="@+id/er2"
+        style="@style/casilla"
+        android:layout_centerHorizontal="true" />
+    <ImageButton
+        android:id="@+id/er3"
+        style="@style/casilla"
+        android:layout_toRightOf="@id/er2" />
+    <ImageButton
+        android:id="@+id/er1"
+        style="@style/casilla"
+        android:layout_toLeftOf="@id/er2" />
+    <ImageButton
+        android:id="@+id/er5"
+        style="@style/casilla"
+        android:layout_below="@id/er2"
+        android:layout_centerHorizontal="true" />
+    <ImageButton
+        android:id="@+id/er6"
+        style="@style/casilla"
+        android:layout_below="@id/er2"
+        android:layout_toRightOf="@id/er5" />
+    <ImageButton
+        android:id="@+id/er4"
+        style="@style/casilla"
+        android:layout_below="@id/er2"
+        android:layout_toLeftOf="@id/er5" />
+    <ImageButton
+        android:id="@+id/er8"
+        style="@style/casilla"
+        android:layout_below="@id/er5"
+        android:layout_centerHorizontal="true" />
+    <ImageButton
+        android:id="@+id/er9"
+        style="@style/casilla"
+        android:layout_below="@id/er5"
+        android:layout_toRightOf="@id/er8" />
+    <ImageButton
+        android:id="@+id/er7"
+        style="@style/casilla"
+        android:layout_below="@id/er5"
+        android:layout_toLeftOf="@id/er8" />
+</RelativeLayout>
