@@ -1,22 +1,47 @@
-package es.uam.eps.dadm.core;
+package es.uam.eps.dadm.activities;
 
-import es.uam.eps.multij.*;
+
+import android.support.design.widget.Snackbar;
+import android.view.View;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+
+import es.uam.eps.dadm.R;
+import es.uam.eps.dadm.model.Casilla;
+import es.uam.eps.dadm.model.MovimientoDamas;
+import es.uam.eps.dadm.model.TableroDamas;
+import es.uam.eps.multij.AccionMover;
+import es.uam.eps.multij.Evento;
+import es.uam.eps.multij.Jugador;
+import es.uam.eps.multij.Partida;
+import es.uam.eps.multij.Tablero;
 
 /**
  * Jugador que juega según las entradas que el usuario vaya haciendo por teclado
  * @author Pablo Manso
  * @version 12/02/2017
  */
-public class JugadorHumano implements Jugador {
+public class JugadorHumano implements Jugador, View.OnClickListener {
+
+    private final int ids[][] = {
+            {R.id.er1, R.id.er2, R.id.er3},
+            {R.id.er4, R.id.er5, R.id.er6},
+            {R.id.er7, R.id.er8, R.id.er9}};
+    private int SIZE = 3;
+    Partida game;
 
     /**
      * Nombre que identifica al jugador
      */
-    private String nombre;
+    private String nombre = "Local player";
+
+    /**
+     * Construye un jugador humano con el nombre por defecto
+     */
+    public JugadorHumano() {
+    }
 
     /**
      * Construye un jugador humano
@@ -96,7 +121,7 @@ public class JugadorHumano implements Jugador {
      * Pregunta al usuario mediante del teclado por una posición del tablero.
      * @return Casilla elegida por el usuario
      */
-    private Casilla askCasilla() throws IOException{
+    private Casilla askCasilla() throws IOException {
         // Miramos que nos dice el usuario y lo pasamos a mayúsculas, por evitar comprobaciones
         InputStreamReader isr = new InputStreamReader(System.in);
         BufferedReader br = new BufferedReader(isr);
@@ -151,6 +176,61 @@ public class JugadorHumano implements Jugador {
         return (posicion.charAt(0) == 's');
     }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    private int fromViewToI(View view) {
+        for (int i = 0; i < SIZE; i++)
+            for (int j = 0; j < SIZE; j++)
+                if (view.getId() == ids[i][j])
+                    return i;
+        return -1;
+    }
+    private int fromViewToJ(View view) {
+        for (int i = 0; i < SIZE; i++)
+            for (int j = 0; j < SIZE; j++)
+                if (view.getId() == ids[i][j])
+                    return j;
+        return -1;
+    }
+    @Override
+    public void onClick(View v) {
+        try {
+            // TODO cuando se clickee por primera vez se guarda la casilla de inicio y se marca que se va a mover
+            // Cuando se clickee por segunda se ejecuta el movimiento
+            if (game.getTablero().getEstado() != Tablero.EN_CURSO) {
+                Snackbar.make(v, R.string.round_already_finished,
+                                 Snackbar.LENGTH_SHORT).show();
+                return;
+            }
+
+            // TODO cambiar el movimiento para que coja el inicio y el fin sobre todo hay que mirar porque esto solo recorre un
+            MovimientoDamas m = new MovimientoDamas(new Casilla(fromViewToI(v), fromViewToJ(v)),new Casilla(fromViewToI(v), fromViewToJ(v)));
+            game.realizaAccion(new AccionMover(this, m));
+        } catch (Exception e) {
+            Snackbar.make(v, R.string.invalid_movement, Snackbar.LENGTH_SHORT).show();
+        }
+    }
+
     /**
      * Devuelve 'true' si este jugador sabe jugar al juego indicado
      * @param tablero Tablero de la partida
@@ -159,6 +239,15 @@ public class JugadorHumano implements Jugador {
     @Override
     public boolean puedeJugar(Tablero tablero) {
         return tablero instanceof TableroDamas;
+    }
+
+
+    /**
+     * Asigna al jugador una partida
+     * @param game Parida que va a jugar el jugador
+     */
+    public void setPartida(Partida game) {
+        this.game = game;
     }
 
     /**
