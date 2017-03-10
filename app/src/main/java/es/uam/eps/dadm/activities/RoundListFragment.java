@@ -8,6 +8,9 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -22,6 +25,18 @@ public class RoundListFragment extends Fragment {
     private static final int SIZE = 3;
     private RecyclerView roundRecyclerView;
     private RoundAdapter roundAdapter;
+
+    private Callbacks callbacks;
+    public interface Callbacks {
+        void onRoundSelected(Round round);
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -31,16 +46,30 @@ public class RoundListFragment extends Fragment {
                 LinearLayoutManager(getActivity());
         roundRecyclerView.setLayoutManager(linearLayoutManager);
         roundRecyclerView.setItemAnimator(new DefaultItemAnimator());
+
+        roundRecyclerView.addOnItemTouchListener(new
+                RecyclerItemClickListener(getActivity(), new
+                RecyclerItemClickListener.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(View view, int position) {
+                        Round round =
+                                RoundRepository.get(getContext()).getRounds().get(position);
+                        callbacks.onRoundSelected(round);
+                    }
+                }));
+
         updateUI();
         return view;
     }
+
+
 
     @Override
     public void onResume() {
         super.onResume();
         updateUI();
     }
-    private void updateUI() {
+    public void updateUI() {
         RoundRepository repository = RoundRepository.get(this.getActivity());
         List<Round> rounds = repository.getRounds();
         if (roundAdapter == null) {
@@ -52,25 +81,48 @@ public class RoundListFragment extends Fragment {
     }
 
 
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        callbacks = (Callbacks) context;
+    }
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        callbacks = null;
+    }
 
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.menu, menu);
+    }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.menu_item_new_round:
+                Round round = new Round(RoundRepository.SIZE);
+                RoundRepository.get(getActivity()).addRound(round);
+                updateUI();
 
-
-
-
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
 
 
 
     public class RoundAdapter extends RecyclerView.Adapter<RoundAdapter.RoundHolder>{
         private List<Round> rounds;
-        public class RoundHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+        public class RoundHolder extends RecyclerView.ViewHolder {
             private TextView idTextView;
             private TextView boardTextView;
             private TextView dateTextView;
             private Round round;
             public RoundHolder(View itemView) {
                 super(itemView);
-                itemView.setOnClickListener(this);
                 idTextView = (TextView) itemView.findViewById(R.id.list_item_id);
                 boardTextView = (TextView) itemView.findViewById(R.id.list_item_board);
                 dateTextView = (TextView) itemView.findViewById(R.id.list_item_date);
@@ -82,12 +134,6 @@ public class RoundListFragment extends Fragment {
                 dateTextView.setText(String.valueOf(round.getDate()).substring(0,19));
             }
 
-            @Override
-            public void onClick(View v) {
-                Context context = v.getContext();
-                Intent intent = RoundActivity.newIntent(context, round.getId());
-                context.startActivity(intent);
-            }
         }
         public RoundAdapter(List<Round> rounds){
             this.rounds = rounds;

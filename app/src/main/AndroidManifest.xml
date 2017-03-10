@@ -16,7 +16,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activities.RoundActivity"></activity>
+        <activity android:name=".activities.RoundActivity"
+            android:parentActivityName=".activities.RoundListActivity"/>
     </application>
 
 </manifest>

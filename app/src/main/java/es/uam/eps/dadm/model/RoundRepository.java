@@ -6,7 +6,7 @@ import java.util.List;
 
 
 public class RoundRepository {
-    private static final int SIZE = 3;
+    public static final int SIZE = 3;
     private static RoundRepository repository;
     private List<Round> rounds;
 
@@ -23,6 +23,8 @@ public class RoundRepository {
             rounds.add(round);
         }
     }
+    public void addRound(Round round) { rounds.add(round); }
+
     public List<Round> getRounds() {
         return rounds;
     }

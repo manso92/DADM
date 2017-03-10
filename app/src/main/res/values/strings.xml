@@ -1,6 +1,10 @@
 <resources>
-    <string name="app_name">My Application</string>
-    <string name="round_already_finished">My Application</string>
-    <string name="invalid_movement">My Application</string>
-    <string name="game_over">Game Over</string>
+    <string name="app_name">ER11</string>
+    <string name="title">EN RAYA</string>
+    <string name="game_over">Game over</string>
+    <string name="game_over_message">Would you like to create a new round?</string>
+    <string name="round_already_finished">This round is finished</string>
+    <string name="invalid_movement">Invalid movement</string>
+    <string name="new_round">New Round</string>
+    <string name="round_restarted">New Round</string>
 </resources>
