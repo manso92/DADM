@@ -9,7 +9,11 @@
         android:gravity="center_horizontal"
         android:orientation="vertical">
 
-        <include layout="@layout/board" />
+        <es.uam.eps.dadm.views.ERView
+            android:id="@+id/board_erview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="30dp"/>
 
         <TextView
             android:id="@+id/round_title"

@@ -24,6 +24,11 @@ public class Casilla {
     private Ficha ficha;
 
     /**
+     * Color de la celda
+     */
+    public enum Color { CLARA, OSCURA}
+
+    /**
      * Constructor de Casilla en el que le indicamos la posición de la casilla
      * @param row Fila de la casilla en el tablero
      * @param col Columna de la casilla en el tablero
@@ -110,6 +115,17 @@ public class Casilla {
      */
     public void col(int col) {
         this.col = col;
+    }
+
+    /**
+     * Indica el color del que tenmos que pintar el tablero
+     * @return Color de la casilla
+     */
+    public Casilla.Color getColor(){
+        if ((col+row)%2 == 1)
+            return Color.OSCURA;
+        else
+            return Color.CLARA;
     }
 
     /**
