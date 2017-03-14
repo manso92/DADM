@@ -3,14 +3,11 @@ package es.uam.eps.dadm.views;
 
 import android.content.Context;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
-import android.support.design.widget.Snackbar;
 import android.support.graphics.drawable.VectorDrawableCompat;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.Toast;
 
 import es.uam.eps.dadm.R;
 import es.uam.eps.dadm.model.Casilla;
@@ -19,7 +16,13 @@ import es.uam.eps.dadm.model.MovimientoDamas;
 import es.uam.eps.dadm.model.TableroDamas;
 import es.uam.eps.multij.Tablero;
 
-public class ERView extends View {
+/**
+ * Esta clase es una view personalizada que pinta el tablero
+ *
+ * @author Pablo Manso
+ * @version 13/03/2017
+ */
+public class TableroView extends View {
 
     /**
      * Pincel que pintará el tablero de juego
@@ -60,7 +63,7 @@ public class ERView extends View {
      * @param context Contexto para dibujar
      * @param attrs Atributos de la vista
      */
-    public ERView(Context context, AttributeSet attrs) {
+    public TableroView(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 

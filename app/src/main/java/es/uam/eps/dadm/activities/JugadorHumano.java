@@ -2,7 +2,7 @@ package es.uam.eps.dadm.activities;
 
 import es.uam.eps.dadm.model.MovimientoDamas;
 import es.uam.eps.dadm.model.TableroDamas;
-import es.uam.eps.dadm.views.ERView;
+import es.uam.eps.dadm.views.TableroView;
 import es.uam.eps.multij.*;
 
 /**
@@ -10,7 +10,7 @@ import es.uam.eps.multij.*;
  * @author Pablo Manso
  * @version 12/02/2017
  */
-public class JugadorHumano implements Jugador, ERView.OnPlayListener{
+public class JugadorHumano implements Jugador, TableroView.OnPlayListener{
 
     /**
      * Partida que está jugando este jugador
