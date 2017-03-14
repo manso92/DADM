@@ -1,8 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+
 <resources>
-    <string name="app_name">ER11</string>
-    <string name="title">EN RAYA</string>
+    <string name="app_name">Checkers</string>
+
     <string name="game_over">Game over</string>
     <string name="game_over_message">Would you like to create a new round?</string>
+    <string name="game_over_pos">Yes</string>
+    <string name="game_over_neg">No</string>
+
     <string name="round_already_finished">This round is finished</string>
     <string name="invalid_movement">Invalid movement</string>
     <string name="new_round">New Round</string>

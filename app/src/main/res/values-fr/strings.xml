@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Dames</string>
+    <string name="game_over">Jeu terminé</string>
+    <string name="game_over_message">Voulez-vous créer un nouveau jeu?</string>
+    <string name="new_round">Nouveaue jeu</string>
+    <string name="invalid_movement">Mouvement non valide</string>
+    <string name="round_already_finished">Ce jeu est terminé</string>
+    <string name="round_restarted">Nouveaue jeu</string>
+    <string name="game_over_pos">Oui</string>
+    <string name="game_over_neg">Non</string>
+</resources>
