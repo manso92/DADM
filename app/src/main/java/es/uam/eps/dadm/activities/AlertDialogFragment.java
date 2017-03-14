@@ -30,36 +30,31 @@ public class AlertDialogFragment extends DialogFragment {
         // Creamos el constructor del diálogo
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
         // Ponemos un título al dialog
-        // TODO revisar esta string
         alertDialogBuilder.setTitle(R.string.game_over);
-
-        // TODO revisar esta string
         // Añadimos el mensaje que mostrará
         alertDialogBuilder.setMessage(R.string.game_over_message);
 
-        // TODO revisar esta string
         // Añadimos el botón afirmativo y capturamos el evento al hacer click
-        alertDialogBuilder.setPositiveButton("Yes",
+        alertDialogBuilder.setPositiveButton(R.string.game_over_pos,
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         // Creamos una nueva partida y la añadimos a nuestro repositorio
-                        Round round = new Round(RoundRepository.SIZE);
+                        Round round = new Round();
                         RoundRepository.get(getActivity()).addRound(round);
                         // Si estamos en pantalla dividida, actualizamos la lista de partidas
                         if (activity instanceof RoundListActivity)
                             ((RoundListActivity) activity).onRoundUpdated(round);
                         // Sino, finalizamos la actividad de la partida
                         else
-                            ((RoundActivity) activity).finish();
+                            activity.finish();
 
                         // Y cerramos el diálogo
                         dialog.dismiss();
                     }
                 });
 
-        // TODO revisar esta string
         // Añadimos el botón negativo y capturamos el evento al hacer click
-        alertDialogBuilder.setNegativeButton("No",
+        alertDialogBuilder.setNegativeButton(R.string.game_over_neg,
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         // En caso de que estemos en pantalla simple y no dividida, finalizamos la actividad

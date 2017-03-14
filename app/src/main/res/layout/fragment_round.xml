@@ -19,18 +19,18 @@
             android:id="@+id/round_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="20dp"
+            android:layout_margin="@dimen/margin_title_size"
             android:textAllCaps="true"
-            android:textSize="20dp" />
+            android:textSize="@dimen/title_size" />
     </LinearLayout>
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/reset_round_fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom|right"
-        android:layout_marginBottom="20dp"
-        android:layout_marginRight="20dp"
+        android:layout_gravity="bottom|end"
+        android:layout_marginBottom="@dimen/margin_floating_button"
+        android:layout_marginRight="@dimen/margin_floating_button"
         android:src="@android:drawable/ic_menu_revert"
         app:fabSize="normal" />
 </android.support.design.widget.CoordinatorLayout>

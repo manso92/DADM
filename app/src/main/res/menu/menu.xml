@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/menu_item_new_round"
-        android:icon="@android:drawable/ic_input_add"
+        android:icon="@drawable/add_round"
         android:title="@string/new_round"
         app:showAsAction="ifRoom|withText" />
 </menu>
