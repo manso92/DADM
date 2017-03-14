@@ -90,6 +90,8 @@ public class TableroDamas extends Tablero {
         this.ejecutaMovimiento(m);
         this.cambiaTurno();
         this.movimientos = this.movimientosValidos();
+        if (this.movimientos.size() == 0)
+            this.estado = FINALIZADA;
     }
 
     /**
@@ -390,7 +392,8 @@ public class TableroDamas extends Tablero {
      */
     @Override
     public boolean reset(){
-        this.numJugadas = 0;
+        super.reset();
+        this.turno = 0;
         this.limpiaTablero();
         this.colocaFichas();
         return true;

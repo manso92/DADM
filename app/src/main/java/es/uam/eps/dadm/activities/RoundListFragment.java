@@ -173,7 +173,7 @@ public class RoundListFragment extends Fragment {
             // Si se creauna nueva rnda
             case R.id.menu_item_new_round:
                 // Creamos una partida, se la mandamos al repositorio y actualizamos la interfaz
-                Round round = new Round(RoundRepository.SIZE);
+                Round round = new Round();
                 RoundRepository.get(getActivity()).addRound(round);
                 updateUI();
 
