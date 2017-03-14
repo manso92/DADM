@@ -26,8 +26,8 @@ public class MovimientoDamas extends Movimiento {
 
     /**
      * Movmiento simple dentro del Juego de las Damas, de un origen a un final
-     * @param origen {@link com.manso92.damas.core.Casilla} de orígen del movmiento
-     * @param destino{@link com.manso92.damas.core.Casilla} de destino del movmiento
+     * @param origen {@link es.uam.eps.dadm.model.Casilla} de orígen del movmiento
+     * @param destino{@link es.uam.eps.dadm.model.Casilla} de destino del movmiento
      */
     public MovimientoDamas(Casilla origen, Casilla destino){
         this.origen = origen;
@@ -36,9 +36,9 @@ public class MovimientoDamas extends Movimiento {
 
     /**
      * Movmiento compuesto dentro del Juego de las Damas, de un origen a un final y un
-     * @param origen {@link com.manso92.damas.core.Casilla} de orígen del movmiento
-     * @param destino {@link com.manso92.damas.core.Casilla} de destino del movmiento
-     * @param movimiento {@link com.manso92.damas.core.MovimientoDamas} movimiento posterior a este, que debe tener como origen el destino de este
+     * @param origen {@link es.uam.eps.dadm.model.Casilla} de orígen del movmiento
+     * @param destino {@link es.uam.eps.dadm.model.Casilla} de destino del movmiento
+     * @param movimiento {@link es.uam.eps.dadm.model.MovimientoDamas} movimiento posterior a este, que debe tener como origen el destino de este
      */
     public MovimientoDamas(Casilla origen, Casilla destino, MovimientoDamas movimiento){
         this.origen = origen;
@@ -74,32 +74,32 @@ public class MovimientoDamas extends Movimiento {
     public int distancia(){ return Math.max(Math.abs(this.destino.col() - this.origen.col()), Math.abs(this.destino.col() - this.origen.col()));}
 
     /**
-     * Nos devuelve la {@link com.manso92.damas.core.Casilla} en la que se origina el movimiento
-     * @return {@link com.manso92.damas.core.Casilla} de origen
+     * Nos devuelve la {@link es.uam.eps.dadm.model.Casilla} en la que se origina el movimiento
+     * @return {@link es.uam.eps.dadm.model.Casilla} de origen
      */
     public Casilla getOrigen() {
         return origen;
     }
 
     /**
-     * Cambia la {@link com.manso92.damas.core.Casilla} de origen del movimiento
-     * @param origen {@link com.manso92.damas.core.Casilla} en la que se origina el movimiento
+     * Cambia la {@link es.uam.eps.dadm.model.Casilla} de origen del movimiento
+     * @param origen {@link es.uam.eps.dadm.model.Casilla} en la que se origina el movimiento
      */
     public void setOrigen(Casilla origen) {
         this.origen = origen;
     }
 
     /**
-     * Nos devuelve la {@link com.manso92.damas.core.Casilla} en la que se finaliza el movimiento
-     * @return {@link com.manso92.damas.core.Casilla} de destino
+     * Nos devuelve la {@link es.uam.eps.dadm.model.Casilla} en la que se finaliza el movimiento
+     * @return {@link es.uam.eps.dadm.model.Casilla} de destino
      */
     public Casilla getDestino() {
         return destino;
     }
 
     /**
-     * Cambia la {@link com.manso92.damas.core.Casilla} de destino del movimiento
-     * @param destino {@link com.manso92.damas.core.Casilla} en la que finaliza el movimiento
+     * Cambia la {@link es.uam.eps.dadm.model.Casilla} de destino del movimiento
+     * @param destino {@link es.uam.eps.dadm.model.Casilla} en la que finaliza el movimiento
      */
     public void setDestino(Casilla destino) {
         this.destino = destino;
@@ -107,7 +107,7 @@ public class MovimientoDamas extends Movimiento {
 
     /**
      * Nos devuelve el movimiento que se deberá realizar después de éste
-     * @return {@link com.manso92.damas.core.MovimientoDamas} a realizar
+     * @return {@link es.uam.eps.dadm.model.MovimientoDamas} a realizar
      */
     public MovimientoDamas getProximoMovimiento() {
         return proximoMovimiento;
@@ -122,9 +122,9 @@ public class MovimientoDamas extends Movimiento {
     }
 
     /**
-     * Cambia el {@link com.manso92.damas.core.MovimientoDamas} que hay que realizar después de éste
-     * @param proximoMovimiento {@link com.manso92.damas.core.MovimientoDamas} a realizar después
-     * @return {@link com.manso92.damas.core.MovimientoDamas} a realizar después
+     * Cambia el {@link es.uam.eps.dadm.model.MovimientoDamas} que hay que realizar después de éste
+     * @param proximoMovimiento {@link es.uam.eps.dadm.model.MovimientoDamas} a realizar después
+     * @return {@link es.uam.eps.dadm.model.MovimientoDamas} a realizar después
      */
     public MovimientoDamas setProximoMovimiento(MovimientoDamas proximoMovimiento) {
         this.proximoMovimiento = proximoMovimiento;
