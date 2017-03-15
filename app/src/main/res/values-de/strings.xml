@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Damespiel</string>
+
+    <string name="game_over">Game over</string>
+    <string name="game_over_message">Wollen Sie ein neues Spiel erschaffen?</string>
+
+    <string name="round_already_finished">Dieses Spiel ist schon beendet</string>
+    <string name="invalid_movement">Bewegung ungültig</string>
+    <string name="new_round">Neue Runde</string>
+    <string name="round_restarted">Neue Runde</string>
+    <string name="game_over_pos">Ja</string>
+    <string name="game_over_neg">Nein</string>
+    <string name="impossible_move">Bewegung ungültig</string>
+</resources>

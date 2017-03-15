@@ -25,6 +25,11 @@ public class MovimientoDamas extends Movimiento {
     private MovimientoDamas proximoMovimiento = null;
 
     /**
+     * Constructor de movimiento vacío por si en el momento de creación no se tiene toda la información
+     */
+    public MovimientoDamas(){}
+
+    /**
      * Movmiento simple dentro del Juego de las Damas, de un origen a un final
      * @param origen {@link es.uam.eps.dadm.model.Casilla} de orígen del movmiento
      * @param destino{@link es.uam.eps.dadm.model.Casilla} de destino del movmiento
@@ -58,6 +63,51 @@ public class MovimientoDamas extends Movimiento {
     }
 
     /**
+     * Comprueba si dos movimientos comienzan igual
+     * @param movimientoDamas Movimiento a comprobar
+     * @return Si los movimientos comienzan igual o no
+     */
+    public boolean mismoInicio(MovimientoDamas movimientoDamas){
+        // Si el otro movimiento no tiene origen, no hay comienzo por lo que empiezan igual
+        if (movimientoDamas.getOrigen() == null) return true;
+        // Si nosotros no lo tenemos y el otro sí, o si son distintos, no empezamos igual
+        if ((this.origen == null) || (!this.origen.equals(movimientoDamas.getOrigen()))) return false;
+        // Si el movimiento no tiene destino, pues son el mismo
+        if (movimientoDamas.getDestino() == null) return true;
+        // Si nosotros no lo tenemos y el otro sí, o si son distintos, no empezamos igual
+        if ((this.destino == null) || (!this.destino.equals(movimientoDamas.getDestino()))) return false;
+
+        // Si no hay más movimiento
+        if (!movimientoDamas.issetProximoMovimiento()) return true;
+        // Si nosotros no lo tenemos y el otro sí, no empezamos igual
+        if (!this.issetProximoMovimiento()) return false;
+
+        return this.getProximoMovimiento().mismoInicio(movimientoDamas.getProximoMovimiento());
+    }
+
+    /**
+     * Nos indica cual es la primera casilla distina de nuestro movimiento que podría ser proximo movimiento del parámetro
+     * @param movimientoDamas Movimiento a comprobar
+     * @return Casilla que es nuestro porible destino
+     */
+    public Casilla proximoDestinoDisponible(MovimientoDamas movimientoDamas){
+        // Si no tenemos inicio, no podemos dar nada
+        if (this.origen == null) return null;
+        // Si el movimiento no tiene inicio, le damos el nuestro
+        if (movimientoDamas.getOrigen() == null) return this.origen;
+        // Si no tenemos destino inmediato, lo indicamos
+        if (this.destino == null) return null;
+        // Si el movimiento pasado no tiene destino fijado, le devolvemos el nuestro
+        if (movimientoDamas.getDestino() == null) return this.getDestino();
+        if (!this.issetProximoMovimiento()) return null;
+        // Si nosotros tenemos proximo movimiento y el argumento no le damos ese destino
+        if (!movimientoDamas.issetProximoMovimiento()) return this.getProximoMovimiento().getDestino();
+
+        // Si nuestro destino no es el elegido retornamos el destino del próximo movimiento
+        return this.getProximoMovimiento().proximoDestinoDisponible(movimientoDamas.getProximoMovimiento());
+    }
+
+    /**
      * Comprueba si un movimiento es igual a otro pero a la inversa
      * @param m Movimiento a comprobar
      * @return Si los movimientos son simétricos o no
@@ -85,9 +135,16 @@ public class MovimientoDamas extends Movimiento {
      * Cambia la {@link es.uam.eps.dadm.model.Casilla} de origen del movimiento
      * @param origen {@link es.uam.eps.dadm.model.Casilla} en la que se origina el movimiento
      */
-    public void setOrigen(Casilla origen) {
+    public MovimientoDamas setOrigen(Casilla origen) {
         this.origen = origen;
+        return this;
     }
+
+    /**
+     * Nos indica si {@link es.uam.eps.dadm.model.Casilla} origen está definida
+     * @return Si está definida o no la casilla de origen
+     */
+    public boolean tieneOrigen() { return !(this.origen == null); }
 
     /**
      * Nos devuelve la {@link es.uam.eps.dadm.model.Casilla} en la que se finaliza el movimiento
@@ -101,9 +158,32 @@ public class MovimientoDamas extends Movimiento {
      * Cambia la {@link es.uam.eps.dadm.model.Casilla} de destino del movimiento
      * @param destino {@link es.uam.eps.dadm.model.Casilla} en la que finaliza el movimiento
      */
-    public void setDestino(Casilla destino) {
+    public MovimientoDamas setDestino(Casilla destino) {
         this.destino = destino;
+        return this;
     }
+
+    /**
+     * Añade un destino después del destino actual
+     * @param destino {@link es.uam.eps.dadm.model.Casilla} en la que finaliza el movimiento
+     */
+    public MovimientoDamas addDestino(Casilla destino) {
+        // Si no tenemos destino, colocamos el destino
+        if (this.destino == null)
+            this.destino = destino;
+        // Si no hay un próximo movimiento se lo añadimos
+        else if (!this.issetProximoMovimiento())
+            this.setProximoMovimiento(new MovimientoDamas(this.destino, destino));
+        // Y si si que hay definido un próximo movimiento, dejamos que él se encargue
+        else this.getProximoMovimiento().addDestino(destino);
+        return this;
+    }
+
+    /**
+     * Nos indica si {@link es.uam.eps.dadm.model.Casilla} destino está definida
+     * @return Si está definida o no la casilla de destino
+     */
+    public boolean tieneDestino() { return !(this.destino == null); }
 
     /**
      * Nos devuelve el movimiento que se deberá realizar después de éste
@@ -150,8 +230,14 @@ public class MovimientoDamas extends Movimiento {
      */
     @Override
     public boolean equals(Object o) {
+        // Si uno no tiene origen y el otro sí no son iguales
+        if (this.getOrigen() == null ^ ((MovimientoDamas)o).getOrigen() == null)
+            return false;
         // Si los orígenes son distintos, no son el mismo movimiento
         if (!this.getOrigen().equals(((MovimientoDamas)o).getOrigen()))
+            return false;
+        // Si uno no tiene origen y el otro sí no son iguales
+        if (this.getDestino() == null ^ ((MovimientoDamas)o).getDestino() == null)
             return false;
         // Si los destinos son distintos, no son el mismo movimiento
         if (!this.getDestino().equals(((MovimientoDamas)o).getDestino()))

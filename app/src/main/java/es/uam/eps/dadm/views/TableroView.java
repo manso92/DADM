@@ -4,10 +4,13 @@ package es.uam.eps.dadm.views;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.support.design.widget.Snackbar;
 import android.support.graphics.drawable.VectorDrawableCompat;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
+
+import java.util.ArrayList;
 
 import es.uam.eps.dadm.R;
 import es.uam.eps.dadm.model.Casilla;
@@ -49,7 +52,15 @@ public class TableroView extends View {
      */
     private OnPlayListener onPlayListener;
 
-    private Casilla origen = null;
+    /**
+     * Movimiento que será introducido a través de las pulsaciones en el tablero
+     */
+    private MovimientoDamas movimiento = null;
+
+    /**
+     * Movimiento que será introducido a través de las pulsaciones en el tablero
+     */
+    private ArrayList<Casilla> movimientosSugeridos = null;
 
     /**
      * Interfaz que define como enviaremos los movimientos al controlador
@@ -156,6 +167,10 @@ public class TableroView extends View {
         if (casilla.getColor() == Casilla.Color.CLARA)
             paint.setColor(this.getContext().getResources().getColor(R.color.casillaClara));
 
+        // Si es una de las casillas sugeridas la ponemos de verde
+        if ((this.movimientosSugeridos != null) && (this.movimientosSugeridos.size()>0) && (this.movimientosSugeridos.indexOf(casilla) != -1))
+            paint.setColor(this.getContext().getResources().getColor(R.color.casillaSugerida));
+
         // Dibujamos el cuadrado del tablero
         canvas.drawRect((casilla.col()*(int) widthOfTile),
                         (casilla.row()*(int) heightOfTile),
@@ -223,27 +238,71 @@ public class TableroView extends View {
      */
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-
-        float a = event.getDownTime();
-
+        // Si no hay partida en curso no hay nada que hacer
         if (board.getEstado() != Tablero.EN_CURSO)
             return true;
-        if (event.getAction() == MotionEvent.ACTION_DOWN) {
-            if (this.origen == null) {
-                /*
-                TODO hay que hacer una función del tablero que compruebe si los movimientos que llevamos hasta ahora
-                constituyen el inicio de una cadena de movimientos válidos. De este modo si el origen no está
-                ni siquiera lo almacenaremos, si se ha registrado un movimiento de dos válido pero hay uno de tres válido esperamos
-                 y si solo encontramos un movimiento válido pues le enviamos
-                 */
-                this.origen = fromEventCasilla(event);
-
-            } else {
-                onPlayListener.onPlay(new MovimientoDamas(this.origen, fromEventCasilla(event)));
-                this.origen = null;
-            }
-        }
+        // Si el evento que se realiza es un toque, lo procesamos
+        if (event.getAction() == MotionEvent.ACTION_DOWN)
+            this.seleccionaCasilla(fromEventCasilla(event));
 
         return true;
+    }
+
+    /**
+     * Captura la información de la casilla seleccionada para procesarla en el juego
+     * @param casilla Casilla que el jugador ha seleccionado
+     */
+    public void seleccionaCasilla(Casilla casilla){
+        if (this.movimiento == null) {
+            // Creamos un movimiento y le asignamos la casilla de inicio
+            this.movimiento = new MovimientoDamas();
+            this.movimiento.setOrigen(casilla);
+
+            // Si no hay un movimiento válido con esa primer casilla, se lo indicamos al usuario y limpiamos el movimiento
+            if (this.board.mismoComienzo(this.movimiento).size() == 0){
+                this.movimiento = null;
+                Snackbar.make((View) this.getParent(), R.string.impossible_move, Snackbar.LENGTH_SHORT).show();
+            }
+        } else {
+            // Añadimos el nuevo destino
+            this.movimiento.addDestino(casilla);
+
+            // Si no existe un movimiento válido que comience igual
+            if (this.board.mismoComienzo(this.movimiento).size() == 0){
+                // Limpiamos el movimiento
+                this.movimiento = null;
+                // Volvemos a ejecutar la función, porque aunque no nos valga como segunda casilla
+                // puede que nos valga como primera
+                this.seleccionaCasilla(casilla);
+            } else {
+                // Si es final de un camino
+                if (this.board.proximasCasillasMovimiento(this.movimiento).size() == 1){
+                    // Ejecutamos el movimiento
+                    onPlayListener.onPlay(this.movimiento);
+                    // Limpiamos el movimiento
+                    this.movimiento = null;
+                }
+            }
+        }
+        // Recargamos la interfaz y las sugerencias
+        this.sugiereCasillas();
+    }
+
+    /**
+     * Actualiza en la interfaz las casillas sugeridas
+     */
+    public void sugiereCasillas(){
+        // Obtenemos la lista de casillas sugeridas
+        this.movimientosSugeridos = this.board.proximasCasillasMovimiento(this.movimiento);
+        // Recargamos la interfaz
+        this.invalidate();
+    }
+
+    /**
+     * Reinicia los valores conflictivos que puedan sugerir
+     */
+    public void reset(){
+        this.movimiento = null;
+        this.movimientosSugeridos = null;
     }
 }

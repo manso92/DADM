@@ -12,4 +12,5 @@
     <string name="invalid_movement">Invalid movement</string>
     <string name="new_round">New Round</string>
     <string name="round_restarted">New Round</string>
+    <string name="impossible_move">Invalid movement</string>
 </resources>

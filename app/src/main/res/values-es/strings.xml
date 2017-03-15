@@ -11,4 +11,5 @@
     <string name="round_restarted">Nueva ronda</string>
     <string name="game_over_pos">Si</string>
     <string name="game_over_neg">No</string>
+    <string name="impossible_move">Movimiento no válido</string>
 </resources>

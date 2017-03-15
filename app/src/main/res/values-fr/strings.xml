@@ -9,4 +9,5 @@
     <string name="round_restarted">Nouveaue jeu</string>
     <string name="game_over_pos">Oui</string>
     <string name="game_over_neg">Non</string>
+    <string name="impossible_move">Mouvement non valide</string>
 </resources>

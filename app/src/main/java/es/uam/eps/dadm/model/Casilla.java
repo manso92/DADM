@@ -185,6 +185,9 @@ public class Casilla {
      */
     @Override
     public boolean equals (Object o){
+        if (o == null) {
+            return false;
+        }
         return (this.row() == ((Casilla)o).row()) && this.col() == ((Casilla)o).col();
     }
 

@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -131,6 +132,7 @@ public class RoundFragment extends Fragment implements PartidaListener{
                             Snackbar.LENGTH_SHORT).show();
                     return;
                 }
+                boardView.reset();
                 // Reiniciamos el tablero y comenzamos la partida
                 round.getBoard().reset();
                 startRound();
@@ -212,12 +214,13 @@ public class RoundFragment extends Fragment implements PartidaListener{
                 break;
             // Evento de que hay un fin de partida
             case Evento.EVENTO_FIN:
-                // TODO comprobar quien ha ganado la partida y en base a eso mostrarlo
                 // Actualizamos el tablero y llamamos al callback que hay que llamar cuando se actualiza la ronda
                 boardView.invalidate();
                 callbacks.onRoundUpdated(round);
                 // Indicamos al jugador que la partida ha acabado
                 Snackbar.make(getView(), R.string.game_over, Snackbar.LENGTH_SHORT).show();
+                new AlertDialogFragment().show(getActivity().getSupportFragmentManager(),
+                        "ALERT DIALOG");
                 break;
         }
     }

@@ -41,7 +41,7 @@ public class RoundRepository {
         // Creamos la una lista de Partidas
         rounds = new ArrayList<Round>();
         // Llenamos la lista con 50 partidas generadas automáticamente
-        for (int i = 0; i < 50; i++) {
+        for (int i = 0; i < 3; i++) {
             Round round = new Round();
             rounds.add(round);
         }

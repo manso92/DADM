@@ -135,12 +135,44 @@ public class TableroDamas extends Tablero {
     public boolean esValido(Movimiento m) { return this.movimientos.indexOf(m) != -1;  }
 
     /**
+     * Devuelve todos los movimientos válidos que comienzan igual que un movimiento dado
+     * @param movimientoDamas Movimiento a comprobar
+     * @return Lista de movimientos con el mismo comienzo
+     */
+    public ArrayList<MovimientoDamas> mismoComienzo (MovimientoDamas movimientoDamas){
+        ArrayList<MovimientoDamas> movimientos = new ArrayList<MovimientoDamas>();
+        // Comprobamos todos los movimientos válidos a ver si tienen el mismo inicio
+        for (Movimiento mov : this.movimientos)
+            if (((MovimientoDamas) mov).mismoInicio(movimientoDamas))
+                movimientos.add((MovimientoDamas) mov);
+        return movimientos;
+    }
+
+    /**
+     * Nos indica cuales son las casillas de los movimientos que empiezan como el nuestro y que van
+     * a continuación
+     * @param movimientoDamas Movimiento a comprobar
+     * @return Casillas disponibles
+     */
+    public ArrayList<Casilla> proximasCasillasMovimiento (MovimientoDamas movimientoDamas){
+        // Para evitar errores, si no hay movimiento, no hay casillas
+        if (movimientoDamas == null)
+            return null;
+        ArrayList<Casilla> destinos = new ArrayList<Casilla>();
+        // Por cada evento que comparte el mismo comienzo devolvemos la proxima casilla
+        for (MovimientoDamas mov :  this.mismoComienzo(movimientoDamas))
+            // if (!mov.equals(movimientoDamas))
+                destinos.add(mov.proximoDestinoDisponible(movimientoDamas));
+        return destinos;
+    }
+
+    /**
      * Genera una lista de movimientos válidos para el turno en el que se invoca la función
      * @return Lista de movimientos válidos
      */
     @Override
     public ArrayList<Movimiento> movimientosValidos() {
-        ArrayList<ArrayList> movimientos = new ArrayList<ArrayList>();
+        ArrayList<ArrayList<Movimiento>> movimientos = new ArrayList<ArrayList<Movimiento>>();
         Ficha.Color color = this.getTurno() == 0 ? Ficha.Color.BLANCA : Ficha.Color.NEGRA ;
 
         // Recorremos todas las casillas para ver cuales de las fichas pertenecen al turno
