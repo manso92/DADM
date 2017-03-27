@@ -48,6 +48,7 @@ public class RoundListFragment extends Fragment {
      */
     public interface Callbacks {
         void onRoundSelected(Round round);
+        void onPreferencesSelected();
     }
 
     /**
@@ -178,6 +179,11 @@ public class RoundListFragment extends Fragment {
                 updateUI();
 
                 return true;
+
+            case R.id.menu_item_settings:
+                callbacks.onPreferencesSelected();
+                return true;
+
             // Por defecto indicamos a la clase padre que se ha seleccionado algo del menú
             default:
                 return super.onOptionsItemSelected(item);

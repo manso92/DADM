@@ -6,4 +6,9 @@
         android:icon="@drawable/add_round"
         android:title="@string/new_round"
         app:showAsAction="ifRoom|withText" />
+    <item
+        android:id="@+id/menu_item_settings"
+        android:icon="@drawable/settings"
+        android:title="@string/settings"
+        app:showAsAction="ifRoom|withText" />
 </menu>

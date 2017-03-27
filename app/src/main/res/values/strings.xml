@@ -13,4 +13,11 @@
     <string name="new_round">New Round</string>
     <string name="round_restarted">New Round</string>
     <string name="impossible_move">Invalid movement</string>
+
+
+    <string name="list_preference_summary">Choose the size of the board</string>
+    <string name="list_preference_title">Board size</string>
+    <string name="checkbox_preference_summary">Click if you feel like listening to music</string>
+    <string name="checkbox_preference_title">Music</string>
+    <string name="settings">Settings</string>
 </resources>

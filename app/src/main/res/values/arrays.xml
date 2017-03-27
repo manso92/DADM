@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="levelsArray">
+        <item>Traditional</item>
+        <item>4 wheel drive</item>
+        <item>Five nights</item>
+    </string-array>
+    <string-array name="levelsValues">
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+    </string-array>
+</resources>

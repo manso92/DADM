@@ -75,4 +75,10 @@ public class RoundListActivity extends AppCompatActivity  implements RoundListFr
         // Actualizamos la lista de partidas
         roundListFragment.updateUI();
     }
+
+    @Override
+    public void onPreferencesSelected() {
+        Intent intent = new Intent(this, PreferenceActivity.class);
+        startActivity(intent);
+    }
 }
