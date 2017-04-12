@@ -1,78 +1,115 @@
 package es.uam.eps.dadm.model;
 
-import android.content.Context;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Esta clase almacenará los datos de las partidas en la aplicación
+ * Esta interfaz ayuda a la gestión de las partidas y de usuarios. De este modo nos da igual cómo
+ * se gestionen, ya que mientras ese gestor implemente esta interfaz, nuestro código no
+ * necesitará variar en nada
  *
  * @author Pablo Manso
- * @version 13/03/2017
+ * @version 12/04/2017
  */
-public class RoundRepository {
+public interface RoundRepository {
     /**
-     * Instancia para la creación del singleton
+     * Abre una conexión con el gestor
+     * @throws Exception Se lanzará una excepción en caso de que haya algún error
      */
-    private static RoundRepository repository;
-    /**
-     * Lista de partidas que tiene la aplicación
-     */
-    private List<Round> rounds;
+    void open() throws Exception;
 
     /**
-     * Función que nos devolverá la instancia de la clase
-     * @param context Conexto desde el que se le llama
-     * @return Instancia de la clase
+     * Cierra la conexión con el gestor
      */
-    public static RoundRepository get(Context context) {
-        // Si no está instanciada, creamos una clase
-        if (repository == null)
-            repository = new RoundRepository(context);
-        // Devolvemos la instancia
-        return repository;
+    void close();
+
+    /**
+     * Interfaz que deberá implementar el callback que pasaremos a la función {@link #login(String, String, LoginRegisterCallback)}
+     */
+    interface LoginRegisterCallback {
+
+        /**
+         * Función que se ejecutará si el login se efectúa de forma correcta
+         * @param playerUuid Identificador del jugador que se acaba de loguear
+         */
+        void onLogin(String playerUuid);
+
+        /**
+         * Función que se ejecutará si el logín no se efectúa de forma incorrecta
+         * @param error Cadena con el error que se ha producido
+         */
+        void onError(String error);
     }
 
     /**
-     * Constructor de la clase
-     * @param context Contexto desde el que se le llama
+     * Función que comprueba si el usuario y la clave son correctos, y envía la respuesta a
+     * el callback de {@link es.uam.eps.dadm.model.RoundRepository.LoginRegisterCallback}
+     * @param playername Nombre del jugador que va a hacer login
+     * @param password Password del usuario que va a hacer login
+     * @param callback Callback que se ejecutará como respuesta al login
      */
-    private RoundRepository(Context context) {
-        // Creamos la una lista de Partidas
-        rounds = new ArrayList<Round>();
-        // Llenamos la lista con 50 partidas generadas automáticamente
-        for (int i = 0; i < 3; i++) {
-            Round round = new Round();
-            rounds.add(round);
-        }
+    void login(String playername, String password, LoginRegisterCallback callback);
+
+    /**
+     * Registra un nuevo usuario en el gestor
+     * @param playername Nombre del jugador
+     * @param password Contraseña del jugador
+     * @param callback Callback que se ejecutará como respuesta al registro
+     */
+    void register(String playername, String password, LoginRegisterCallback callback);
+
+    /**
+     * Interfaz que deberán implementar el callback que pasaremos a las funciones
+     * {@link #addRound(Round, BooleanCallback)} y {@link #updateRound(Round, BooleanCallback)}
+     */
+    interface BooleanCallback {
+        /**
+         * Función a ejecutar en respuesta a determinadas acciones con las rondas
+         * @param ok Boolean respuesta a cómo se ha ejecutado la función
+         */
+        void onResponse(boolean ok);
     }
 
     /**
-     * Añade una partida a la lista
-     * @param round Partida a añadir
+     * Añade una partida al respositorio
+     * @param round Partida que queremos añadir
+     * @param callback Callback a ejecutar con la respuesta a la función
      */
-    public void addRound(Round round) { rounds.add(round); }
+    void addRound(Round round, BooleanCallback callback);
 
     /**
-     * Devuelve la lista de partidas de la app
-     * @return Lista de partidas
+     * Actualiza una partida en el repositorio
+     * @param round Partida que queremos actualizar
+     * @param callback Callback a ejecutar con la respuesta a la función
      */
-    public List<Round> getRounds() {
-        return rounds;
-    }
+    void updateRound(Round round, BooleanCallback callback);
 
     /**
-     * Devuelve una partida en base a su identificador
-     * @param id Id de la partida
-     * @return Partida que se ha encontrado
+     * Devolverá la lista de partidas disponibles en el gestor que pertenecen al usuario
+     * @param playeruuid Identificador de usuario
+     * @param orderByField Orden en el que se devolverán las partidas
+     * @param group No voy a mentir, aún no sé para que es esto
+     * @param callback Callback a ejecutar al que se le notificará cómo funcionó la función
      */
-    public Round getRound(String id) {
-        // Por cada ronda de la lista comparamos el id y si cuadra se devuelve
-        for (Round round : rounds)
-            if (round.getId().equals(id))
-                return round;
+    void getRounds(String playeruuid, String orderByField, String group,
+                   RoundsCallback callback);
 
-        // Si no la encontramos, devolvemos null
-        return null;
+    /**
+     * Interfaz que deberán implementar el callback que pasaremos a las funciones
+     * {@link #getRounds(String, String, String, RoundsCallback)}
+     */
+    interface RoundsCallback {
+
+        /**
+         * En el caso de que se haya podido recuperar la lista de partidas, se le enviarán como
+         * respuesta la lista de partidas que se nos había pedido
+         * @param rounds Lista de partidas
+         */
+        void onResponse(List<Round> rounds);
+
+        /**
+         * En caso de error, se notificará con el mensaje que lo identifica
+         * @param error Mensaje de error que se mandará
+         */
+        void onError(String error);
     }
 }
