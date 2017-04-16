@@ -102,7 +102,7 @@ public class RoundListFragment extends Fragment {
                             }
                             @Override
                             public void onError(String error) {
-                                Snackbar.make(getView(), R.string.noroundindatabase,
+                                Snackbar.make(getView(), R.string.repository_no_round_founded,
                                         Snackbar.LENGTH_LONG).show();
                             }
                         };
@@ -206,10 +206,10 @@ public class RoundListFragment extends Fragment {
                     public void onResponse(boolean ok) {
                         if (ok)
                             Snackbar.make(getActivity().findViewById(R.id.fragment_container),
-                                    R.string.round_create_success, Snackbar.LENGTH_LONG).show();
+                                    R.string.repository_round_create_success, Snackbar.LENGTH_LONG).show();
                         else
                             Snackbar.make(getActivity().findViewById(R.id.fragment_container),
-                                    R.string.round_create_error, Snackbar.LENGTH_LONG).show();
+                                    R.string.repository_round_create_error, Snackbar.LENGTH_LONG).show();
                     }
                 };
 

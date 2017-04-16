@@ -31,12 +31,12 @@ public class AlertDialogFragment extends DialogFragment {
         // Creamos el constructor del diálogo
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
         // Ponemos un título al dialog
-        alertDialogBuilder.setTitle(R.string.game_over);
+        alertDialogBuilder.setTitle(R.string.game_game_over);
         // Añadimos el mensaje que mostrará
-        alertDialogBuilder.setMessage(R.string.game_over_message);
+        alertDialogBuilder.setMessage(R.string.game_game_over_message);
 
         // Añadimos el botón afirmativo y capturamos el evento al hacer click
-        alertDialogBuilder.setPositiveButton(R.string.game_over_pos,
+        alertDialogBuilder.setPositiveButton(R.string.game_game_over_pos,
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         // Creamos una nueva partida y la añadimos a nuestro repositorio
@@ -58,7 +58,7 @@ public class AlertDialogFragment extends DialogFragment {
                 });
 
         // Añadimos el botón negativo y capturamos el evento al hacer click
-        alertDialogBuilder.setNegativeButton(R.string.game_over_neg,
+        alertDialogBuilder.setNegativeButton(R.string.game_game_over_neg,
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         // En caso de que estemos en pantalla simple y no dividida, finalizamos la actividad

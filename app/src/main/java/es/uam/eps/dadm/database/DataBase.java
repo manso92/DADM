@@ -183,7 +183,7 @@ public class DataBase implements RoundRepository {
             callback.onLogin(uuid);
         // Si el login es incorrecto, llamamamos al callback con el error
         else
-            callback.onError(contexto.getString(R.string.loginerror));
+            callback.onError(contexto.getString(R.string.login_loginerror));
     }
 
     /**
@@ -196,7 +196,7 @@ public class DataBase implements RoundRepository {
     public void register(String playername, String password, LoginRegisterCallback callback) {
 
         if (playername.equals(PreferenceActivity.PLAYERNAME_DEFAULT)) {
-            callback.onError(contexto.getString(R.string.registererror) + playername);
+            callback.onError(contexto.getString(R.string.login_registererror) + playername);
             return;
         }
 
@@ -215,7 +215,7 @@ public class DataBase implements RoundRepository {
 
         // Si la respuesta es negativa devolvemos un error
         if (id < 0)
-            callback.onError(contexto.getString(R.string.registererror) + playername);
+            callback.onError(contexto.getString(R.string.login_registererror) + playername);
         // Si la respuesta es afirmativa, llamamos al login con el uuid generado
         else
             callback.onLogin(uuid);
@@ -340,6 +340,6 @@ public class DataBase implements RoundRepository {
             callback.onResponse(rounds);
         // Si no hay rondas o error, enviamos un error
         else
-            callback.onError(contexto.getString(R.string.noroundindatabase));
+            callback.onError(contexto.getString(R.string.repository_no_round_founded));
     }
 }

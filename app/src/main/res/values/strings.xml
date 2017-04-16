@@ -3,21 +3,36 @@
 <resources>
     <string name="app_name">Checkers</string>
 
-    <string name="game_over">Game over</string>
-    <string name="game_over_message">Would you like to create a new round?</string>
-    <string name="game_over_pos">Yes</string>
-    <string name="game_over_neg">No</string>
+    <string name="game.round_finished">This round is finished</string>
+    <string name="game.invalid_movement">Invalid movement</string>
+    <string name="game.new_round">New Round</string>
+    <string name="game.round_restarted">New Round</string>
+    <string name="game.impossible_move">Invalid movement</string>
+    <string name="game.game_over">Game over</string>
+    <string name="game.game_over_message">Would you like to create a new round?</string>
+    <string name="game.game_over_pos">Yes</string>
+    <string name="game.game_over_neg">No</string>
 
-    <string name="round_already_finished">This round is finished</string>
-    <string name="invalid_movement">Invalid movement</string>
-    <string name="new_round">New Round</string>
-    <string name="round_restarted">New Round</string>
-    <string name="impossible_move">Invalid movement</string>
+    <string name="settings.list_preference_summary">Choose the size of the board</string>
+    <string name="settings.list_preference_title">Board size</string>
+    <string name="settings.checkbox_preference_summary">Click if you feel like listening to music</string>
+    <string name="settings.checkbox_preference_title">Music</string>
+    <string name="settings.settings">Settings</string>
 
 
-    <string name="list_preference_summary">Choose the size of the board</string>
-    <string name="list_preference_title">Board size</string>
-    <string name="checkbox_preference_summary">Click if you feel like listening to music</string>
-    <string name="checkbox_preference_title">Music</string>
-    <string name="settings">Settings</string>
+    <string name="repository.round_create_success">Round created</string>
+    <string name="repository.round_create_error">Error creating round</string>
+    <string name="repository.no_round_founded">No rounds found in database</string>
+    <string name="repository.round_error_updating">Error updating round</string>
+    <string name="repository.opening_error">Error opening database</string>
+
+    <string name="login.username">Username</string>
+    <string name="login.password">Password</string>
+    <string name="login.login">Login</string>
+    <string name="login.exit">Exit</string>
+    <string name="login.newuser">New User</string>
+    <string name="login.logout">Logout</string>
+    <string name="login.loginerror">Username or password incorrect</string>
+    <string name="login.registererror">Error inserting new player named</string>
+
 </resources>

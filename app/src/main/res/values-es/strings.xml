@@ -1,15 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Damas</string>
-
-    <string name="game_over">Game over</string>
-    <string name="game_over_message">¿Quieres crear una nueva partida?</string>
-
-    <string name="round_already_finished">Esta partida ya ha acabado</string>
-    <string name="invalid_movement">Movimiento no válido</string>
-    <string name="new_round">Nueva ronda</string>
-    <string name="round_restarted">Nueva ronda</string>
-    <string name="game_over_pos">Si</string>
-    <string name="game_over_neg">No</string>
-    <string name="impossible_move">Movimiento no válido</string>
+    <string name="game.game_over">Game over</string>
+    <string name="game.game_over_message">¿Quieres crear una nueva partida?</string>
+    <string name="game.invalid_movement">Movimiento no válido</string>
+    <string name="game.new_round">Nueva ronda</string>
+    <string name="game.round_restarted">Nueva ronda</string>
+    <string name="game.round_finished">Esta partida ya ha acabado</string>
+    <string name="game.impossible_move">Movimiento imposible</string>
+    <string name="game.game_over_pos">Si</string>
+    <string name="game.game_over_neg">No</string>
+    <string name="login.exit">Salir</string>
+    <string name="login.login">Entrar</string>
+    <string name="login.loginerror">Usuario o contraseña incorrecta</string>
+    <string name="login.logout">Salir</string>
+    <string name="login.newuser">Nuevo usuario</string>
+    <string name="login.password">Contraseña</string>
+    <string name="login.registererror">Error registrando al jugador de nombre</string>
+    <string name="login.username">Usuario</string>
+    <string name="repository.no_round_founded">No se han encontrado partidas en la base de datos</string>
+    <string name="repository.opening_error">Error al abrir la base de datos</string>
+    <string name="repository.round_create_error">Error al crear la partida</string>
+    <string name="repository.round_create_success">Partida creada con éxito</string>
+    <string name="repository.round_error_updating">Error al actualizar la partida</string>
+    <string name="settings.checkbox_preference_summary">Pulsa si te gusta escuchar música</string>
+    <string name="settings.checkbox_preference_title">Música</string>
+    <string name="settings.list_preference_summary">Elige el tamaño del tablero</string>
+    <string name="settings.list_preference_title">Tamaño del tablero</string>
+    <string name="settings.settings">Ajustes</string>
 </resources>

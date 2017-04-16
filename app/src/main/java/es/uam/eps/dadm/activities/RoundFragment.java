@@ -196,7 +196,7 @@ public class RoundFragment extends Fragment implements PartidaListener {
             public void onClick(View view) {
                 // Si la partida ya ha acabado se lo indicamos al usuario
                 if (round.getBoard().getEstado() != Tablero.EN_CURSO) {
-                    Snackbar.make(getView(), R.string.round_already_finished,
+                    Snackbar.make(getView(), R.string.game_round_finished,
                             Snackbar.LENGTH_SHORT).show();
                     return;
                 }
@@ -206,7 +206,7 @@ public class RoundFragment extends Fragment implements PartidaListener {
                 startRound();
                 // Llamamos al callback de la actualización y le indicamos al jugador que el cambio de ha hecho
                 callbacks.onRoundUpdated();
-                Snackbar.make(getView(), R.string.round_restarted,
+                Snackbar.make(getView(), R.string.game_round_restarted,
                         Snackbar.LENGTH_SHORT).show();
             }
         });
@@ -286,7 +286,7 @@ public class RoundFragment extends Fragment implements PartidaListener {
                 boardView.invalidate();
                 callbacks.onRoundUpdated();
                 // Indicamos al jugador que la partida ha acabado
-                Snackbar.make(getView(), R.string.game_over, Snackbar.LENGTH_SHORT).show();
+                Snackbar.make(getView(), R.string.game_game_over, Snackbar.LENGTH_SHORT).show();
                 new AlertDialogFragment().show(getActivity().getSupportFragmentManager(),
                         "ALERT DIALOG");
                 break;
@@ -300,7 +300,7 @@ public class RoundFragment extends Fragment implements PartidaListener {
             @Override
             public void onResponse(boolean response) {
                 if (response == false)
-                    Snackbar.make(getView(), R.string.error_updating_round,
+                    Snackbar.make(getView(), R.string.repository_round_error_updating,
                             Snackbar.LENGTH_LONG).show();
             }
         };
