@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v7.app.AppCompatActivity;
 
 import es.uam.eps.dadm.R;
 
@@ -14,7 +15,7 @@ import es.uam.eps.dadm.R;
  * @author Pablo Manso
  * @version 12/04/2017
  */
-public class SplashScreen extends Activity {
+public class SplashScreen extends AppCompatActivity {
 
     /**
      * Timeout por defecto después del cual se llamará a la actividad de login
