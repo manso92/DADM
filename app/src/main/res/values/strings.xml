@@ -19,6 +19,15 @@
     <string name="settings.board_size_summary">Choose the size of the board</string>
     <string name="settings.audio_effects_title">Audio Effects</string>
     <string name="settings.audio_effects_summary">Click if you like to listen audio effects</string>
+    <string name="settings.see_help">Help</string>
+    <string name="help.help_text">
+        <![CDATA[
+        <h1>Help</h1>
+        <p>This is a basic help instructions to the game. This are the things that ends a game:</p>
+        <p>· One player has no piece</p>
+        <p>· One player has no avalaible movements to do</p>
+        ]]>
+    </string>
 
 
     <string name="repository.round_create_success">Round created</string>

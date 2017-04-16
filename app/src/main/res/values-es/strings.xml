@@ -29,4 +29,13 @@
     <string name="settings.board_size_title">Tamaño del tablero</string>
     <string name="settings.settings">Ajustes</string>
     <string name="settings.settings_summary">Ajustes del juego</string>
+    <string name="settings.see_help">Ayuda</string>
+    <string name="help.help_text">
+        <![CDATA[
+        <h1>Ayuda</h1>
+        <p>Estas son unas instrucciones muy básicas para el juego. Las maneras de ganar son las siguientes:</p>
+        <p>· Un jugador ya no tiene piezas</p>
+        <p>· Un jugador ya no tiene movimientos válidos para hacer</p>
+        ]]>
+    </string>
 </resources>

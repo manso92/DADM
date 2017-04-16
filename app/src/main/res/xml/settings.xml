@@ -12,5 +12,8 @@
             android:key="audioeffects"
             android:summary="@string/settings.audio_effects_summary"
             android:title="@string/settings.audio_effects_title" />
+        <Preference
+            android:key="help"
+            android:title="@string/settings.see_help" />
     </PreferenceCategory>
 </PreferenceScreen>

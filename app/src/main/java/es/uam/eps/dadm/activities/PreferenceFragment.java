@@ -1,6 +1,10 @@
 package es.uam.eps.dadm.activities;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.preference.Preference;
+
 import es.uam.eps.dadm.R;
 
 /**
@@ -19,5 +23,8 @@ public class PreferenceFragment extends android.preference.PreferenceFragment {
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.settings);
+
+        Preference preferences=findPreference("help");
+        preferences.setIntent(new Intent(this.getActivity(), HelpActivity.class));
     }
 }
