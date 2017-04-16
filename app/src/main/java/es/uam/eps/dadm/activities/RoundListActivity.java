@@ -63,7 +63,9 @@ public class RoundListActivity extends AppCompatActivity  implements RoundListFr
         }
     }
 
-
+    /**
+     * Función que gestionará las modificaciones necesarias en caso de que se actualice la ronda
+     */
     @Override
     public void onRoundUpdated() {
         // Obtenemos el FragmentManager
@@ -75,8 +77,12 @@ public class RoundListActivity extends AppCompatActivity  implements RoundListFr
         roundListFragment.updateUI();
     }
 
+    /**
+     * Función que arrancará la actividad de preferencias si se pulsa el icono
+     */
     @Override
     public void onPreferencesSelected() {
+        // Creamos el intent que ejecutará las preferencias y lo iniciamos
         Intent intent = new Intent(this, PreferenceActivity.class);
         startActivity(intent);
     }
