@@ -184,7 +184,7 @@ public class TableroView extends View {
 
         // Si la casilla tiene una ficha, la pintamos también
         if (casilla.tieneFicha())
-            pintaFicha(canvas, casilla);
+            pintaFicha(canvas, paint, casilla);
     }
 
     /**
@@ -192,37 +192,30 @@ public class TableroView extends View {
      * @param canvas Canvas en el que dibujar
      * @param casilla Casilla con la ficha que vamos a pintar
      */
-    private void pintaFicha(Canvas canvas, Casilla casilla) {
-        // Obtenemos la imagen vectorial que queremos dibujar
-        VectorDrawableCompat mMyVectorDrawable =
-                VectorDrawableCompat.create(getContext().getResources(), getFichaDrawable(casilla.getFicha()), null);
+    private void pintaFicha(Canvas canvas, Paint paint, Casilla casilla) {
+        // Comprobamos el color de la ficha que tenemos que pintar
+        if (casilla.getFicha().color == Ficha.Color.BLANCA)
+            paint.setColor(this.getContext().getResources().getColor(R.color.fichablanca));
+        if (casilla.getFicha().color == Ficha.Color.NEGRA)
+            paint.setColor(this.getContext().getResources().getColor(R.color.fichanegra));
 
-        // Colocamos la imagen del tamaño necesario
-        mMyVectorDrawable.setBounds((casilla.col()*(int) widthOfTile),
-                                    (casilla.row()*(int) heightOfTile),
-                                    ((1+casilla.col())*(int) widthOfTile),
-                                    ((1+casilla.row())*(int) heightOfTile));
+        // Dibujamos la ficha en el tablero
+        canvas.drawCircle((casilla.col()*(int) widthOfTile) + (widthOfTile/2),
+                (casilla.row()*(int) heightOfTile) + (widthOfTile/2) ,widthOfTile/2,
+                paint);
 
-        // Dibujamos la ficha
-        mMyVectorDrawable.draw(canvas);
-    }
+        if (casilla.getFicha().getTipo() == Ficha.Tipo.REINA){
+            // Comprueba si el cuadro es oscuro o claro y cambia el pincel en consecuencia
+            if (casilla.getColor() == Casilla.Color.OSCURA)
+                paint.setColor(this.getContext().getResources().getColor(R.color.casillaOscura));
+            if (casilla.getColor() == Casilla.Color.CLARA)
+                paint.setColor(this.getContext().getResources().getColor(R.color.casillaClara));
 
-    /**
-     * Devuelve el identificador de recurso de la ficha que tenemos que pintar
-     * @param ficha Ficha a pintar
-     * @return Identificador del recurso que pintaremos
-     */
-    private int getFichaDrawable(Ficha ficha){
-        // Comrpobamos el color de la ficha y el tipo y devolvemos el identificador en consecuencia
-        if (ficha.color == Ficha.Color.BLANCA) {
-            if (ficha.getTipo() == Ficha.Tipo.DAMA)  return R.drawable.dama_blanca;
-            if (ficha.getTipo() == Ficha.Tipo.REINA) return R.drawable.reina_blanca;
+            // Dibujamos el circulo interior de las damas
+            canvas.drawCircle((casilla.col()*(int) widthOfTile) + (widthOfTile/2),
+                    (casilla.row()*(int) heightOfTile) + (widthOfTile/2) ,widthOfTile/3,
+                    paint);
         }
-        if (ficha.color == Ficha.Color.NEGRA) {
-            if (ficha.getTipo() == Ficha.Tipo.DAMA)  return R.drawable.dama_negra;
-            if (ficha.getTipo() == Ficha.Tipo.REINA) return R.drawable.reina_negra;
-        }
-        return 0;
     }
 
     /**
@@ -284,11 +277,6 @@ public class TableroView extends View {
                     // Ejecutamos el movimiento
                     onPlayListener.onPlay(this.movimiento);
 
-                    if (PreferenceActivity.getAudioEffects(getContext())) {
-                        SoundPool sp = new SoundPool(5, AudioManager.STREAM_MUSIC, 0);
-                        int soundId = sp.load(this.getContext(), R.raw.movimiento, 1);
-                        sp.play(soundId, 1, 1, 0, 0, 1);
-                    }
                     // Limpiamos el movimiento
                     this.movimiento = null;
                 }
