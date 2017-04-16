@@ -94,12 +94,20 @@ public class RoundListFragment extends Fragment {
                     @Override
                     public void onItemClick(View view, final int position) {
                         RoundRepository repository = RoundRepositoryFactory.createRepository(getActivity());
-                        RoundRepository.RoundsCallback roundsCallback = new RoundRepository.RoundsCallback()
-                        {
+                        RoundRepository.RoundsCallback roundsCallback = new RoundRepository.RoundsCallback() {
+                            /**
+                             * Gestiona la lista de partidas del repositorio
+                             * @param rounds Lista de partidas
+                             */
                             @Override
                             public void onResponse(List<Round> rounds) {
                                 callbacks.onRoundSelected(rounds.get(position));
                             }
+
+                            /**
+                             * Gestiona el error al consultar la lista de partidas del repositorio
+                             * @param error Mensaje de error que se mandará
+                             */
                             @Override
                             public void onError(String error) {
                                 Snackbar.make(getView(), R.string.repository_no_round_founded,
@@ -129,30 +137,42 @@ public class RoundListFragment extends Fragment {
      * Actualiza la interfaz, la lista de las partidas disponibles
      */
     public void updateUI() {
+        // Instanciamos el repositorio de datos y creamos un callback para cuando pedimos la lista
+        // de partidas disponibles
         RoundRepository repository = RoundRepositoryFactory.createRepository(this.getActivity());
-        repository.getRounds(PreferenceActivity.getPlayerUUID(this.getActivity()),null,null,
-                new RoundRepository.RoundsCallback(){
-                    @Override
-                    public void onResponse(List<Round> rounds) {
-                        if (roundAdapter == null) {
-                            // Pasamos al adapter la lista de rondas y se lo colocamos al recyclerview
-                            roundAdapter = new RoundAdapter(rounds);
-                            roundRecyclerView.setAdapter(roundAdapter);
-                        }
-                        // Indicamos al roundadapter que los datos han cambiado
-                        else {
-                            roundAdapter.setRounds(rounds);
-                            roundAdapter.notifyDataSetChanged();
-                        }
-                    }
+        RoundRepository.RoundsCallback roundsCallback = new RoundRepository.RoundsCallback(){
+            /**
+             * Gestiona la lista de partidas del repositorio
+             * @param rounds Lista de partidas
+             */
+            @Override
+            public void onResponse(List<Round> rounds) {
+                if (roundAdapter == null) {
+                    // Pasamos al adapter la lista de rondas y se lo colocamos al recyclerview
+                    roundAdapter = new RoundAdapter(rounds);
+                    roundRecyclerView.setAdapter(roundAdapter);
+                }
+                // Indicamos al roundadapter que los datos han cambiado
+                else {
+                    roundAdapter.setRounds(rounds);
+                    roundAdapter.notifyDataSetChanged();
+                }
+            }
 
-                    @Override
-                    public void onError(String error) {
-                        // Mostramos el error que nos indican al llamar al callback
-                        Snackbar.make(getActivity().findViewById(R.id.fragment_container), error
-                                , Snackbar.LENGTH_LONG).show();
-                    }
-                });
+            /**
+             * Gestiona el error al consultar la lista de partidas del repositorio
+             * @param error Mensaje de error que se mandará
+             */
+            @Override
+            public void onError(String error) {
+                // Mostramos el error que nos indican al llamar al callback
+                Snackbar.make(getActivity().findViewById(R.id.fragment_container), error
+                        , Snackbar.LENGTH_LONG).show();
+            }
+        };
+        // Regcargamos la lista de rondas disponibles
+        repository.getRounds(PreferenceActivity.getPlayerUUID(this.getActivity()),
+                             null,null,roundsCallback);
 
     }
 
@@ -198,12 +218,19 @@ public class RoundListFragment extends Fragment {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+            // Si crea una nueva partida
             case R.id.menu_item_new_round:
+                // Instanciamos el servidor
                 RoundRepository repository = RoundRepositoryFactory.createRepository(this.getActivity());
-                RoundRepository.BooleanCallback booleanCallback = new RoundRepository.BooleanCallback()
-                {
+                // Creamos un callback booleano que gestione la respuesta
+                RoundRepository.BooleanCallback booleanCallback = new RoundRepository.BooleanCallback(){
+                    /**
+                     * Gestiona la respuesta a la creación de una nueva partida
+                     * @param ok Boolean respuesta a cómo se ha ejecutado la función
+                     */
                     @Override
                     public void onResponse(boolean ok) {
+                        // Sacamos un Snackbar que muestre el resultado de la operación
                         if (ok)
                             Snackbar.make(getActivity().findViewById(R.id.fragment_container),
                                     R.string.repository_round_create_success, Snackbar.LENGTH_LONG).show();
@@ -213,17 +240,27 @@ public class RoundListFragment extends Fragment {
                     }
                 };
 
+                // Creamos una partida nueva y le colocamos los datos del jugador que la va a jugar
                 Round round = new Round();
                 round.setPlayerName(PreferenceActivity.getPlayerName(this.getContext()));
                 round.setPlayerUUID(PreferenceActivity.getPlayerUUID(this.getContext()));
+
+                // Añadimos la partida al repositorio de datos y actualizamos la interfaz
                 repository.addRound(round, booleanCallback);
                 updateUI();
                 return true;
+
+            // Si va al menú ajustes
             case R.id.menu_item_settings:
+                // Llamamos al callback que mostrará la activity con las preferencias
                 callbacks.onPreferencesSelected();
                 return true;
+
+            // Si se hace logout
             case R.id.menu_item_logout:
+                // Reseteamos las preferencias
                 PreferenceActivity.resetPreferences(this.getContext());
+                // Arrancamos la activity del login y finalizamos esta
                 startActivity(new Intent(this.getActivity(), LoginActivity.class));
                 this.getActivity().finish();
                 return true;
