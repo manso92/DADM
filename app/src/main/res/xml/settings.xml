@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-    <PreferenceCategory android:title="Ajustes del juego">
+    <PreferenceCategory android:title="@string/settings.settings_summary">
         <ListPreference
             android:defaultValue="3"
             android:entries="@array/levelsArray"
             android:entryValues="@array/levelsValues"
             android:key="boardsize"
-            android:summary="Choose the size of the board"
-            android:title="Board size" />
+            android:summary="@string/settings.board_size_summary"
+            android:title="@string/settings.board_size_title" />
         <CheckBoxPreference
             android:key="music"
-            android:summary="Click if you feel like listening to music"
-            android:title="Music" />
+            android:summary="@string/settings.audio_effects_summary"
+            android:title="@string/settings.audio_effects_title" />
     </PreferenceCategory>
 </PreferenceScreen>

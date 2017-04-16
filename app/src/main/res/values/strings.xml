@@ -13,11 +13,12 @@
     <string name="game.game_over_pos">Yes</string>
     <string name="game.game_over_neg">No</string>
 
-    <string name="settings.list_preference_summary">Choose the size of the board</string>
-    <string name="settings.list_preference_title">Board size</string>
-    <string name="settings.checkbox_preference_summary">Click if you feel like listening to music</string>
-    <string name="settings.checkbox_preference_title">Music</string>
     <string name="settings.settings">Settings</string>
+    <string name="settings.settings_summary">Game settings</string>
+    <string name="settings.board_size_title">Board size</string>
+    <string name="settings.board_size_summary">Choose the size of the board</string>
+    <string name="settings.audio_effects_title">Audio Effects</string>
+    <string name="settings.audio_effects_summary">Click if you like to listen audio effects</string>
 
 
     <string name="repository.round_create_success">Round created</string>

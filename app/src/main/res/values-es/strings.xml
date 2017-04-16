@@ -23,9 +23,10 @@
     <string name="repository.round_create_error">Error al crear la partida</string>
     <string name="repository.round_create_success">Partida creada con éxito</string>
     <string name="repository.round_error_updating">Error al actualizar la partida</string>
-    <string name="settings.checkbox_preference_summary">Pulsa si te gusta escuchar música</string>
-    <string name="settings.checkbox_preference_title">Música</string>
-    <string name="settings.list_preference_summary">Elige el tamaño del tablero</string>
-    <string name="settings.list_preference_title">Tamaño del tablero</string>
+    <string name="settings.audio_effects_summary">Pulsa si quieres escuchar efectos de audio</string>
+    <string name="settings.audio_effects_title">Efectos de audio</string>
+    <string name="settings.board_size_summary">Elige el tamaño del tablero</string>
+    <string name="settings.board_size_title">Tamaño del tablero</string>
     <string name="settings.settings">Ajustes</string>
+    <string name="settings.settings_summary">Ajustes del juego</string>
 </resources>
