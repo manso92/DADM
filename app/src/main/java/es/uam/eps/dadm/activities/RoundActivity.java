@@ -8,7 +8,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
 import es.uam.eps.dadm.R;
-import es.uam.eps.dadm.model.Round;
 
 /**
  * RoundActivity es una clase que cargará el framgento de la partida cuando la pantalla del dispositivo

@@ -41,7 +41,6 @@ public class RoundFragment extends Fragment implements PartidaListener {
      */
     public static final String ARG_FIRST_PLAYER_NAME = "es.uam.eps.dadm.player_name";
 
-
     /**
      * Id del argumento del nombre del jugador
      */
@@ -291,19 +290,30 @@ public class RoundFragment extends Fragment implements PartidaListener {
                         "ALERT DIALOG");
                 break;
         }
+        // Actualizamos la partida en el repositorio
         updateRound();
     }
 
+    /**
+     * Actualiza la partida en el repositorio
+     */
     private void updateRound() {
+        // Obtenemos una referencia al repositorio y creamos un booleancalback
         RoundRepository repository = RoundRepositoryFactory.createRepository(getActivity());
         RoundRepository.BooleanCallback callback = new RoundRepository.BooleanCallback() {
+            /**
+             * Gestiona la respuesta del servidor a un evento de respuesta booelana
+             * @param response Correcta ejecución de la función en el servidor
+             */
             @Override
             public void onResponse(boolean response) {
+                // Si se produce un error al actualizar la partida, se lo comunicamos al usuario
                 if (response == false)
                     Snackbar.make(getView(), R.string.repository_round_error_updating,
                             Snackbar.LENGTH_LONG).show();
             }
         };
+        // Actualizamos la partida en la base de datos
         repository.updateRound(round, callback);
     }
 
