@@ -48,25 +48,24 @@ public class RoundListActivity extends AppCompatActivity  implements RoundListFr
     public void onRoundSelected(Round round) {
         // Si estamos en una pantalla pequeña, creamos la actividad y la arrancamos
         if (findViewById(R.id.detail_fragment_container) == null) {
-            Intent intent = RoundActivity.newIntent(this, round.getId());
+            Intent intent = RoundActivity.newIntent(this, round.getId(),round.getPlayerName(),
+                    round.getPlayerUUID(), round.getTitle(),8,round.getDate(),round.getBoard().tableroToString());
             startActivity(intent);
         }
         // Si estamos con la pantalla dividida, instanciamos el fragmento de la partida y la
         // cargamos en el manager de fragmentos
         else {
-            RoundFragment roundFragment = RoundFragment.newInstance(round.getId());
+            RoundFragment roundFragment = RoundFragment.newInstance(round.getId(),round.getPlayerName(),
+                    round.getPlayerUUID(), round.getTitle(),8,round.getDate(),round.getBoard().tableroToString());
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.detail_fragment_container, roundFragment)
                     .commit();
         }
     }
 
-    /**
-     * Función que se ejecutará cada vez que se produzca un cambio en la partida
-     * @param round Partida que se ha modificado
-     */
+
     @Override
-    public void onRoundUpdated(Round round) {
+    public void onRoundUpdated() {
         // Obtenemos el FragmentManager
         FragmentManager fragmentManager = getSupportFragmentManager();
         // Obtenemos el fragmento de la lista de partidas

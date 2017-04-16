@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +15,7 @@ import java.util.ArrayList;
 import es.uam.eps.dadm.R;
 import es.uam.eps.dadm.model.Round;
 import es.uam.eps.dadm.model.RoundRepository;
+import es.uam.eps.dadm.model.RoundRepositoryFactory;
 import es.uam.eps.dadm.views.TableroView;
 import es.uam.eps.multij.*;
 
@@ -24,32 +24,69 @@ import es.uam.eps.multij.*;
  * @author Pablo Manso
  * @version 13/03/2017
  */
-public class RoundFragment extends Fragment implements PartidaListener{
+public class RoundFragment extends Fragment implements PartidaListener {
+
     /**
-     * String que contiene la clave del par clave-valor que nos indicará la partida que se va a jugar
+     * Tag para escribir en el log
+     */
+    public static final String DEBUG = "DEBUG";
+
+    /**
+     * Id del argumento de la ronda
      */
     public static final String ARG_ROUND_ID = "es.uam.eps.dadm.round_id";
 
     /**
-     * Partida que jugará el usuario
+     * Id del argumento del nombre del jugador
+     */
+    public static final String ARG_FIRST_PLAYER_NAME = "es.uam.eps.dadm.player_name";
+
+
+    /**
+     * Id del argumento del nombre del jugador
+     */
+    public static final String ARG_FIRST_PLAYER_UUID = "es.uam.eps.dadm.player_uuid";
+
+    /**
+     * Id del argumento del título de la partida
+     */
+    public static final String ARG_ROUND_TITLE = "es.uam.eps.dadm.round_title";
+
+    /**
+     * Id del argumento del tamaño de la partida
+     */
+    public static final String ARG_ROUND_SIZE = "es.uam.eps.dadm.round_size";
+
+    /**
+     * Id del argumento de la fecha de la partida
+     */
+    public static final String ARG_ROUND_DATE = "es.uam.eps.dadm.round_date";
+
+    /**
+     * Id del argumento del tablero
+     */
+    public static final String ARG_ROUND_BOARD = "es.uam.eps.dadm.round_board";
+
+    /**
+     * Ronda en juego
      */
     private Round round;
 
     /**
-     * View que dibujará el tablero de las damas en el fragmento
+     * View del tablero a actualizar con cada movimiento
      */
     private TableroView boardView;
 
     /**
-     * Callback que se ejecutará cada vez que se hace una modificación en la partida
+     * Calback registrado para cuando se actualice la ronda
      */
     private Callbacks callbacks;
 
     /**
-     * Interfaz que se implementará para ser llamado cada vez que se actualice la partida
+     * Interfaz que implementarán al que haya que notificar de que se ha actualizado la ronda
      */
     public interface Callbacks {
-        void onRoundUpdated(Round round);
+        void onRoundUpdated();
     }
 
     /**
@@ -60,16 +97,32 @@ public class RoundFragment extends Fragment implements PartidaListener{
     /**
      * Crea una instancia del fragmento de modo que se le indica la partida que se jugará
      * @param roundId Id de la partida que se va a jugar
+     * @param playerName Nombre del jugador que la jugará
+     * @param playerUUID iDENTIFICADOR DEL JUGADOR QUE LA JUGARÁ
+     * @param roundTitle Título de la partida que se va a jugar
+     * @param roundSize Tamaño del tablero de la partida
+     * @param roundDate Fecha de la partida que se va a jugar
+     * @param roundBoard Tablero que vamos a jugar
      * @return Instancia del fragmento que se acaba de crear
      */
-    public static RoundFragment newInstance(String roundId) {
-        // Creamos un Bundle y ponemos el id de la partida en los argumentos
+    public static RoundFragment newInstance(String roundId, String playerName, String playerUUID,
+                                            String roundTitle, int roundSize,
+                                            String roundDate, String roundBoard) {
+        // Creamos un contenedor para los argumentos
         Bundle args = new Bundle();
+
+        // Ponemos uno a uno todos los argumentos en el contenedor
         args.putString(ARG_ROUND_ID, roundId);
-        // Creamos una instancia del fragmento y le adjuntamos los argumentos del bundle que acabamos de crear
+        args.putString(ARG_FIRST_PLAYER_NAME, playerName);
+        args.putString(ARG_FIRST_PLAYER_UUID, playerUUID);
+        args.putString(ARG_ROUND_TITLE, roundTitle);
+        args.putString(ARG_ROUND_SIZE, Integer.toString(roundSize));
+        args.putString(ARG_ROUND_DATE, roundDate);
+        args.putString(ARG_ROUND_BOARD, roundBoard);
+
+        // Creamos una instancia del fragmento, ponemos los argumentos y la devolvemos
         RoundFragment roundFragment = new RoundFragment();
         roundFragment.setArguments(args);
-        // Devolvemos el fragmento
         return roundFragment;
     }
 
@@ -79,11 +132,26 @@ public class RoundFragment extends Fragment implements PartidaListener{
      */
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        // Llamamos a la clase padre
         super.onCreate(savedInstanceState);
-        // Obtenemos el id de la partida ya la buscamos en el repositorio de partidas
-        String roundId = getArguments().getString(ARG_ROUND_ID);
-        round = RoundRepository.get(getActivity()).getRound(roundId);
+        // Creamos una ronda y vamos metiendo uno a uno todos los argumentos
+        this.round = new Round();
+        if (getArguments().containsKey(ARG_ROUND_ID))
+            this.round.setId(getArguments().getString(ARG_ROUND_ID));
+        if (getArguments().containsKey(ARG_FIRST_PLAYER_NAME))
+            this.round.setPlayerName(getArguments().getString(ARG_FIRST_PLAYER_NAME));
+        if (getArguments().containsKey(ARG_FIRST_PLAYER_UUID))
+            this.round.setPlayerUUID(getArguments().getString(ARG_FIRST_PLAYER_UUID));
+        if (getArguments().containsKey(ARG_ROUND_TITLE))
+            this.round.setTitle(getArguments().getString(ARG_ROUND_TITLE));
+        if (getArguments().containsKey(ARG_ROUND_DATE))
+            this.round.setDate(getArguments().getString(ARG_ROUND_DATE));
+        if (getArguments().containsKey(ARG_ROUND_BOARD))
+            try {
+                this.round.getBoard().stringToTablero(getArguments().getString(ARG_ROUND_BOARD));
+            } catch (ExcepcionJuego excepcionJuego) {
+                excepcionJuego.printStackTrace();
+                this.getActivity().finish();
+            }
     }
 
     /**
@@ -100,7 +168,7 @@ public class RoundFragment extends Fragment implements PartidaListener{
         final View rootView = inflater.inflate(R.layout.fragment_round, container, false);
         // Obtenemos el textview del título y ponemos el valor de la partida
         TextView roundTitleTextView = (TextView) rootView.findViewById(R.id.round_title);
-        roundTitleTextView.setText(round.getTitle());
+        roundTitleTextView.setText(this.round.getTitle());
         return rootView;
     }
 
@@ -137,7 +205,7 @@ public class RoundFragment extends Fragment implements PartidaListener{
                 round.getBoard().reset();
                 startRound();
                 // Llamamos al callback de la actualización y le indicamos al jugador que el cambio de ha hecho
-                callbacks.onRoundUpdated(round);
+                callbacks.onRoundUpdated();
                 Snackbar.make(getView(), R.string.round_restarted,
                         Snackbar.LENGTH_SHORT).show();
             }
@@ -210,18 +278,33 @@ public class RoundFragment extends Fragment implements PartidaListener{
             case Evento.EVENTO_CAMBIO:
                 // Actualizamos el tablero y llamamos al callback que hay que llamar cuando se actualiza la ronda
                 boardView.invalidate();
-                callbacks.onRoundUpdated(round);
+                callbacks.onRoundUpdated();
                 break;
             // Evento de que hay un fin de partida
             case Evento.EVENTO_FIN:
                 // Actualizamos el tablero y llamamos al callback que hay que llamar cuando se actualiza la ronda
                 boardView.invalidate();
-                callbacks.onRoundUpdated(round);
+                callbacks.onRoundUpdated();
                 // Indicamos al jugador que la partida ha acabado
                 Snackbar.make(getView(), R.string.game_over, Snackbar.LENGTH_SHORT).show();
                 new AlertDialogFragment().show(getActivity().getSupportFragmentManager(),
                         "ALERT DIALOG");
                 break;
         }
+        updateRound();
     }
+
+    private void updateRound() {
+        RoundRepository repository = RoundRepositoryFactory.createRepository(getActivity());
+        RoundRepository.BooleanCallback callback = new RoundRepository.BooleanCallback() {
+            @Override
+            public void onResponse(boolean response) {
+                if (response == false)
+                    Snackbar.make(getView(), R.string.error_updating_round,
+                            Snackbar.LENGTH_LONG).show();
+            }
+        };
+        repository.updateRound(round, callback);
+    }
+
 }

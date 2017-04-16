@@ -45,9 +45,11 @@ public class RoundCursorWrapper extends CursorWrapper {
         String board =      getString(getColumnIndex(RoundTable.Cols.BOARD));
 
         Round round = new Round();
-        //round.setFirstPlayerName("random");
-        //round.setSecondPlayerName(playername);
-        // TODO colocar todas las cosas de la partida en la clase
+        round.setPlayerName(playername);
+        round.setPlayerUUID(playeruuid);
+        round.setId(rounduuid);
+        round.setDate(date);
+        round.setTitle(title);
 
         try {
             round.getBoard().stringToTablero(board);

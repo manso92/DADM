@@ -10,6 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import es.uam.eps.dadm.R;
 import es.uam.eps.dadm.model.Round;
 import es.uam.eps.dadm.model.RoundRepository;
+import es.uam.eps.dadm.model.RoundRepositoryFactory;
 
 /**
  * AlertDialogFragment es un dialog que se mostrará al final de las partidas para preguntar si se
@@ -40,10 +41,13 @@ public class AlertDialogFragment extends DialogFragment {
                     public void onClick(DialogInterface dialog, int which) {
                         // Creamos una nueva partida y la añadimos a nuestro repositorio
                         Round round = new Round();
-                        RoundRepository.get(getActivity()).addRound(round);
+                        round.setPlayerUUID(PreferenceActivity.getPlayerUUID(getContext()));
+                        round.setPlayerName(PreferenceActivity.getPlayerName(getContext()));
+                        RoundRepository repository = RoundRepositoryFactory.createRepository(getContext());
+                        repository.addRound(round,null);
                         // Si estamos en pantalla dividida, actualizamos la lista de partidas
                         if (activity instanceof RoundListActivity)
-                            ((RoundListActivity) activity).onRoundUpdated(round);
+                            ((RoundListActivity) activity).onRoundUpdated();
                         // Sino, finalizamos la actividad de la partida
                         else
                             activity.finish();

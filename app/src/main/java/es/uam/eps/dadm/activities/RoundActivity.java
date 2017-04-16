@@ -17,10 +17,6 @@ import es.uam.eps.dadm.model.Round;
  * @version 13/03/2017
  */
 public class RoundActivity extends AppCompatActivity  implements RoundFragment.Callbacks{
-    /**
-     * Cadena que identificará el id de partida que se nos mandará a través del Bundle
-     */
-    public static final String EXTRA_ROUND_ID = "es.uam.eps.dadm.round_id";
 
     /**
      * Crea todo lo necesario para la correcta ejecución de la actividad
@@ -37,10 +33,15 @@ public class RoundActivity extends AppCompatActivity  implements RoundFragment.C
         Fragment fragment = fm.findFragmentById(R.id.fragment_container);
         // Si el fragmento devuelto es null, lo cargamos
         if (fragment == null) {
-            // Obtenemos la ronda que nos ha indicado la actividad que nos invoca
-            String roundId = getIntent().getStringExtra(EXTRA_ROUND_ID);
             // Creamos un gragmento directamente con el método que nos provee el fragmento
-            RoundFragment roundFragment = RoundFragment.newInstance(roundId);
+            RoundFragment roundFragment = RoundFragment.newInstance(
+                    getIntent().getStringExtra(RoundFragment.ARG_ROUND_ID),
+                    getIntent().getStringExtra(RoundFragment.ARG_FIRST_PLAYER_NAME),
+                    getIntent().getStringExtra(RoundFragment.ARG_FIRST_PLAYER_UUID),
+                    getIntent().getStringExtra(RoundFragment.ARG_ROUND_TITLE),
+                    Integer.parseInt(getIntent().getStringExtra(RoundFragment.ARG_ROUND_SIZE)),
+                    getIntent().getStringExtra(RoundFragment.ARG_ROUND_DATE),
+                    getIntent().getStringExtra(RoundFragment.ARG_ROUND_BOARD));
             // Cargamos el gragmento a través del FragmentManager
             fm.beginTransaction()
                     .add(R.id.fragment_container, roundFragment)
@@ -54,13 +55,21 @@ public class RoundActivity extends AppCompatActivity  implements RoundFragment.C
      * @param roundId Partida que esta actividad mostrará
      * @return Intenta para invocar esta actividad
      */
-    public static Intent newIntent(Context packageContext, String roundId){
+    public static Intent newIntent(Context packageContext, String roundId, String playerName,
+                                   String playerUUID, String roundTitle, int roundSize,
+                                   String roundDate, String roundBoard){
         // Creamos un intent entre el contexto que nos pasan y esta clase
         Intent intent = new Intent(packageContext, RoundActivity.class);
         // Adjuntamos la ronda con la clave que tenemos en la clase y devolvemos el intent
-        intent.putExtra(EXTRA_ROUND_ID, roundId);
+        intent.putExtra(RoundFragment.ARG_ROUND_ID, roundId);
+        intent.putExtra(RoundFragment.ARG_FIRST_PLAYER_NAME, playerName);
+        intent.putExtra(RoundFragment.ARG_FIRST_PLAYER_UUID, playerUUID);
+        intent.putExtra(RoundFragment.ARG_ROUND_TITLE, roundTitle);
+        intent.putExtra(RoundFragment.ARG_ROUND_SIZE, Integer.toString(roundSize));
+        intent.putExtra(RoundFragment.ARG_ROUND_DATE, roundDate);
+        intent.putExtra(RoundFragment.ARG_ROUND_BOARD, roundBoard);
         return intent;
     }
     @Override
-    public void onRoundUpdated(Round round) {}
+    public void onRoundUpdated() {}
 }
