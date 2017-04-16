@@ -44,7 +44,7 @@ public class SplashScreen extends Activity {
                 Intent i = new Intent(SplashScreen.this, LoginActivity.class);
                 startActivity(i);
 
-                // Fiinalizamos esta actividad para que no volvamos a ella al retroceder
+                // Finalizamos esta actividad para que no volvamos a ella al retroceder
                 finish();
             }
         }, SPLASH_TIME_OUT);
