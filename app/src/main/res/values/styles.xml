@@ -7,26 +7,4 @@
         <item name="colorPrimaryDark">@color/primary_dark</item>
         <item name="colorAccent">@color/accent</item>
     </style>
-
-    <style name="casillabase">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:src">@drawable/ficha_transparente</item>
-        <item name="android:background">@android:color/transparent</item>
-    </style>
-    <style name="cuadronegro"  parent="casillabase"><item name="android:background">@color/casillaOscura</item></style>
-    <style name="cuadroblanco"  parent="casillabase"><item name="android:background">@color/casillaClara</item></style>
-
-    <style name="damablanca" parent="cuadronegro">
-        <item name="android:src">@drawable/dama_blanca</item>
-    </style>
-    <style name="reinablanca" parent="cuadronegro">
-        <item name="android:src">@drawable/reina_blanca</item>
-    </style>
-    <style name="damanegra" parent="cuadronegro">
-        <item name="android:src">@drawable/dama_negra</item>
-    </style>
-    <style name="reinanegra" parent="cuadronegro">
-        <item name="android:src">@drawable/reina_negra</item>
-    </style>
 </resources>
