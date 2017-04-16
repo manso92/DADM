@@ -22,6 +22,16 @@ import es.uam.eps.dadm.R;
 public class PreferenceActivity extends AppCompatActivity {
 
     /**
+     * Clave para registrar las preferencias de audio
+     */
+    private final static String AUDIO_EFFECTS_KEY = "audioeffects";
+
+    /**
+     * Preferencias de audio por defecto para el usuario
+     */
+    public final static boolean AUDIO_EFFECTS_DEFAULT = false;
+
+    /**
      * Clave para registrar el tamaño del tablero
      */
     private final static String BOARD_SIZE_KEY = "boardsize";
@@ -84,12 +94,21 @@ public class PreferenceActivity extends AppCompatActivity {
     }
 
     /**
+     * Devuelve el valor de las preferencias de los efectos de audio
+     * @param context Contexto desde el cual se quiere obtener el valor del usuario
+     * @return Si habrá efectos de tablero o no
+     */
+    public static boolean getAudioEffects(Context context) {
+        return getBooleanKey(context, AUDIO_EFFECTS_KEY, AUDIO_EFFECTS_DEFAULT);
+    }
+
+    /**
      * Devuelve el valor del tamaño del tablero
      * @param context Contexto desde el cual se quiere obtener el valor del usuario
      * @return Tamaño del tablero
      */
     public static int getSize(Context context) {
-        return Integer.parseInt(getKey(context, BOARD_SIZE_KEY, Integer.toString(BOARD_SIZE_DEFAULT)));
+        return Integer.parseInt(getStringKey(context, BOARD_SIZE_KEY, Integer.toString(BOARD_SIZE_DEFAULT)));
     }
 
     /**
@@ -107,7 +126,7 @@ public class PreferenceActivity extends AppCompatActivity {
      * @return Identificador de usuario registrado | Default value para el identificador de usuario
      */
     public static String getPlayerUUID(Context context) {
-        return getKey(context, PLAYERUUID_KEY, PLAYERUUID_DEFAULT);
+        return getStringKey(context, PLAYERUUID_KEY, PLAYERUUID_DEFAULT);
     }
 
     /**
@@ -125,7 +144,7 @@ public class PreferenceActivity extends AppCompatActivity {
      * @return Nombre de usuario registrado | Default value para el nombre de usuario
      */
     public static String getPlayerName(Context context) {
-        return getKey(context, PLAYERNAME_KEY, PLAYERNAME_DEFAULT);
+        return getStringKey(context, PLAYERNAME_KEY, PLAYERNAME_DEFAULT);
     }
 
     /**
@@ -160,8 +179,20 @@ public class PreferenceActivity extends AppCompatActivity {
      * @param defaultValue Valor por defecto en caso de no encontrarse la clave
      * @return String asociado a la clave que se ha provisto
      */
-    private static String getKey(Context context, String key, String defaultValue){
+    private static String getStringKey(Context context, String key, String defaultValue){
         return PreferenceManager.getDefaultSharedPreferences(context)
                 .getString(key, defaultValue);
+    }
+
+    /**
+     * Obtiene una clave de las preferencias de usuario
+     * @param context Contexto desde el cual se pide el valor
+     * @param key Clave que se está pidiendo
+     * @param defaultValue Valor por defecto en caso de no encontrarse la clave
+     * @return Boolean asociado a la clave que se ha provisto
+     */
+    private static Boolean getBooleanKey(Context context, String key, Boolean defaultValue){
+        return PreferenceManager.getDefaultSharedPreferences(context)
+                .getBoolean(key, defaultValue);
     }
 }

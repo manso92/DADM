@@ -4,6 +4,8 @@ package es.uam.eps.dadm.views;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.media.AudioManager;
+import android.media.SoundPool;
 import android.support.design.widget.Snackbar;
 import android.support.graphics.drawable.VectorDrawableCompat;
 import android.util.AttributeSet;
@@ -11,8 +13,10 @@ import android.view.MotionEvent;
 import android.view.View;
 
 import java.util.ArrayList;
+import java.util.IllegalFormatCodePointException;
 
 import es.uam.eps.dadm.R;
+import es.uam.eps.dadm.activities.PreferenceActivity;
 import es.uam.eps.dadm.model.Casilla;
 import es.uam.eps.dadm.model.Ficha;
 import es.uam.eps.dadm.model.MovimientoDamas;
@@ -279,6 +283,12 @@ public class TableroView extends View {
                 if (this.board.proximasCasillasMovimiento(this.movimiento).size() == 1){
                     // Ejecutamos el movimiento
                     onPlayListener.onPlay(this.movimiento);
+
+                    if (PreferenceActivity.getAudioEffects(getContext())) {
+                        SoundPool sp = new SoundPool(5, AudioManager.STREAM_MUSIC, 0);
+                        int soundId = sp.load(this.getContext(), R.raw.movimiento, 1);
+                        sp.play(soundId, 1, 1, 0, 0, 1);
+                    }
                     // Limpiamos el movimiento
                     this.movimiento = null;
                 }

@@ -9,7 +9,7 @@
             android:summary="@string/settings.board_size_summary"
             android:title="@string/settings.board_size_title" />
         <CheckBoxPreference
-            android:key="music"
+            android:key="audioeffects"
             android:summary="@string/settings.audio_effects_summary"
             android:title="@string/settings.audio_effects_title" />
     </PreferenceCategory>
