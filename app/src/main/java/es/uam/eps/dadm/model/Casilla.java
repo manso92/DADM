@@ -80,9 +80,9 @@ public class Casilla {
      * Comprueba si la casilla que hemos creado está entre los límites del tablero
      * @return Si la casilla está o no en el tablero
      */
-    public boolean enTablero(){
-        return ((this.col() >= 0) && (this.col() < TableroDamas.TABLEROSIZE) &&
-                (this.row() >= 0) && (this.row() < TableroDamas.TABLEROSIZE) );
+    public boolean enTablero(int size){
+        return ((this.col() >= 0) && (this.col() < size) &&
+                (this.row() >= 0) && (this.row() < size) );
     }
 
     /**

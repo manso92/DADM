@@ -36,6 +36,7 @@ public class RoundCursorWrapper extends CursorWrapper {
      * @return Round correspondiente a la consulta
      */
     public Round getRound() {
+        // Obtenemos los valores de todos los parámetros
         String playername = getString(getColumnIndex(UserTable.Cols.PLAYERNAME));
         String playeruuid = getString(getColumnIndex(UserTable.Cols.PLAYERUUID));
         String rounduuid =  getString(getColumnIndex(RoundTable.Cols.ROUNDUUID));
@@ -44,7 +45,8 @@ public class RoundCursorWrapper extends CursorWrapper {
         String size =       getString(getColumnIndex(RoundTable.Cols.SIZE));
         String board =      getString(getColumnIndex(RoundTable.Cols.BOARD));
 
-        Round round = new Round();
+        // Creamos una ronda y se los asignamos uno a uno
+        Round round = new Round(Integer.parseInt(size));
         round.setPlayerName(playername);
         round.setPlayerUUID(playeruuid);
         round.setId(rounduuid);

@@ -195,6 +195,8 @@ public class DataBase implements RoundRepository {
     @Override
     public void register(String playername, String password, LoginRegisterCallback callback) {
 
+        // Miramos que el usuario no intente registrarse con el usuario por defecto,
+        // ya que esto daría problemas más adelante
         if (playername.equals(PreferenceActivity.PLAYERNAME_DEFAULT)) {
             callback.onError(contexto.getString(R.string.login_registererror) + playername);
             return;
@@ -232,7 +234,7 @@ public class DataBase implements RoundRepository {
         values.put(RoundTable.Cols.ROUNDUUID,  round.getId());
         values.put(RoundTable.Cols.DATE,       round.getDate());
         values.put(RoundTable.Cols.TITLE,      round.getTitle());
-        values.put(RoundTable.Cols.SIZE,       8);
+        values.put(RoundTable.Cols.SIZE,       round.getSize());
         values.put(RoundTable.Cols.BOARD,      round.getBoard().tableroToString());
 
         return values;

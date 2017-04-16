@@ -49,14 +49,14 @@ public class RoundListActivity extends AppCompatActivity  implements RoundListFr
         // Si estamos en una pantalla pequeña, creamos la actividad y la arrancamos
         if (findViewById(R.id.detail_fragment_container) == null) {
             Intent intent = RoundActivity.newIntent(this, round.getId(),round.getPlayerName(),
-                    round.getPlayerUUID(), round.getTitle(),8,round.getDate(),round.getBoard().tableroToString());
+                    round.getPlayerUUID(), round.getTitle(),round.getSize(),round.getDate(),round.getBoard().tableroToString());
             startActivity(intent);
         }
         // Si estamos con la pantalla dividida, instanciamos el fragmento de la partida y la
         // cargamos en el manager de fragmentos
         else {
             RoundFragment roundFragment = RoundFragment.newInstance(round.getId(),round.getPlayerName(),
-                    round.getPlayerUUID(), round.getTitle(),8,round.getDate(),round.getBoard().tableroToString());
+                    round.getPlayerUUID(), round.getTitle(), round.getSize(),round.getDate(),round.getBoard().tableroToString());
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.detail_fragment_container, roundFragment)
                     .commit();

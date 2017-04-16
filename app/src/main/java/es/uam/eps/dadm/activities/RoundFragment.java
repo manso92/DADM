@@ -133,7 +133,7 @@ public class RoundFragment extends Fragment implements PartidaListener {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // Creamos una ronda y vamos metiendo uno a uno todos los argumentos
-        this.round = new Round();
+        this.round = new Round(Integer.parseInt(getArguments().getString(ARG_ROUND_SIZE)));
         if (getArguments().containsKey(ARG_ROUND_ID))
             this.round.setId(getArguments().getString(ARG_ROUND_ID));
         if (getArguments().containsKey(ARG_FIRST_PLAYER_NAME))

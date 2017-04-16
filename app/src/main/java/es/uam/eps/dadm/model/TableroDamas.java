@@ -21,24 +21,25 @@ public class TableroDamas extends Tablero {
     /**
      * Tamaño que tiene el tablero
      */
-    public final static int TABLEROSIZE = 8;
+    public int size;
 
     /**
      * Doble array que contendrá toda la info del tablero
      */
-    Casilla[][] casillas;
+    private Casilla[][] casillas;
 
     /**
      * Registra una lista con los movimientos validos en cada turno
      */
-    ArrayList<Movimiento> movimientos = null;
+    private ArrayList<Movimiento> movimientos = null;
 
     /**
      * Construye el tablero para jugar a las damas
      */
-    public TableroDamas() {
+    public TableroDamas(int size) {
         super();
-        this.casillas = new Casilla[TABLEROSIZE][TABLEROSIZE];
+        this.size = size;
+        this.casillas = new Casilla[size][size];
         this.limpiaTablero();
         this.colocaFichas();
         this.numJugadas=0;
@@ -62,14 +63,14 @@ public class TableroDamas extends Tablero {
     public void colocaFichas(){
         // Colocamos las fichas del primer jugador en la parte superior del tablero
         for (int i = 0; i < 3; i++)
-            for (int j = 0; j < TABLEROSIZE; j++)
+            for (int j = 0; j < this.size; j++)
                 if ((i + j) % 2 == 1)
                     this.casillas[i][j].ponFicha(new Ficha(Ficha.Color.BLANCA));
 
 
         // Colocamos las fichas del segundo jugador en la parte inferior del tablero
-        for (int i = TABLEROSIZE - 3; i < TABLEROSIZE; i++)
-            for (int j = 0; j < TABLEROSIZE; j++)
+        for (int i = this.size - 3; i < this.size; i++)
+            for (int j = 0; j < this.size; j++)
                 if ((i + j) % 2 == 1)
                     this.casillas[i][j].ponFicha(new Ficha(Ficha.Color.NEGRA));
 
@@ -116,7 +117,7 @@ public class TableroDamas extends Tablero {
         }
 
         // Si la ficha llega al final de donde debe llegar, lo convertimos en reina
-        if (((this.getCasilla(destino.row(), destino.col()).getFicha().color == Ficha.Color.BLANCA) && (destino.row() == 7)) ||
+        if (((this.getCasilla(destino.row(), destino.col()).getFicha().color == Ficha.Color.BLANCA) && (destino.row() == this.size-1)) ||
                 ((this.getCasilla(destino.row(), destino.col()).getFicha().color == Ficha.Color.NEGRA) && (destino.row() == 0)))
             this.getCasilla(destino.row(), destino.col()).getFicha().reina();
 
@@ -230,7 +231,7 @@ public class TableroDamas extends Tablero {
         ArrayList<Movimiento> movimientosaux;
 
         // Si la casilla destino no está en el tablero, no hay movimiento válido
-        if ((new Casilla(origen, sentido, salto)).enTablero()) {
+        if ((new Casilla(origen, sentido, salto)).enTablero(this.size)) {
             Casilla destino = this.getCasilla(new Casilla(origen, sentido, salto)).clone();
             // Comprobamos si el movimiento directo es válido
             if (this.comrpuebaMovimiento(new MovimientoDamas(origen, destino))) {
@@ -269,7 +270,7 @@ public class TableroDamas extends Tablero {
         Casilla destino = ((MovimientoDamas) m).getDestino();
 
         // Comprobamos que el destino sea una casilla del tablero
-        if (!destino.enTablero()) return false;
+        if (!destino.enTablero(this.size)) return false;
 
         // Si el movmiento tiene distancia 1, es un movimiento simple, y simplemente comprobamos si el destino está vacío
         if (m.distancia() == 1)
@@ -296,8 +297,8 @@ public class TableroDamas extends Tablero {
     public String tableroToString() {
         String ret = "" + this.getNumJugadas() + "/";
         // Para cada celda del tablero
-        for(int i=0;i<TABLEROSIZE;i++)
-            for (int j = 0; j < TABLEROSIZE; j++)
+        for(int i=0;i<this.size;i++)
+            for (int j = 0; j < this.size; j++)
             // Si no tiene fichas no conviene exportarlo
                 if (this.casillas[i][j].tieneFicha()){
                     // Añadimos el color a la salida
@@ -334,9 +335,9 @@ public class TableroDamas extends Tablero {
         String tablero = stok.nextToken();
 
         // Creamos un tablero vacío
-        Casilla[][] casillas = new Casilla[TABLEROSIZE][TABLEROSIZE];
-        for (int i = 0; i < TABLEROSIZE; i++)
-            for (int j = 0; j < TABLEROSIZE; j++)
+        Casilla[][] casillas = new Casilla[this.size][this.size];
+        for (int i = 0; i < this.size; i++)
+            for (int j = 0; j < this.size; j++)
                 casillas[i][j] = new Casilla(i,j);
 
         // Cada ficha ocupa cuatro caracteres, si no es múltiplo de 4 es que hay un error
@@ -352,8 +353,8 @@ public class TableroDamas extends Tablero {
             int columna = Character.getNumericValue(tablero.charAt(i+3));
             if (color != 0 && color != 1) throw new ExcepcionJuego("String no válido para un TableroDamas");
             if (tipo != 0 && tipo != 1)   throw new ExcepcionJuego("String no válido para un TableroDamas");
-            if (fila < 0 || fila >= TABLEROSIZE)       throw new ExcepcionJuego("String no válido para un TableroDamas");
-            if (columna < 0 || columna >= TABLEROSIZE) throw new ExcepcionJuego("String no válido para un TableroDamas");
+            if (fila < 0 || fila >= this.size)       throw new ExcepcionJuego("String no válido para un TableroDamas");
+            if (columna < 0 || columna >= this.size) throw new ExcepcionJuego("String no válido para un TableroDamas");
 
             // Creamos la ficha y la ponemos en el tablero
             Ficha.Color colorFicha = (color == 0) ? Ficha.Color.BLANCA : Ficha.Color.NEGRA;
@@ -365,7 +366,7 @@ public class TableroDamas extends Tablero {
         this.numJugadas = jugadas;
         if ((this.numJugadas % 2) == 1) this.turno = 1; else this.turno = 0;
         this.casillas = casillas;
-        System.out.println(this.toString());
+        //System.out.println(this.toString());
         this.movimientos = this.movimientosValidos();
     }
 

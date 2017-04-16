@@ -124,8 +124,8 @@ public class TableroView extends View {
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         // Actualizamos el alto y el ancho que tendrán los cuadrados del tablero
-        widthOfTile = w / TableroDamas.TABLEROSIZE;
-        heightOfTile = h / TableroDamas.TABLEROSIZE;
+        widthOfTile = w / this.board.size;
+        heightOfTile = h / this.board.size;
 
         // Enviamos esa información a la clase padre
         super.onSizeChanged(w, h, oldw, oldh);
@@ -149,8 +149,8 @@ public class TableroView extends View {
      */
     private void pintaTablero(Canvas canvas, Paint paint) {
         // Imprimimos cada uno de los cuadros del tablero
-        for (int i = 0; i < TableroDamas.TABLEROSIZE; i++)
-            for (int j = 0; j <  TableroDamas.TABLEROSIZE; j++)
+        for (int i = 0; i < this.board.size; i++)
+            for (int j = 0; j < this.board.size; j++)
                 pintaCuadro(canvas, paint, this.board.getCasilla(i,j));
     }
 

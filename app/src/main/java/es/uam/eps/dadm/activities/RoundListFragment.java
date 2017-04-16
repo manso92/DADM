@@ -241,7 +241,7 @@ public class RoundListFragment extends Fragment {
                 };
 
                 // Creamos una partida nueva y le colocamos los datos del jugador que la va a jugar
-                Round round = new Round();
+                Round round = new Round(PreferenceActivity.getSize(this.getContext()));
                 round.setPlayerName(PreferenceActivity.getPlayerName(this.getContext()));
                 round.setPlayerUUID(PreferenceActivity.getPlayerUUID(this.getContext()));
 

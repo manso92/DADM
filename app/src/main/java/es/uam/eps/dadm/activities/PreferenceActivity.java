@@ -20,6 +20,17 @@ import es.uam.eps.dadm.R;
  * @version 12/04/2017
  */
 public class PreferenceActivity extends AppCompatActivity {
+
+    /**
+     * Clave para registrar el tamaño del tablero
+     */
+    private final static String BOARD_SIZE_KEY = "boardsize";
+
+    /**
+     * Tamaño del tablero por defecto para el usuario
+     */
+    public final static int BOARD_SIZE_DEFAULT = 8;
+    
     /**
      * Clave para registrar el UUID del usuario
      */
@@ -70,6 +81,24 @@ public class PreferenceActivity extends AppCompatActivity {
         // Limpia las preferencias y commiteamos el cambio
         editor.clear();
         editor.commit();
+    }
+
+    /**
+     * Devuelve el valor del tamaño del tablero
+     * @param context Contexto desde el cual se quiere obtener el valor del usuario
+     * @return Tamaño del tablero
+     */
+    public static int getSize(Context context) {
+        return Integer.parseInt(getKey(context, BOARD_SIZE_KEY, Integer.toString(BOARD_SIZE_DEFAULT)));
+    }
+
+    /**
+     * Registra el tamaño del tablero en las preferencias de usuario
+     * @param context Contexto desde el cual se quiere registrar el valor
+     * @param size Tamaño del tablero
+     */
+    public static void setPlayerUUID(Context context, int size) {
+        setKey(context, BOARD_SIZE_KEY, Integer.toString(size));
     }
 
     /**
