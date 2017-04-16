@@ -44,6 +44,7 @@ public class PreferenceActivity extends AppCompatActivity {
      * Crea todo lo necesario para la correcta ejecución de la actividad
      * @param savedInstanceState Pares clave valor que nos pasa la actividad que nos invoca
      */
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // Colocamos el layout del fragment
