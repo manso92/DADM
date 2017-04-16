@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.UUID;
 
 import es.uam.eps.dadm.R;
+import es.uam.eps.dadm.activities.PreferenceActivity;
 import es.uam.eps.dadm.model.Round;
 import es.uam.eps.dadm.model.RoundRepository;
 
@@ -55,11 +56,16 @@ public class DataBase implements RoundRepository {
      */
     private SQLiteDatabase db;
 
+    private Context contexto;
+
     /**
      * Constructor de la base de datos
      * @param context Contexto desde el cual se la invoca
      */
-    public DataBase(Context context) {  }
+    public DataBase(Context context) {
+        this.helper = new DatabaseHelper(context);
+        this.contexto = context;
+    }
 
     /**
      * Clase auxiliar que nos ayudará a crear y actualizar la base de datos cuando sea necesario
@@ -177,7 +183,7 @@ public class DataBase implements RoundRepository {
             callback.onLogin(uuid);
         // Si el login es incorrecto, llamamamos al callback con el error
         else
-            callback.onError(Resources.getSystem().getString(R.string.loginerror));
+            callback.onError(contexto.getString(R.string.loginerror));
     }
 
     /**
@@ -188,6 +194,12 @@ public class DataBase implements RoundRepository {
      */
     @Override
     public void register(String playername, String password, LoginRegisterCallback callback) {
+
+        if (playername.equals(PreferenceActivity.PLAYERNAME_DEFAULT)) {
+            callback.onError(contexto.getString(R.string.registererror) + playername);
+            return;
+        }
+
         // Creamos un uuid para el usuario
         String uuid = UUID.randomUUID().toString();
 
@@ -203,7 +215,7 @@ public class DataBase implements RoundRepository {
 
         // Si la respuesta es negativa devolvemos un error
         if (id < 0)
-            callback.onError(Resources.getSystem().getString(R.string.registererror) + playername);
+            callback.onError(contexto.getString(R.string.registererror) + playername);
         // Si la respuesta es afirmativa, llamamos al login con el uuid generado
         else
             callback.onLogin(uuid);
@@ -220,7 +232,7 @@ public class DataBase implements RoundRepository {
         values.put(RoundTable.Cols.ROUNDUUID,  round.getId());
         values.put(RoundTable.Cols.DATE,       round.getDate());
         values.put(RoundTable.Cols.TITLE,      round.getTitle());
-        values.put(RoundTable.Cols.SIZE,       8); // TODO hacer referencia a cambiar el tamaño del tablero
+        values.put(RoundTable.Cols.SIZE,       8);
         values.put(RoundTable.Cols.BOARD,      round.getBoard().tableroToString());
 
         return values;
@@ -328,6 +340,6 @@ public class DataBase implements RoundRepository {
             callback.onResponse(rounds);
         // Si no hay rondas o error, enviamos un error
         else
-            callback.onError(Resources.getSystem().getString(R.string.noroundindatabase));
+            callback.onError(contexto.getString(R.string.noroundindatabase));
     }
 }

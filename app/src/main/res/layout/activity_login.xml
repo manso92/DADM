@@ -4,10 +4,11 @@
     android:layout_height="match_parent"
     android:gravity="center_vertical|center_horizontal"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:padding="16dp"
+    android:id="@+id/layout_login">
 
     <EditText
-        android:id="@+id/editUserName"
+        android:id="@+id/username_edittext"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
@@ -15,7 +16,7 @@
         android:text="@string/login.username" />
 
     <EditText
-        android:id="@+id/editPassword"
+        android:id="@+id/password_edittext"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
@@ -28,7 +29,7 @@
         android:orientation="horizontal">
 
         <Button
-            android:id="@+id/buttonLogIn"
+            android:id="@+id/login_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -36,7 +37,7 @@
             style="?android:attr/buttonBarButtonStyle"/>
 
         <Button
-            android:id="@+id/buttonExit"
+            android:id="@+id/cancel_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -45,7 +46,7 @@
     </LinearLayout>
 
     <Button
-        android:id="@+id/buttonNewUser"
+        android:id="@+id/new_user_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/login.newuser" />
