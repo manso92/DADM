@@ -3,4 +3,7 @@
     <dimen name="title_size">20sp</dimen>
     <dimen name="margin_title_size">20dp</dimen>
     <dimen name="margin_floating_button">20dp</dimen>
+
+
+    <dimen name="text.url_main">12sp</dimen>
 </resources>

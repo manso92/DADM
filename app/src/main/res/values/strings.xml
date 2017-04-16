@@ -45,4 +45,7 @@
     <string name="login.loginerror">Username or password incorrect</string>
     <string name="login.registererror">Error inserting new player named</string>
 
+    <string name="splash.img_logo_descripcion">Checkers board in a game</string>
+    <string name="splash.developer_website">manso92.com</string>
+
 </resources>
