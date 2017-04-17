@@ -1,6 +1,5 @@
 package es.uam.eps.dadm.activities;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -9,18 +8,18 @@ import android.support.v7.app.AppCompatActivity;
 import es.uam.eps.dadm.R;
 
 /**
- * SplashScreen es una pantalla que se muestra para que la app pueda cargar todos los recurso
+ * SplashActivity es una pantalla que se muestra para que la app pueda cargar todos los recurso
  * necesarios danto tiempo para que luego vaya más fluida
  *
  * @author Pablo Manso
  * @version 12/04/2017
  */
-public class SplashScreen extends AppCompatActivity {
+public class SplashActivity extends AppCompatActivity {
 
     /**
      * Timeout por defecto después del cual se llamará a la actividad de login
      */
-    private static int SPLASH_TIME_OUT = 3000;
+    private static int SPLASH_TIME_OUT = 30;
 
     /**
      * Crea todo lo necesario para la correcta ejecución de la actividad
@@ -42,7 +41,7 @@ public class SplashScreen extends AppCompatActivity {
             @Override
             public void run() {
                 // Cresmos un intent con la siguiente actividad y la arrancamos
-                Intent i = new Intent(SplashScreen.this, LoginActivity.class);
+                Intent i = new Intent(SplashActivity.this, LoginActivity.class);
                 startActivity(i);
 
                 // Finalizamos esta actividad para que no volvamos a ella al retroceder
