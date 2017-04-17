@@ -48,6 +48,8 @@ public class ScoresActivity extends AppCompatActivity {
         // Cargamos el layout de la acitividad
         setContentView(R.layout.activity_scores);
 
+        getSupportActionBar().setTitle(R.string.settings_scores);
+
         // Instanciamos el recycler view
         roundRecyclerView = (RecyclerView) findViewById(R.id.scores_recycler_view);
         // Cogemos el layout manager y le ajustamos un linearlayout para la lista
