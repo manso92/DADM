@@ -31,6 +31,6 @@
         android:layout_gravity="bottom|end"
         android:layout_marginBottom="@dimen/margin_floating_button"
         android:layout_marginRight="@dimen/margin_floating_button"
-        android:src="@android:drawable/ic_menu_revert"
+        android:src="@drawable/restart_round"
         app:fabSize="normal" />
 </android.support.design.widget.CoordinatorLayout>
