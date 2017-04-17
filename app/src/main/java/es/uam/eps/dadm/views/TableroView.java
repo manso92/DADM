@@ -18,6 +18,7 @@ import java.util.IllegalFormatCodePointException;
 import es.uam.eps.dadm.R;
 import es.uam.eps.dadm.activities.PreferenceActivity;
 import es.uam.eps.dadm.model.Casilla;
+import es.uam.eps.dadm.model.ColorManager;
 import es.uam.eps.dadm.model.Ficha;
 import es.uam.eps.dadm.model.MovimientoDamas;
 import es.uam.eps.dadm.model.TableroDamas;
@@ -167,13 +168,13 @@ public class TableroView extends View {
     private void pintaCuadro(Canvas canvas, Paint paint, Casilla casilla) {
         // Comprueba si el cuadro es oscuro o claro y cambia el pincel en consecuencia
         if (casilla.getColor() == Casilla.Color.OSCURA)
-            paint.setColor(this.getContext().getResources().getColor(R.color.casillaOscura));
+            paint.setColor(this.getContext().getResources().getColor(ColorManager.casillaOscura(getContext())));
         if (casilla.getColor() == Casilla.Color.CLARA)
-            paint.setColor(this.getContext().getResources().getColor(R.color.casillaClara));
+            paint.setColor(this.getContext().getResources().getColor(ColorManager.casillaClara(getContext())));
 
         // Si es una de las casillas sugeridas la ponemos de verde
         if ((this.movimientosSugeridos != null) && (this.movimientosSugeridos.size()>0) && (this.movimientosSugeridos.indexOf(casilla) != -1))
-            paint.setColor(this.getContext().getResources().getColor(R.color.casillaSugerida));
+            paint.setColor(this.getContext().getResources().getColor(ColorManager.casillaSugerida(getContext())));
 
         // Dibujamos el cuadrado del tablero
         canvas.drawRect((casilla.col()*(int) widthOfTile),
@@ -195,9 +196,9 @@ public class TableroView extends View {
     private void pintaFicha(Canvas canvas, Paint paint, Casilla casilla) {
         // Comprobamos el color de la ficha que tenemos que pintar
         if (casilla.getFicha().color == Ficha.Color.BLANCA)
-            paint.setColor(this.getContext().getResources().getColor(R.color.fichablanca));
+            paint.setColor(this.getContext().getResources().getColor(ColorManager.fichaBlanca(getContext())));
         if (casilla.getFicha().color == Ficha.Color.NEGRA)
-            paint.setColor(this.getContext().getResources().getColor(R.color.fichanegra));
+            paint.setColor(this.getContext().getResources().getColor(ColorManager.fichaNega(getContext())));
 
         // Dibujamos la ficha en el tablero
         canvas.drawCircle((casilla.col()*(int) widthOfTile) + (widthOfTile/2),
@@ -207,9 +208,9 @@ public class TableroView extends View {
         if (casilla.getFicha().getTipo() == Ficha.Tipo.REINA){
             // Comprueba si el cuadro es oscuro o claro y cambia el pincel en consecuencia
             if (casilla.getColor() == Casilla.Color.OSCURA)
-                paint.setColor(this.getContext().getResources().getColor(R.color.casillaOscura));
+                paint.setColor(this.getContext().getResources().getColor(ColorManager.casillaOscura(getContext())));
             if (casilla.getColor() == Casilla.Color.CLARA)
-                paint.setColor(this.getContext().getResources().getColor(R.color.casillaClara));
+                paint.setColor(this.getContext().getResources().getColor(ColorManager.casillaClara(getContext())));
 
             // Dibujamos el circulo interior de las damas
             canvas.drawCircle((casilla.col()*(int) widthOfTile) + (widthOfTile/2),

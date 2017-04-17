@@ -1,26 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string-array name="levelsArray">
-        <item>7</item>
-        <item>8</item>
-        <item>9</item>
-    </string-array>
-    <string-array name="levelsValues">
-        <item>7</item>
-        <item>8</item>
-        <item>9</item>
-    </string-array>
-    <string name="levelsDefault">8</string>
-
     <string-array name="colorsArray">
         <item>Colores de madera</item>
         <item>Blanco y negro</item>
         <item>Alto contraste</item>
     </string-array>
-    <string-array name="colorsValues">
-        <item>brown</item>
-        <item>grey</item>
-        <item>hightcontrast</item>
-    </string-array>
-    <string name="colorsDefault">brown</string>
 </resources>

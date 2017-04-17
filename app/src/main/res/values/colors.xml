@@ -11,9 +11,21 @@
 
 
 
-    <color name="casillaSugerida">#5fff4e</color>
-    <color name="casillaClara">#F8C698</color>
-    <color name="casillaOscura">#AB6C43</color>
-    <color name="fichablanca">#D3D3C9</color>
-    <color name="fichanegra">#6C3B2D</color>
+    <color name="wood.casillaSugerida">#5fff4e</color>
+    <color name="wood.casillaClara">#F8C698</color>
+    <color name="wood.casillaOscura">#AB6C43</color>
+    <color name="wood.fichablanca">#D3D3C9</color>
+    <color name="wood.fichanegra">#6C3B2D</color>
+
+    <color name="byn.casillaSugerida">#5fff4e</color>
+    <color name="byn.casillaClara">#c9c9c9</color>
+    <color name="byn.casillaOscura">#949494</color>
+    <color name="byn.fichablanca">#ffffff</color>
+    <color name="byn.fichanegra">#000000</color>
+
+    <color name="hightcontrast.casillaSugerida">#fb00ff</color>
+    <color name="hightcontrast.casillaClara">#feffb1</color>
+    <color name="hightcontrast.casillaOscura">#ff6368</color>
+    <color name="hightcontrast.fichablanca">#00ff22</color>
+    <color name="hightcontrast.fichanegra">#0000ff</color>
 </resources>

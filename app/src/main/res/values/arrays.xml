@@ -18,9 +18,9 @@
         <item>High contrast</item>
     </string-array>
     <string-array name="colorsValues">
-        <item>brown</item>
-        <item>grey</item>
+        <item>wood</item>
+        <item>byn</item>
         <item>hightcontrast</item>
     </string-array>
-    <string name="colorsDefault">brown</string>
+    <string name="colorsDefault">wood</string>
 </resources>
