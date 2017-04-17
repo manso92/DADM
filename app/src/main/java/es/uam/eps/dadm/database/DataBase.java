@@ -364,7 +364,8 @@ public class DataBase implements RoundRepository {
                 RoundTable.NAME + " " +
                 "WHERE " + UserTable.Cols.PLAYERUUID + "=" +
                 RoundTable.Cols.PLAYERUUID + " " +
-                "GROUP BY " + UserTable.Cols.PLAYERUUID + ";";
+                "GROUP BY " + UserTable.Cols.PLAYERUUID + " " +
+                "ORDER BY COUNT(" + RoundTable.Cols.ROUNDUUID + ") DESC ;";
 
         // Ejecutamos la consulta...
         Cursor cursor = db.rawQuery(sql, null);
