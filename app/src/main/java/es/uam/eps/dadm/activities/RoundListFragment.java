@@ -22,6 +22,7 @@ import es.uam.eps.dadm.R;
 import es.uam.eps.dadm.model.Round;
 import es.uam.eps.dadm.model.RoundRepository;
 import es.uam.eps.dadm.model.RoundRepositoryFactory;
+import es.uam.eps.dadm.views.TableroView;
 
 /**
  * RoundListFragment es el fragmento que mostrará la lista de partidas necesarias
@@ -295,7 +296,7 @@ public class RoundListFragment extends Fragment {
             /**
              * Textview que contiene una representación del tablero
              */
-            private TextView boardTextView;
+            private TableroView tableroView;
             /**
              * Textview que mostrará la fecha de la partida
              */
@@ -314,7 +315,7 @@ public class RoundListFragment extends Fragment {
                 super(itemView);
                 // Guardamos un enlacea a cada una de las vistas a modificar más adelante
                 idTextView = (TextView) itemView.findViewById(R.id.list_item_id);
-                boardTextView = (TextView) itemView.findViewById(R.id.list_item_board);
+                tableroView = (TableroView) itemView.findViewById(R.id.tableroViewThumb);
                 dateTextView = (TextView) itemView.findViewById(R.id.list_item_date);
             }
 
@@ -327,10 +328,9 @@ public class RoundListFragment extends Fragment {
                 this.round = round;
                 // Mostrarmos en los TextView la info de la partida
                 idTextView.setText(round.getTitle());
-                boardTextView.setText(round.getBoard().toString());
+                tableroView.setBoard(round.getBoard());
                 dateTextView.setText(String.valueOf(round.getDate()).substring(0, 19));
             }
-
         }
 
         /**

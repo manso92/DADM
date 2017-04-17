@@ -251,40 +251,41 @@ public class TableroView extends View {
      * @param casilla Casilla que el jugador ha seleccionado
      */
     public void seleccionaCasilla(Casilla casilla){
-        if (this.movimiento == null) {
-            // Creamos un movimiento y le asignamos la casilla de inicio
-            this.movimiento = new MovimientoDamas();
-            this.movimiento.setOrigen(casilla);
+        if (this.onPlayListener != null) {
+            if (this.movimiento == null) {
+                // Creamos un movimiento y le asignamos la casilla de inicio
+                this.movimiento = new MovimientoDamas();
+                this.movimiento.setOrigen(casilla);
 
-            // Si no hay un movimiento válido con esa primer casilla, se lo indicamos al usuario y limpiamos el movimiento
-            if (this.board.mismoComienzo(this.movimiento).size() == 0){
-                this.movimiento = null;
-                Snackbar.make((View) this.getParent(), R.string.game_impossible_move, Snackbar.LENGTH_SHORT).show();
-            }
-        } else {
-            // Añadimos el nuevo destino
-            this.movimiento.addDestino(casilla);
-
-            // Si no existe un movimiento válido que comience igual
-            if (this.board.mismoComienzo(this.movimiento).size() == 0){
-                // Limpiamos el movimiento
-                this.movimiento = null;
-                // Volvemos a ejecutar la función, porque aunque no nos valga como segunda casilla
-                // puede que nos valga como primera
-                this.seleccionaCasilla(casilla);
+                // Si no hay un movimiento válido con esa primer casilla, se lo indicamos al usuario y limpiamos el movimiento
+                if (this.board.mismoComienzo(this.movimiento).size() == 0) {
+                    this.movimiento = null;
+                    Snackbar.make((View) this.getParent(), R.string.game_impossible_move, Snackbar.LENGTH_SHORT).show();
+                }
             } else {
-                // Si es final de un camino
-                if (this.board.proximasCasillasMovimiento(this.movimiento).size() == 1){
-                    // Ejecutamos el movimiento
-                    onPlayListener.onPlay(this.movimiento);
+                // Añadimos el nuevo destino
+                this.movimiento.addDestino(casilla);
 
+                // Si no existe un movimiento válido que comience igual
+                if (this.board.mismoComienzo(this.movimiento).size() == 0) {
                     // Limpiamos el movimiento
                     this.movimiento = null;
+                    // Volvemos a ejecutar la función, porque aunque no nos valga como segunda casilla
+                    // puede que nos valga como primera
+                    this.seleccionaCasilla(casilla);
+                } else {
+                    // Si es final de un camino
+                    if (this.board.proximasCasillasMovimiento(this.movimiento).size() == 1) {
+                        // Ejecutamos el movimiento
+                        onPlayListener.onPlay(this.movimiento);
+                        // Limpiamos el movimiento
+                        this.movimiento = null;
+                    }
                 }
             }
+            // Recargamos la interfaz y las sugerencias
+            this.sugiereCasillas();
         }
-        // Recargamos la interfaz y las sugerencias
-        this.sugiereCasillas();
     }
 
     /**
