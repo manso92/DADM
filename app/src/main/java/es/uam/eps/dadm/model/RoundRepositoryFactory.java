@@ -2,6 +2,7 @@ package es.uam.eps.dadm.model;
 import android.content.Context;
 import android.support.annotation.Nullable;
 
+import es.uam.eps.dadm.activities.PreferenceActivity;
 import es.uam.eps.dadm.database.DataBase;
 
 /**
@@ -14,11 +15,6 @@ import es.uam.eps.dadm.database.DataBase;
 public class RoundRepositoryFactory {
 
     /**
-     * Define si estamos jugando en local o con una conexión a un servidor
-     */
-    private static final boolean LOCAL = true;
-
-    /**
      * Crea una instancia del almacenamiento de datos y lo devuelve para poder manejar toda la
      * lógica de la app
      * @param context Contexto desde el cual se invoca el almacenamiento
@@ -27,7 +23,7 @@ public class RoundRepositoryFactory {
     @Nullable
     public static RoundRepository createRepository(Context context) {
         // Creamos una referencia de la base de datos, local o en remoto
-        RoundRepository repository = LOCAL ? new DataBase(context) : new DataBase(context);
+        RoundRepository repository = PreferenceActivity.getOnlineGame(context) ? new DataBase(context) : new DataBase(context);
         try {
             // Abrimos la referencia en el gestor de datos
             repository.open();
