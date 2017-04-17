@@ -2,16 +2,23 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
     <PreferenceCategory android:title="@string/settings.settings_summary">
         <ListPreference
-            android:defaultValue="3"
+            android:defaultValue="@string/levelsDefault"
             android:entries="@array/levelsArray"
             android:entryValues="@array/levelsValues"
             android:key="boardsize"
             android:summary="@string/settings.board_size_summary"
             android:title="@string/settings.board_size_title" />
+        <ListPreference
+            android:defaultValue="@string/colorsDefault"
+            android:entries="@array/colorsArray"
+            android:entryValues="@array/colorsValues"
+            android:key="colorscheme"
+            android:summary="@string/settings.color_scheme_summary"
+            android:title="@string/settings.color_scheme_title" />
         <CheckBoxPreference
-            android:key="audioeffects"
-            android:summary="@string/settings.audio_effects_summary"
-            android:title="@string/settings.audio_effects_title" />
+            android:key="onlinegame"
+            android:summary="@string/settings.online_game_summary"
+            android:title="@string/settings.online_game_title" />
         <Preference
             android:key="help"
             android:title="@string/settings.see_help" />

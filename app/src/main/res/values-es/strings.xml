@@ -23,8 +23,6 @@
     <string name="repository.round_create_error">Error al crear la partida</string>
     <string name="repository.round_create_success">Partida creada con éxito</string>
     <string name="repository.round_error_updating">Error al actualizar la partida</string>
-    <string name="settings.audio_effects_summary">Pulsa si quieres escuchar efectos de audio</string>
-    <string name="settings.audio_effects_title">Efectos de audio</string>
     <string name="settings.board_size_summary">Elige el tamaño del tablero</string>
     <string name="settings.board_size_title">Tamaño del tablero</string>
     <string name="settings.settings">Ajustes</string>
@@ -38,4 +36,10 @@
         <p>· Un jugador ya no tiene movimientos válidos para hacer</p>
         ]]>
     </string>
+    <string name="settings.color_scheme_summary">Elige el esquema de colores del tablero</string>
+    <string name="settings.color_scheme_title">Esquema de colores</string>
+    <string name="settings.online_game_summary">Pulsa si quieres jugar online</string>
+    <string name="settings.online_game_title">Juego online</string>
+    <string name="splash.developer_website">manso92.com</string>
+    <string name="splash.img_logo_descripcion">Tablero de damas durante un juego</string>
 </resources>

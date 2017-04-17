@@ -24,12 +24,22 @@ public class PreferenceActivity extends AppCompatActivity {
     /**
      * Clave para registrar las preferencias de audio
      */
-    private final static String AUDIO_EFFECTS_KEY = "audioeffects";
+    private final static String COLOR_SCHEME_KEY = "colorscheme";
 
     /**
      * Preferencias de audio por defecto para el usuario
      */
-    public final static boolean AUDIO_EFFECTS_DEFAULT = false;
+    public final static String COLOR_SCHEME_DEFAULT = "brown";
+
+    /**
+     * Clave para registrar las preferencias de audio
+     */
+    private final static String ONLINE_GAME_KEY = "onlinegame";
+
+    /**
+     * Preferencias de audio por defecto para el usuario
+     */
+    public final static boolean ONLINE_GAME_DEFAULT = false;
 
     /**
      * Clave para registrar el tamaño del tablero
@@ -39,7 +49,7 @@ public class PreferenceActivity extends AppCompatActivity {
     /**
      * Tamaño del tablero por defecto para el usuario
      */
-    public final static int BOARD_SIZE_DEFAULT = 8;
+    public final static String BOARD_SIZE_DEFAULT = "8";
     
     /**
      * Clave para registrar el UUID del usuario
@@ -94,12 +104,39 @@ public class PreferenceActivity extends AppCompatActivity {
     }
 
     /**
-     * Devuelve el valor de las preferencias de los efectos de audio
+     * Devuelve el valor del esquema de colores elegido por el usuario para el tablero
      * @param context Contexto desde el cual se quiere obtener el valor del usuario
-     * @return Si habrá efectos de tablero o no
+     * @return Esquema de colores para el tablero
      */
-    public static boolean getAudioEffects(Context context) {
-        return getBooleanKey(context, AUDIO_EFFECTS_KEY, AUDIO_EFFECTS_DEFAULT);
+    public static String getColorScheme(Context context) {
+        return getKey(context, COLOR_SCHEME_KEY, COLOR_SCHEME_DEFAULT);
+    }
+
+    /**
+     * Registra el esquema de colores que utilizará el tablero
+     * @param context Contexto desde el cual se quiere registrar el valor
+     * @param color Esquema de color que utilizará el tablero
+     */
+    public static void setColorScheme(Context context, String color) {
+        setKey(context, COLOR_SCHEME_KEY, color);
+    }
+
+    /**
+     * Devuelve el valor de las preferencias de juego online o offline
+     * @param context Contexto desde el cual se quiere obtener el valor del usuario
+     * @return Si se juega online o no
+     */
+    public static boolean getOnlineGame(Context context) {
+        return getKey(context, ONLINE_GAME_KEY, ONLINE_GAME_DEFAULT);
+    }
+
+    /**
+     * Registra si se juga online o no
+     * @param context Contexto desde el cual se quiere registrar el valor
+     * @param online Si el juego es online o no
+     */
+    public static void setOnlineGame(Context context, boolean online) {
+        setKey(context, BOARD_SIZE_KEY, online);
     }
 
     /**
@@ -108,7 +145,7 @@ public class PreferenceActivity extends AppCompatActivity {
      * @return Tamaño del tablero
      */
     public static int getSize(Context context) {
-        return Integer.parseInt(getStringKey(context, BOARD_SIZE_KEY, Integer.toString(BOARD_SIZE_DEFAULT)));
+        return Integer.parseInt(getKey(context, BOARD_SIZE_KEY, BOARD_SIZE_DEFAULT));
     }
 
     /**
@@ -116,7 +153,7 @@ public class PreferenceActivity extends AppCompatActivity {
      * @param context Contexto desde el cual se quiere registrar el valor
      * @param size Tamaño del tablero
      */
-    public static void setPlayerUUID(Context context, int size) {
+    public static void setSize(Context context, int size) {
         setKey(context, BOARD_SIZE_KEY, Integer.toString(size));
     }
 
@@ -126,7 +163,7 @@ public class PreferenceActivity extends AppCompatActivity {
      * @return Identificador de usuario registrado | Default value para el identificador de usuario
      */
     public static String getPlayerUUID(Context context) {
-        return getStringKey(context, PLAYERUUID_KEY, PLAYERUUID_DEFAULT);
+        return getKey(context, PLAYERUUID_KEY, PLAYERUUID_DEFAULT);
     }
 
     /**
@@ -144,7 +181,7 @@ public class PreferenceActivity extends AppCompatActivity {
      * @return Nombre de usuario registrado | Default value para el nombre de usuario
      */
     public static String getPlayerName(Context context) {
-        return getStringKey(context, PLAYERNAME_KEY, PLAYERNAME_DEFAULT);
+        return getKey(context, PLAYERNAME_KEY, PLAYERNAME_DEFAULT);
     }
 
     /**
@@ -173,13 +210,45 @@ public class PreferenceActivity extends AppCompatActivity {
     }
 
     /**
+     * Registra una clave en las preferencias de usuario
+     * @param context Contexto desde el cual se quiere registrar el valor
+     * @param key Clave que se quiere registrar
+     * @param value Valor que se le quiere dar a la clave
+     */
+    private static void setKey(Context context, String key, boolean value){
+        // Obtenemos una referencia de las preferencias de usuario
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        // Creamos una referencia del editor de claves
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        // Registramos la clave y commiteamos el cambio
+        editor.putBoolean(key, value);
+        editor.commit();
+    }
+
+    /**
+     * Registra una clave en las preferencias de usuario
+     * @param context Contexto desde el cual se quiere registrar el valor
+     * @param key Clave que se quiere registrar
+     * @param value Valor que se le quiere dar a la clave
+     */
+    private static void setKey(Context context, String key, int value){
+        // Obtenemos una referencia de las preferencias de usuario
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        // Creamos una referencia del editor de claves
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        // Registramos la clave y commiteamos el cambio
+        editor.putInt(key, value);
+        editor.commit();
+    }
+
+    /**
      * Obtiene una clave de las preferencias de usuario
      * @param context Contexto desde el cual se pide el valor
      * @param key Clave que se está pidiendo
      * @param defaultValue Valor por defecto en caso de no encontrarse la clave
      * @return String asociado a la clave que se ha provisto
      */
-    private static String getStringKey(Context context, String key, String defaultValue){
+    private static String getKey(Context context, String key, String defaultValue){
         return PreferenceManager.getDefaultSharedPreferences(context)
                 .getString(key, defaultValue);
     }
@@ -191,8 +260,20 @@ public class PreferenceActivity extends AppCompatActivity {
      * @param defaultValue Valor por defecto en caso de no encontrarse la clave
      * @return Boolean asociado a la clave que se ha provisto
      */
-    private static Boolean getBooleanKey(Context context, String key, Boolean defaultValue){
+    private static boolean getKey(Context context, String key, boolean defaultValue){
         return PreferenceManager.getDefaultSharedPreferences(context)
                 .getBoolean(key, defaultValue);
+    }
+
+    /**
+     * Obtiene una clave de las preferencias de usuario
+     * @param context Contexto desde el cual se pide el valor
+     * @param key Clave que se está pidiendo
+     * @param defaultValue Valor por defecto en caso de no encontrarse la clave
+     * @return Boolean asociado a la clave que se ha provisto
+     */
+    private static int getKey(Context context, String key, int defaultValue){
+        return PreferenceManager.getDefaultSharedPreferences(context)
+                .getInt(key, defaultValue);
     }
 }

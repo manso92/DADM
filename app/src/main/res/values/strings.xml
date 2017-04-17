@@ -17,8 +17,10 @@
     <string name="settings.settings_summary">Game settings</string>
     <string name="settings.board_size_title">Board size</string>
     <string name="settings.board_size_summary">Choose the size of the board</string>
-    <string name="settings.audio_effects_title">Audio Effects</string>
-    <string name="settings.audio_effects_summary">Click if you like to listen audio effects</string>
+    <string name="settings.color_scheme_title">Color scheme</string>
+    <string name="settings.color_scheme_summary">Choose the board\'s color scheme</string>
+    <string name="settings.online_game_title">Online Game</string>
+    <string name="settings.online_game_summary">Click if you like to play online</string>
     <string name="settings.see_help">Help</string>
     <string name="help.help_text">
         <![CDATA[

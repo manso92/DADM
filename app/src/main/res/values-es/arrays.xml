@@ -13,9 +13,9 @@
     <string name="levelsDefault">8</string>
 
     <string-array name="colorsArray">
-        <item>Wood colors</item>
-        <item>Black and white</item>
-        <item>High contrast</item>
+        <item>Colores de madera</item>
+        <item>Blanco y negro</item>
+        <item>Alto contraste</item>
     </string-array>
     <string-array name="colorsValues">
         <item>brown</item>
