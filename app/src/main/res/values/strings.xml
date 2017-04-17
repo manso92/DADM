@@ -21,6 +21,7 @@
     <string name="settings.color_scheme_summary">Choose the board\'s color scheme</string>
     <string name="settings.online_game_title">Online Game</string>
     <string name="settings.online_game_summary">Click if you like to play online</string>
+    <string name="settings.scores">Scores</string>
     <string name="settings.see_help">Help</string>
     <string name="help.help_text">
         <![CDATA[
@@ -31,10 +32,14 @@
         ]]>
     </string>
 
+    <string name="scores.user_title">User</string>
+    <string name="scores.score_title">Games</string>
+
 
     <string name="repository.round_create_success">Round created</string>
     <string name="repository.round_create_error">Error creating round</string>
     <string name="repository.no_round_founded">No rounds found in database</string>
+    <string name="repository.no_users_founded">No users found in database</string>
     <string name="repository.round_error_updating">Error updating round</string>
     <string name="repository.opening_error">Error opening database</string>
 

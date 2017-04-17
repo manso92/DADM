@@ -20,6 +20,9 @@
             android:summary="@string/settings.online_game_summary"
             android:title="@string/settings.online_game_title" />
         <Preference
+            android:key="scores"
+            android:title="@string/settings.scores" />
+        <Preference
             android:key="help"
             android:title="@string/settings.see_help" />
     </PreferenceCategory>

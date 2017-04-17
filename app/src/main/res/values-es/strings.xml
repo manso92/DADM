@@ -42,4 +42,8 @@
     <string name="settings.online_game_title">Juego online</string>
     <string name="splash.developer_website">manso92.com</string>
     <string name="splash.img_logo_descripcion">Tablero de damas durante un juego</string>
+    <string name="scores.score_title">Partidas</string>
+    <string name="scores.user_title">Usuario</string>
+    <string name="settings.scores">Puntuaciones</string>
+    <string name="repository.no_users_founded">No hay usuarios en la base de datos</string>
 </resources>

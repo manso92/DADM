@@ -344,4 +344,46 @@ public class DataBase implements RoundRepository {
         else
             callback.onError(contexto.getString(R.string.repository_no_round_founded));
     }
+
+    /**
+     * Busca en la base de datos los usuarios registrados y el número de partidas que está jugando
+     * y se lo manda al callback
+     * @param callback Callback al que se le mandará la información
+     */
+    @Override
+    public void getScores(ScoresCallback callback) {
+        // Creamos una lista para cada una de las cosas
+        List<String> players = new ArrayList<>();
+        List<Integer> scores = new ArrayList<>();
+
+        // Sentencia sql que nos devolverá la información
+        String sql = "SELECT " +
+                UserTable.Cols.PLAYERNAME + ", " +
+                "COUNT(" + RoundTable.Cols.ROUNDUUID + ") " +
+                "FROM " + UserTable.NAME + ", " +
+                RoundTable.NAME + " " +
+                "WHERE " + UserTable.Cols.PLAYERUUID + "=" +
+                RoundTable.Cols.PLAYERUUID + " " +
+                "GROUP BY " + UserTable.Cols.PLAYERUUID + ";";
+
+        // Ejecutamos la consulta...
+        Cursor cursor = db.rawQuery(sql, null);
+        // ... y vamos recuperando los datos
+        cursor.moveToFirst();
+        while (!cursor.isAfterLast()) {
+            // Introducimos los valores en listas y vamos al siguiente registro
+            players.add(cursor.getString(0));
+            scores.add(cursor.getInt(1));
+            cursor.moveToNext();
+        }
+        // Cerramos el cursor
+        cursor.close();
+
+        // Si hay valores, se los pasamos al callback
+        if (cursor.getCount() > 0)
+            callback.onResponse(players, scores);
+        // Si no hay se lo indicamos con el error
+        else
+            callback.onError(contexto.getString(R.string.repository_no_users_founded));
+    }
 }

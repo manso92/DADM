@@ -112,4 +112,30 @@ public interface RoundRepository {
          */
         void onError(String error);
     }
+
+    /**
+     * Busca en el repositorio los usuarios registrados y el número de partidas que está jugando
+     * y se lo manda al callback
+     * @param callback Callback al que se le mandará la información
+     */
+    void getScores(ScoresCallback callback);
+
+    /**
+     * Callback que manejará la respuesta de {@link #getScores(ScoresCallback)}
+     */
+    interface ScoresCallback {
+
+        /**
+         * Maneja la lísta de usuarios y sus partidas
+         * @param players Lista de jugadores
+         * @param rounds Lista de partidas
+         */
+        void onResponse(List<String> players, List<Integer> rounds);
+
+        /**
+         * Maneja el error de que no haya datos de usuarios en el repositorio
+         * @param error Mensaje de error para mostrarse
+         */
+        void onError(String error);
+    }
 }

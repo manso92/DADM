@@ -24,7 +24,8 @@ public class PreferenceFragment extends android.preference.PreferenceFragment {
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.settings);
 
-        Preference preferences=findPreference("help");
-        preferences.setIntent(new Intent(this.getActivity(), HelpActivity.class));
+        // Asignamos a las dos preferencias que son vínculos
+        findPreference("scores").setIntent(new Intent(this.getActivity(), ScoresActivity.class));
+        findPreference("help").setIntent(new Intent(this.getActivity(), HelpActivity.class));
     }
 }

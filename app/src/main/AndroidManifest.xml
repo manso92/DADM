@@ -27,6 +27,9 @@
         <activity
             android:name=".activities.HelpActivity"
             android:parentActivityName=".activities.PreferenceActivity" />
+        <activity
+            android:name=".activities.ScoresActivity"
+            android:parentActivityName=".activities.PreferenceActivity" />
     </application>
 
 </manifest>
