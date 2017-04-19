@@ -18,6 +18,8 @@ import android.widget.TextView;
 
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import es.uam.eps.dadm.R;
 import es.uam.eps.dadm.model.Round;
 import es.uam.eps.dadm.model.RoundRepository;
@@ -35,7 +37,7 @@ public class RoundListFragment extends Fragment {
     /**
      * Instancia del recycler
      */
-    RecyclerView roundRecyclerView;
+    private RecyclerView roundRecyclerView;
 
     /**
      * Adapter que manejará nuestra lista personalizada
@@ -289,18 +291,25 @@ public class RoundListFragment extends Fragment {
          * @version 13/03/2017
          */
         public class RoundHolder extends RecyclerView.ViewHolder {
+
             /**
              * Textview que contiene el nombre de la partida
              */
-            private TextView idTextView;
+            @BindView(R.id.list_item_id)
+            TextView idTextView;
+
             /**
              * Textview que contiene una representación del tablero
              */
-            private TableroView tableroView;
+            @BindView(R.id.tableroViewThumb)
+            TableroView tableroView;
+
             /**
              * Textview que mostrará la fecha de la partida
              */
-            private TextView dateTextView;
+            @BindView(R.id.list_item_date)
+            TextView dateTextView;
+
             /**
              * Partida que representa la partida que queremos indicar en el item
              */
@@ -311,12 +320,9 @@ public class RoundListFragment extends Fragment {
              * @param itemView Item al que modificar las views
              */
             public RoundHolder(View itemView) {
-                // Llamamos a la clase padre para la construcción
+                // Llamamos a la clase padre para la construcción y hacemos binding de componentes
                 super(itemView);
-                // Guardamos un enlacea a cada una de las vistas a modificar más adelante
-                idTextView = (TextView) itemView.findViewById(R.id.list_item_id);
-                tableroView = (TableroView) itemView.findViewById(R.id.tableroViewThumb);
-                dateTextView = (TextView) itemView.findViewById(R.id.list_item_date);
+                ButterKnife.bind(this, itemView);
             }
 
             /**

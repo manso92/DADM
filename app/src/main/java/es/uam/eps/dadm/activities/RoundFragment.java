@@ -12,7 +12,12 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+import butterknife.Unbinder;
 import es.uam.eps.dadm.R;
+import es.uam.eps.dadm.model.JugadorHumano;
 import es.uam.eps.dadm.model.Round;
 import es.uam.eps.dadm.model.RoundRepository;
 import es.uam.eps.dadm.model.RoundRepositoryFactory;
@@ -21,6 +26,7 @@ import es.uam.eps.multij.*;
 
 /**
  * RoundFragment es un fragmento que mostrará el tablero de las damas con el que el jugador comenzará la partida
+ *
  * @author Pablo Manso
  * @version 13/03/2017
  */
@@ -65,16 +71,18 @@ public class RoundFragment extends Fragment implements PartidaListener {
      * Id del argumento del tablero
      */
     public static final String ARG_ROUND_BOARD = "es.uam.eps.dadm.round_board";
+    @BindView(R.id.board_view)
+    TableroView boardView;
+    @BindView(R.id.round_title)
+    TextView roundTitle;
+    @BindView(R.id.reset_round_fab)
+    FloatingActionButton resetRoundFab;
+    Unbinder unbinder;
 
     /**
      * Ronda en juego
      */
     private Round round;
-
-    /**
-     * View del tablero a actualizar con cada movimiento
-     */
-    private TableroView boardView;
 
     /**
      * Calback registrado para cuando se actualice la ronda
@@ -91,16 +99,18 @@ public class RoundFragment extends Fragment implements PartidaListener {
     /**
      * Constructor vacío del fragmento
      */
-    public RoundFragment() {}
+    public RoundFragment() {
+    }
 
     /**
      * Crea una instancia del fragmento de modo que se le indica la partida que se jugará
-     * @param roundId Id de la partida que se va a jugar
+     *
+     * @param roundId    Id de la partida que se va a jugar
      * @param playerName Nombre del jugador que la jugará
      * @param playerUUID iDENTIFICADOR DEL JUGADOR QUE LA JUGARÁ
      * @param roundTitle Título de la partida que se va a jugar
-     * @param roundSize Tamaño del tablero de la partida
-     * @param roundDate Fecha de la partida que se va a jugar
+     * @param roundSize  Tamaño del tablero de la partida
+     * @param roundDate  Fecha de la partida que se va a jugar
      * @param roundBoard Tablero que vamos a jugar
      * @return Instancia del fragmento que se acaba de crear
      */
@@ -127,6 +137,7 @@ public class RoundFragment extends Fragment implements PartidaListener {
 
     /**
      * Prepara el fragmento para su ejecución
+     *
      * @param savedInstanceState Pares clave-valor con los datos que serán necesarios para la ejecución del fragmento
      */
     @Override
@@ -155,20 +166,29 @@ public class RoundFragment extends Fragment implements PartidaListener {
 
     /**
      * Ejecutará las acciones necesarias para cuando se cree la vista
-     * @param inflater Clase que se encargará de mostrar los elementos del fragment
-     * @param container Contenedor del fragment
+     *
+     * @param inflater           Clase que se encargará de mostrar los elementos del fragment
+     * @param container          Contenedor del fragment
      * @param savedInstanceState Pares clave valor que se nos dan como parámetro
      * @return View que se acaba de crear
      */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Cargamos el layout del fragmento
+        // Cargamos el layout del fragmento y hacemos binding de los componentes
         final View rootView = inflater.inflate(R.layout.fragment_round, container, false);
-        // Obtenemos el textview del título y ponemos el valor de la partida
-        TextView roundTitleTextView = (TextView) rootView.findViewById(R.id.round_title);
-        roundTitleTextView.setText(this.round.getTitle());
+        unbinder = ButterKnife.bind(this, rootView);
+
+        // Cambiamos el título por el de la partida
+        roundTitle.setText(this.round.getTitle());
+
         return rootView;
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        unbinder.unbind();
     }
 
     /**
@@ -182,37 +202,27 @@ public class RoundFragment extends Fragment implements PartidaListener {
         startRound();
     }
 
-    /**
-     * Buscamos los elementos que queramos escuchar y les asociamos el listener que maneje sus eventos
-     */
-    private void registerListeners() {
-        // Buscamos el botón flotante típico de Android 5.0...
-        FloatingActionButton resetButton = (FloatingActionButton)
-                getView().findViewById(R.id.reset_round_fab);
-        // ... y le añadimos un listener
-        resetButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // Si la partida ya ha acabado se lo indicamos al usuario
-                if (round.getBoard().getEstado() != Tablero.EN_CURSO) {
-                    Snackbar.make(getView(), R.string.game_round_finished,
-                            Snackbar.LENGTH_SHORT).show();
-                    return;
-                }
-                boardView.reset();
-                // Reiniciamos el tablero y comenzamos la partida
-                round.getBoard().reset();
-                startRound();
-                // Llamamos al callback de la actualización y le indicamos al jugador que el cambio de ha hecho
-                callbacks.onRoundUpdated();
-                Snackbar.make(getView(), R.string.game_round_restarted,
-                        Snackbar.LENGTH_SHORT).show();
-            }
-        });
+    @OnClick(R.id.reset_round_fab)
+    public void onClick(View view) {
+        // Si la partida ya ha acabado se lo indicamos al usuario
+        if (round.getBoard().getEstado() != Tablero.EN_CURSO) {
+            Snackbar.make(getView(), R.string.game_round_finished,
+                    Snackbar.LENGTH_SHORT).show();
+            return;
+        }
+        boardView.reset();
+        // Reiniciamos el tablero y comenzamos la partida
+        round.getBoard().reset();
+        startRound();
+        // Llamamos al callback de la actualización y le indicamos al jugador que el cambio de ha hecho
+        callbacks.onRoundUpdated();
+        Snackbar.make(getView(), R.string.game_round_restarted,
+                Snackbar.LENGTH_SHORT).show();
     }
 
     /**
      * Esta función se ejecutará cuando se adhiere a un contenedor
+     *
      * @param context Contenedor en el que se adhiere el fragmento
      */
     @Override
@@ -254,12 +264,8 @@ public class RoundFragment extends Fragment implements PartidaListener {
         localPlayer.setPartida(game);
 
         // Instanciamos el tablero de juego, le pasamos el tablero y el jugador que jugará la partida
-        boardView = (TableroView) getView().findViewById(R.id.board_erview);
-        boardView.setBoard(round.getBoard());
-        boardView.setOnPlayListener(localPlayer);
-
-        // Registramos los listeners de este fragmento
-        registerListeners();
+        this.boardView.setBoard(round.getBoard());
+        this.boardView.setOnPlayListener(localPlayer);
 
         // Si la partida no ha comenzado, la empezamos
         if (game.getTablero().getEstado() == Tablero.EN_CURSO) game.comenzar();
@@ -267,6 +273,7 @@ public class RoundFragment extends Fragment implements PartidaListener {
 
     /**
      * Capturamos los eventos que se producen en la partida
+     *
      * @param evento Evento del juego al que tenemos que preparar una salida
      */
     @Override
@@ -308,7 +315,7 @@ public class RoundFragment extends Fragment implements PartidaListener {
             @Override
             public void onResponse(boolean response) {
                 // Si se produce un error al actualizar la partida, se lo comunicamos al usuario
-                if (response == false)
+                if (!response)
                     Snackbar.make(getView(), R.string.repository_round_error_updating,
                             Snackbar.LENGTH_LONG).show();
             }
