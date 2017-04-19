@@ -129,5 +129,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         }
     }
 
+    public boolean isOnline() {
+        ConnectivityManager connMgr = (ConnectivityManager)
+                getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+        return (networkInfo != null && networkInfo.isConnected());
+    }
 
 }
