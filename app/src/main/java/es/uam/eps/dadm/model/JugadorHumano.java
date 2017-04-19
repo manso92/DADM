@@ -1,4 +1,4 @@
-package es.uam.eps.dadm.activities;
+package es.uam.eps.dadm.model;
 
 import es.uam.eps.dadm.model.MovimientoDamas;
 import es.uam.eps.dadm.model.TableroDamas;
