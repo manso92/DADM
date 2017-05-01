@@ -1,4 +1,4 @@
-package es.uam.eps.dadm.activities;
+package es.uam.eps.dadm.view.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
