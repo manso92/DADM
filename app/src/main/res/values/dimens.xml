@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <dimen name="default_layout_margin">16dp</dimen>
+
     <dimen name="title_size">20sp</dimen>
     <dimen name="margin_title_size">20dp</dimen>
     <dimen name="margin_floating_button">20dp</dimen>

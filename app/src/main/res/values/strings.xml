@@ -5,6 +5,23 @@
 
     <string name="splash.img_logo_descripcion">Checkers board in a game</string>
     <string name="splash.developer_website">manso92.com</string>
+
+
+    <string name="login.title_activity">Sign in</string>
+    <string name="login.user_hint">User</string>
+    <string name="login.pass_hint">Password</string>
+    <string name="login.keyboard_button">Sign in</string>
+    <string name="login.signin_button">Sign in</string>
+    <string name="login.signup_button">Sing up</string>
+    <string name="login.offlinegame_button">Offline game</string>
+    <string name="login.username_required">Username is required</string>
+    <string name="login.username_tooshort">Username is too short</string>
+    <string name="login.password_required">Password is required</string>
+    <string name="login.password_tooshort">Password is too short</string>
+    <string name="login.signin_error">Username or password incorrect</string>
+    <string name="login.signup_error">Username is taken</string>
+
+
     <string name="game.round_finished">This round is finished</string>
     <string name="game.invalid_movement">Invalid movement</string>
     <string name="game.new_round">New Round</string>
