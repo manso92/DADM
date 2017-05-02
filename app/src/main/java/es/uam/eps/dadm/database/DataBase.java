@@ -14,9 +14,9 @@ import java.util.List;
 import java.util.UUID;
 
 import es.uam.eps.dadm.R;
-import es.uam.eps.dadm.activities.PreferenceActivity;
 import es.uam.eps.dadm.model.Round;
 import es.uam.eps.dadm.model.RoundRepository;
+import es.uam.eps.dadm.view.activities.PreferenceActivity;
 
 import static es.uam.eps.dadm.database.RoundDataBaseSchema.RoundTable;
 import static es.uam.eps.dadm.database.RoundDataBaseSchema.UserTable;
@@ -183,7 +183,7 @@ public class DataBase implements RoundRepository {
             callback.onLogin(uuid);
         // Si el login es incorrecto, llamamamos al callback con el error
         else
-            callback.onError(contexto.getString(R.string.login_loginerror));
+            callback.onError(contexto.getString(R.string.login_signin_error));
     }
 
     /**
@@ -198,7 +198,7 @@ public class DataBase implements RoundRepository {
         // Miramos que el usuario no intente registrarse con el usuario por defecto,
         // ya que esto daría problemas más adelante
         if (playername.equals(PreferenceActivity.PLAYERNAME_DEFAULT)) {
-            callback.onError(contexto.getString(R.string.login_registererror) + playername);
+            callback.onError(contexto.getString(R.string.login_signup_error));
             return;
         }
 
@@ -217,7 +217,7 @@ public class DataBase implements RoundRepository {
 
         // Si la respuesta es negativa devolvemos un error
         if (id < 0)
-            callback.onError(contexto.getString(R.string.login_registererror) + playername);
+            callback.onError(contexto.getString(R.string.login_signup_error));
         // Si la respuesta es afirmativa, llamamos al login con el uuid generado
         else
             callback.onLogin(uuid);

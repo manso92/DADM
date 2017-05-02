@@ -3,11 +3,8 @@ package es.uam.eps.dadm.model;
 import android.content.Context;
 
 import es.uam.eps.dadm.R;
-import es.uam.eps.dadm.activities.PreferenceActivity;
+import es.uam.eps.dadm.view.activities.PreferenceActivity;
 
-/**
- * Created by manso92 on 17/04/2017.
- */
 
 public class ColorManager {
     public static int casillaClara(Context context){

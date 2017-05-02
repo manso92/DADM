@@ -1,8 +1,6 @@
 package es.uam.eps.dadm.model;
 
-import es.uam.eps.dadm.model.MovimientoDamas;
-import es.uam.eps.dadm.model.TableroDamas;
-import es.uam.eps.dadm.views.TableroView;
+import es.uam.eps.dadm.view.views.TableroView;
 import es.uam.eps.multij.*;
 
 /**
