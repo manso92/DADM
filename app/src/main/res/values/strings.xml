@@ -20,6 +20,13 @@
     <string name="login.password_tooshort">Password is too short</string>
     <string name="login.signin_error">Username or password incorrect</string>
     <string name="login.signup_error">Username is taken</string>
+    <string name="login.signup_error_nointernet">Can\'t register whithout internet.</string>
+
+
+    <string name="repository.server_notavailable">Server not available</string>
+    <string name="repository.internet_noconnection">Not internet connection. Unable to connect to server</string>
+    <string name="repository.database_notavailable">Error opening database</string>
+
 
 
     <string name="game.round_finished">This round is finished</string>
