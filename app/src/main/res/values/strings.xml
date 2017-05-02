@@ -7,7 +7,7 @@
     <string name="splash.developer_website">manso92.com</string>
 
 
-    <string name="login.title_activity">Sign in</string>
+    <string name="login.activity_title">Sign in</string>
     <string name="login.user_hint">User</string>
     <string name="login.pass_hint">Password</string>
     <string name="login.keyboard_button">Sign in</string>
@@ -21,6 +21,10 @@
     <string name="login.signin_error">Username or password incorrect</string>
     <string name="login.signup_error">Username is taken</string>
     <string name="login.signup_error_nointernet">Can\'t register whithout internet.</string>
+
+
+    <string name="help.activity_title">Help</string>
+    <string name="help.loading_title">Help</string>
 
 
     <string name="repository.server_notavailable">Server not available</string>

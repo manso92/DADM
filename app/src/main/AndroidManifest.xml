@@ -18,20 +18,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activities.LoginActivity" />
-        <activity android:name=".activities.RoundListActivity" />
         <activity
-            android:name=".activities.RoundActivity"
-            android:parentActivityName=".activities.RoundListActivity" />
+            android:name=".view.activities.LoginActivity"
+            android:label="@string/login.activity_title" />
         <activity
-            android:name=".activities.PreferenceActivity"
-            android:parentActivityName=".activities.RoundListActivity" />
-        <activity
-            android:name=".activities.HelpActivity"
-            android:parentActivityName=".activities.PreferenceActivity" />
-        <activity
-            android:name=".activities.ScoresActivity"
-            android:parentActivityName=".activities.PreferenceActivity" />
+            android:name=".view.activities.HelpActivity"
+            android:label="@string/help.activity_title" />
     </application>
 
 </manifest>
