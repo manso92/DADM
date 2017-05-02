@@ -1,11 +1,10 @@
-package es.uam.eps.dadm.activities;
+package es.uam.eps.dadm.view.fragment;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
-import android.preference.Preference;
 
 import es.uam.eps.dadm.R;
+import es.uam.eps.dadm.view.activities.HelpActivity;
 
 /**
  * PreferenceFragment muestra las preferencias modificables de la app
@@ -25,7 +24,7 @@ public class PreferenceFragment extends android.preference.PreferenceFragment {
         addPreferencesFromResource(R.xml.settings);
 
         // Asignamos a las dos preferencias que son vínculos
-        findPreference("scores").setIntent(new Intent(this.getActivity(), ScoresActivity.class));
+        // findPreference("scores").setIntent(new Intent(this.getActivity(), ScoresActivity.class));
         findPreference("help").setIntent(new Intent(this.getActivity(), HelpActivity.class));
     }
 }

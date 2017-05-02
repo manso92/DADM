@@ -22,8 +22,12 @@
             android:name=".view.activities.LoginActivity"
             android:label="@string/login.activity_title" />
         <activity
+            android:name=".view.activities.PreferenceActivity"
+            android:label="@string/preference.activity_title" />
+        <activity
             android:name=".view.activities.HelpActivity"
-            android:label="@string/help.activity_title" />
+            android:label="@string/help.activity_title"
+            android:parentActivityName=".view.activities.PreferenceActivity"/>
     </application>
 
 </manifest>

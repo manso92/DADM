@@ -1,13 +1,17 @@
-package es.uam.eps.dadm.activities;
+package es.uam.eps.dadm.view.activities;
 
 
+import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
+import es.uam.eps.dadm.view.fragment.PreferenceFragment;
 
 import es.uam.eps.dadm.R;
 
@@ -39,7 +43,7 @@ public class PreferenceActivity extends AppCompatActivity {
     /**
      * Preferencias de audio por defecto para el usuario
      */
-    public final static boolean ONLINE_GAME_DEFAULT = false;
+    public final static boolean ONLINE_GAME_DEFAULT = true;
 
     /**
      * Clave para registrar el tamaño del tablero
@@ -49,8 +53,8 @@ public class PreferenceActivity extends AppCompatActivity {
     /**
      * Tamaño del tablero por defecto para el usuario
      */
-    public final static String BOARD_SIZE_DEFAULT = "8";
-    
+    public final static int BOARD_SIZE_DEFAULT = 8;
+
     /**
      * Clave para registrar el UUID del usuario
      */
@@ -59,7 +63,7 @@ public class PreferenceActivity extends AppCompatActivity {
     /**
      * UUID por defecto para el usuario
      */
-    public final static String PLAYERUUID_DEFAULT = "280f83bc-cc34-4744-b20c-b70f0765c846";
+    public final static String PLAYERUUID_DEFAULT = "00000000-0000-0000-0000-000000000000";
 
     /**
      * Clave para registrar el nombre de usuario
@@ -83,7 +87,7 @@ public class PreferenceActivity extends AppCompatActivity {
         // Creamos un fragment manager para colocar el PreferenceFragment
         FragmentManager fragmentManager = getFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        PreferenceFragment fragment = new PreferenceFragment();
+        Fragment fragment = new PreferenceFragment();
         // Cambiamos el contenido por defecto pro nuestro fragmento
         fragmentTransaction.replace(android.R.id.content, fragment);
         fragmentTransaction.commit();
@@ -101,6 +105,17 @@ public class PreferenceActivity extends AppCompatActivity {
         // Limpia las preferencias y commiteamos el cambio
         editor.clear();
         editor.commit();
+    }
+
+    public static boolean isOnline(Context context) {
+        ConnectivityManager connMgr = (ConnectivityManager)
+                context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+        return (networkInfo != null && networkInfo.isConnected());
+    }
+
+    public static boolean isLoggedIn(Context context) {
+        return (!PreferenceActivity.getPlayerUUID(context).equals(PLAYERUUID_DEFAULT));
     }
 
     /**
@@ -145,7 +160,7 @@ public class PreferenceActivity extends AppCompatActivity {
      * @return Tamaño del tablero
      */
     public static int getSize(Context context) {
-        return Integer.parseInt(getKey(context, BOARD_SIZE_KEY, BOARD_SIZE_DEFAULT));
+        return Integer.parseInt(getKey(context, BOARD_SIZE_KEY, Integer.toString(BOARD_SIZE_DEFAULT)));
     }
 
     /**
