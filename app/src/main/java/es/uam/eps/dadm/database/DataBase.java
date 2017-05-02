@@ -178,12 +178,16 @@ public class DataBase implements RoundRepository {
         String uuid = count == 1 && cursor.moveToFirst() ? cursor.getString(0) : "";
         // Eliminamos la respuesta
         cursor.close();
-        // Si el login es correcto, llamamamos al callback del login
-        if (count == 1)
-            callback.onLogin(uuid);
-        // Si el login es incorrecto, llamamamos al callback con el error
-        else
-            callback.onError(contexto.getString(R.string.login_signin_error));
+
+        // Si hay callback que ejecutar
+        if (callback != null) {
+            // Si el login es correcto, llamamamos al callback del login
+            if (count == 1)
+                callback.onLogin(uuid);
+                // Si el login es incorrecto, llamamamos al callback con el error
+            else
+                callback.onError(contexto.getString(R.string.login_signin_error));
+        }
     }
 
     /**
@@ -215,12 +219,61 @@ public class DataBase implements RoundRepository {
         // Insertamos los valores en la tabla de usuario
         long id = db.insert(UserTable.NAME, null, values);
 
-        // Si la respuesta es negativa devolvemos un error
-        if (id < 0)
-            callback.onError(contexto.getString(R.string.login_signup_error));
-        // Si la respuesta es afirmativa, llamamos al login con el uuid generado
-        else
-            callback.onLogin(uuid);
+        // Si hay callback que ejecutar
+        if (callback != null) {
+            // Si la respuesta es negativa devolvemos un error
+            if (id < 0)
+                callback.onError(contexto.getString(R.string.login_signup_error));
+                // Si la respuesta es afirmativa, llamamos al login con el uuid generado
+            else
+                callback.onLogin(uuid);
+        }
+    }
+
+
+    /**
+     * Registra un usuario en la base de datos con un uuid concreto
+     * @param username Nombre de usuario
+     * @param password Contraseña del usuario
+     * @param newUUID Nuevo uuid que se le asignará al usuario
+     * @param registerCallback Callback a ejecutar una vez ejecutada
+     */
+    public void register(String username, String password,
+                         final String newUUID, final LoginRegisterCallback registerCallback) {
+        // Creamos un callback para manejar el registro
+        final LoginRegisterCallback callback = new LoginRegisterCallback() {
+            @Override
+            public void onLogin(String oldUUID) {
+                // Modificamos el uuid del usuario
+                modifyPlayerUUID(oldUUID, newUUID);
+                // Si nos han pasado un callback lo ejecutamos
+                if (registerCallback != null) registerCallback.onLogin(newUUID);
+
+            }
+            @Override
+            public void onError(String error) {
+                // Si nos han pasado un callback lo ejecutamos
+                if (registerCallback != null) registerCallback.onError(error);
+            }
+        };
+        // Registramos al usuario en la base de datos
+        this.register(username, password, callback);
+    }
+
+    /**
+     * Modifica el UUID de un usuario en la base  de datos
+     * @param oldUUID UUID a modificar
+     * @param newUUID UUID nuevo del usuario
+     */
+    private void modifyPlayerUUID(String oldUUID, String newUUID){
+        // Creamos un contenedor de valores donde introduciremos el nuevo uuid
+        ContentValues values = new ContentValues();
+        values.put(UserTable.Cols.PLAYERUUID, newUUID);
+        // Realizaremos un update en la tabla de los valores sobre el antiguo uuid
+        db.update(UserTable.NAME,
+                values,
+                UserTable.Cols.PLAYERUUID + " = ?",
+                new String[]{oldUUID});
     }
 
     /**
