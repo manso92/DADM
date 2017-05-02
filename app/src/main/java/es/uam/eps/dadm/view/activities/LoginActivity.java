@@ -12,8 +12,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.UUID;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -171,7 +169,7 @@ public class LoginActivity extends AppCompatActivity {
                 new RoundRepository.LoginRegisterCallback() {
                     @Override
                     public void onLogin(String userUUID) {
-                        ((DataBase)localRepository).register(user, pass, userUUID);
+                        ((DataBase)localRepository).register(user, pass, userUUID, null);
                         PreferenceActivity.setPlayerUUID(LoginActivity.this, userUUID);
                         PreferenceActivity.setPlayerName(LoginActivity.this, user);
                         // TODO descomentar esta linea
@@ -239,7 +237,7 @@ public class LoginActivity extends AppCompatActivity {
                 new RoundRepository.LoginRegisterCallback() {
                     @Override
                     public void onLogin(String userUUID) {
-                        ((DataBase)localRepository).register(user, pass, userUUID);
+                        ((DataBase)localRepository).register(user, pass, userUUID, null);
                         PreferenceActivity.setPlayerUUID(LoginActivity.this, userUUID);
                         PreferenceActivity.setPlayerName(LoginActivity.this, user);
                         // TODO descomentar esta linea
