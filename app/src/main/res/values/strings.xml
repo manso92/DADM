@@ -15,16 +15,19 @@
     <string name="login.signup_button">Sing up</string>
     <string name="login.offlinegame_button">Offline game</string>
     <string name="login.username_required">Username is required</string>
-    <string name="login.username_tooshort">Username is too short</string>
+    <string name="login.username_tooshort">Username is too short, at least 6</string>
     <string name="login.password_required">Password is required</string>
-    <string name="login.password_tooshort">Password is too short</string>
+    <string name="login.password_tooshort">Password is too short, at least 6</string>
     <string name="login.signin_error">Username or password incorrect</string>
     <string name="login.signup_error">Username is taken</string>
     <string name="login.signup_error_nointernet">Can\'t register whithout internet.</string>
 
 
+    <string name="preference.activity_title">Preferences</string>
+
+
     <string name="help.activity_title">Help</string>
-    <string name="help.loading_title">Help</string>
+    <string name="help.loading_title">Loading...</string>
 
 
     <string name="repository.server_notavailable">Server not available</string>
