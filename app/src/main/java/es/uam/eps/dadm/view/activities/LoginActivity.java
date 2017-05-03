@@ -1,6 +1,9 @@
 package es.uam.eps.dadm.view.activities;
 
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -9,6 +12,7 @@ import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -17,7 +21,6 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import es.uam.eps.dadm.R;
 import es.uam.eps.dadm.database.DataBase;
-import es.uam.eps.dadm.model.Round;
 import es.uam.eps.dadm.model.RoundRepository;
 import es.uam.eps.dadm.model.RoundRepositoryFactory;
 
@@ -49,6 +52,12 @@ public class LoginActivity extends AppCompatActivity {
     ProgressBar loginProgress;
 
     /**
+     * Layout que contiene el formulario de login
+     */
+    @BindView(R.id.login_form)
+    ScrollView loginForm;
+
+    /**
      * Repositorio de datos con el que manejaremos el login local
      */
     private RoundRepository localRepository;
@@ -72,10 +81,9 @@ public class LoginActivity extends AppCompatActivity {
         // Si el usuario está logueado, nos saltamos el paso del login
         if (PreferenceActivity.isLoggedIn(this)) {
             // Mostramos al usuario su lista de partidas disponibles
-            // TODO Descomentar esta línea,
-            //startActivity(new Intent(LoginActivity.this, RoundListActivity.class));
-            //finish();
-            //return;
+            startActivity(new Intent(LoginActivity.this, RoundListActivity.class));
+            finish();
+            return;
         }
 
         // Arrancamos los repositorios de datos
@@ -89,9 +97,9 @@ public class LoginActivity extends AppCompatActivity {
      */
     public void setupRepositories() {
         // Comprobamos si hay conexión a internet
-        if (PreferenceActivity.isOnline(this)){
+        if (Jarvis.isOnline(this)) {
             // Creamos una instancia del servidor remoto
-            this.serverRepository = RoundRepositoryFactory.createRepository(this,true);
+            this.serverRepository = RoundRepositoryFactory.createRepository(this, true);
             // Si no se puede conectar se lo indicamos al usuario
             if (this.serverRepository == null)
                 Toast.makeText(LoginActivity.this, R.string.repository_server_notavailable,
@@ -112,7 +120,7 @@ public class LoginActivity extends AppCompatActivity {
     /**
      * Captura los botones de acción que tiene el teclado cuando están activos los edittext
      */
-    public void setupKeyboard(){
+    public void setupKeyboard() {
         // Capturamos el evento de teclado del EditText de usuario
         userEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
@@ -143,17 +151,57 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     /**
+     * Cambia la visibilidad entre el formulario de login y el loading progress
+     * @param show Boolean que nos indica si se ha de ocultar el formulario (true) o no (false)
+     */
+    private void showProgress(final boolean show) {
+        // Si es ocultar, cogemos un tiempo más largo que si es mostrar
+        int time = show ? getResources().getInteger(android.R.integer.config_longAnimTime) :
+                getResources().getInteger(android.R.integer.config_shortAnimTime);
+
+        // Comenzamos a ocultar el formulario de login
+        loginForm.animate().setDuration(time).alpha(
+                show ? 0 : 1).setListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                // Establecemos la visibilidad definitiva cuando la animación termine
+                loginForm.setVisibility(show ? View.GONE : View.VISIBLE);
+            }
+        });
+
+        // Comenzamos a mostrar el icono del progreso
+        loginProgress.animate().setDuration(time).alpha(
+                show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                // Establecemos la visibilidad definitiva cuando la animación termine
+                loginProgress.setVisibility(show ? View.VISIBLE : View.GONE);
+            }
+        });
+    }
+
+    /**
      * Captura los toques que se realicen sobre el botón de login
+     *
      * @param v View del botón que se ha pulsado
      */
     @OnClick(R.id.login_button)
     public void login(View v) {
+        // Ocultamos el teclado para que la salida se vea mejor
+        Jarvis.hideKeyboard(this);
+
+        //  Comprobamos si los credenciales introducidos están entre los parámetros necesarios
+        if (!comrpuebaCredenciales()) return;
+
         // Cogemos el nombre de usuario y la contraseña que se han introducido
         String user = userEditText.getText().toString();
         String pass = passEditText.getText().toString();
 
+        // Ocultamos el formulario y mostramos el progress
+        showProgress(true);
+
         // Si estamos conectados a internet el login lo hacemos con el servidor, sino lo hacemos en local
-        if (PreferenceActivity.isOnline(this))
+        if (Jarvis.isOnline(this))
             serverLogin(user, pass);
         else
             localLogin(user, pass);
@@ -164,23 +212,28 @@ public class LoginActivity extends AppCompatActivity {
      * @param user Usuario que intenta hacer login
      * @param pass Contraseña con la que se quiere hacer login
      */
-    public void serverLogin(final String user, final String pass){
+    public void serverLogin(final String user, final String pass) {
+        // Creamos un callback para cuando hagamos login con el servidor
         RoundRepository.LoginRegisterCallback loginCallback =
                 new RoundRepository.LoginRegisterCallback() {
                     @Override
                     public void onLogin(String userUUID) {
-                        ((DataBase)localRepository).register(user, pass, userUUID, null);
-                        PreferenceActivity.setPlayerUUID(LoginActivity.this, userUUID);
-                        PreferenceActivity.setPlayerName(LoginActivity.this, user);
-                        // TODO descomentar esta linea
-                        //startActivity(new Intent(LoginActivity.this, RoundListActivity.class));
+                        if (!((DataBase)localRepository).existUser(user))
+                            ((DataBase) localRepository).register(user, pass, userUUID, null);
+                        //PreferenceActivity.setPlayerUUID(LoginActivity.this, userUUID);
+                        //PreferenceActivity.setPlayerName(LoginActivity.this, user);
+                        startActivity(new Intent(LoginActivity.this, RoundListActivity.class));
                         finish();
                     }
+
                     @Override
                     public void onError(String error) {
+                        // Mostramos el error y volvemos a mostrar el formulario
                         Snackbar.make(findViewById(R.id.login_form), error, Snackbar.LENGTH_SHORT).show();
+                        showProgress(false);
                     }
                 };
+        // Intentamos hacer login con el servidor
         serverRepository.login(user, pass, loginCallback);
     }
 
@@ -189,24 +242,27 @@ public class LoginActivity extends AppCompatActivity {
      * @param user Usuario que intenta hacer login
      * @param pass Contraseña con la que se quiere hacer login
      */
-    public void localLogin(final String user, final String pass){
+    public void localLogin(final String user, final String pass) {
+        // Creamos un callback para cuando hagamos login con la base de datos
         RoundRepository.LoginRegisterCallback loginCallback =
                 new RoundRepository.LoginRegisterCallback() {
                     @Override
                     public void onLogin(String userUUID) {
-                        PreferenceActivity.setPlayerUUID(LoginActivity.this, userUUID);
-                        PreferenceActivity.setPlayerName(LoginActivity.this, user);
-                        // TODO escribir en una preferencia que no se ha logueado online
-                        // TODO descomentar esta linea
-                        //startActivity(new Intent(LoginActivity.this, RoundListActivity.class));
+                        //PreferenceActivity.setPlayerUUID(LoginActivity.this, userUUID);
+                        //PreferenceActivity.setPlayerName(LoginActivity.this, user);
+                        startActivity(new Intent(LoginActivity.this, RoundListActivity.class));
                         finish();
                     }
+
                     @Override
                     public void onError(String error) {
+                        // Mostramos el error y volvemos a mostrar el formulario
                         Snackbar.make(findViewById(R.id.login_form), error, Snackbar.LENGTH_SHORT).show();
+                        showProgress(false);
                     }
                 };
-        serverRepository.login(user, pass, loginCallback);
+        // Intentamos hacer login con la base de datos local
+        localRepository.login(user, pass, loginCallback);
     }
 
     /**
@@ -215,16 +271,25 @@ public class LoginActivity extends AppCompatActivity {
      */
     @OnClick(R.id.register_button)
     public void register(View v) {
+        // Ocultamos el teclado para que la salida se vea mejor
+        Jarvis.hideKeyboard(this);
+
+        //  Comprobamos si los credenciales introducidos están entre los parámetros necesarios
+        if (!comrpuebaCredenciales()) return;
+
         // Cogemos el nombre de usuario y la contraseña que se han introducido
         String user = userEditText.getText().toString();
         String pass = passEditText.getText().toString();
 
-        // Si estamos conectados a internet el login lo hacemos con el servidor, sino lo hacemos en local
-        if (!PreferenceActivity.isOnline(this))
+        // Si no estamos conectado, indicamos al usuario que no se puede registrar sin internet
+        if (!Jarvis.isOnline(this))
             Snackbar.make(findViewById(R.id.login_form), R.string.login_signup_error_nointernet,
                     Snackbar.LENGTH_SHORT).show();
-        else
+        // Ocultamos el formulario e intentamos registrar al usuario
+        else {
+            showProgress(true);
             registerUser(user, pass);
+        }
     }
 
     /**
@@ -232,34 +297,63 @@ public class LoginActivity extends AppCompatActivity {
      * @param user Usuario que intenta registrarse
      * @param pass Contraseña con la que se quiere registrarse
      */
-    public void registerUser(final String user, final String pass){
+    public void registerUser(final String user, final String pass) {
+        // Creamos un callback para cuando nos registremos
         RoundRepository.LoginRegisterCallback loginCallback =
                 new RoundRepository.LoginRegisterCallback() {
                     @Override
                     public void onLogin(String userUUID) {
-                        ((DataBase)localRepository).register(user, pass, userUUID, null);
-                        PreferenceActivity.setPlayerUUID(LoginActivity.this, userUUID);
-                        PreferenceActivity.setPlayerName(LoginActivity.this, user);
-                        // TODO descomentar esta linea
-                        //startActivity(new Intent(LoginActivity.this, RoundListActivity.class));
+                        // Si se ha registrado con éxito en el servidor, lo registramos en local
+                        ((DataBase) localRepository).register(user, pass, userUUID, null);
+                        //PreferenceActivity.setPlayerUUID(LoginActivity.this, userUUID);
+                        //PreferenceActivity.setPlayerName(LoginActivity.this, user);
+                        // Mostramos las partidas disponibles para este jugador
+                        startActivity(new Intent(LoginActivity.this, RoundListActivity.class));
                         finish();
                     }
                     @Override
                     public void onError(String error) {
+                        // Mostramos el error y volvemos a mostrar el formulario
+                        showProgress(false);
                         Snackbar.make(findViewById(R.id.login_form), error, Snackbar.LENGTH_SHORT).show();
                     }
                 };
+
+        // Intentamos registrarnos en el servidor
         serverRepository.register(user, pass, loginCallback);
     }
 
     /**
+     * Comprueba si los parámetros introducidos de usuario y contraseña están entre los mínimos requereidos
+     * En caso contrario mostrará un error en los edittext de ambos campos
+     * @return Si los credenciales son válidos o no
+     */
+    public boolean comrpuebaCredenciales() {
+        // Limpiamos los errores en caso de que hayamos mostrado un error previamente
+        userEditText.setError(null);
+        passEditText.setError(null);
+
+        // Si el nombre de usuario no tiene como mínimo 6 caracteres mostramos un error
+        if (userEditText.getText().toString().length() < 6)
+            userEditText.setError(getString(R.string.login_username_tooshort));
+
+        // Si la contraseña de usuario no tiene como mínimo 6 caracteres mostramos un error
+        if (passEditText.getText().toString().length() < 6)
+            passEditText.setError(getString(R.string.login_password_tooshort));
+
+        // Indicamos como respuesta si se ha producido algún error
+        return !((userEditText.getText().toString().length() < 6) || (passEditText.getText().toString().length() < 6));
+    }
+
+    /**
      * Captura los toques que se realicen sobre el botón de login
+     *
      * @param v View del botón que se ha pulsado
      */
     @OnClick(R.id.offline_game_button)
     public void offlineGame(View v) {
         // TODO hacer que sea jugable una partida nueva
-        Round round = new Round(PreferenceActivity.BOARD_SIZE_DEFAULT);
+        //Round round = new Round(PreferenceActivity.BOARD_SIZE_DEFAULT);
 
         /*Intent i = RoundActivity.newIntent(this,round.getId(),PreferenceActivity.PLAYERNAME_DEFAULT,
                 PreferenceActivity.PLAYERUUID_DEFAULT, round.getTitle(), round.getSize(),

@@ -22,7 +22,7 @@ public class SplashActivity extends AppCompatActivity {
     private static int SPLASH_TIME_OUT = 3000;
 
     /**
-     * Crea todo lo necesario para la correcta ejecución de la actividad
+     * Prepara todos lo necesario para la correcta creación de la vista
      * @param savedInstanceState Pares clave valor que nos pasa la actividad que nos invoca
      */
     @Override
