@@ -1,4 +1,4 @@
-package es.uam.eps.dadm.myapplication;
+package es.uam.eps.dadm;
 
 import org.junit.Test;
 

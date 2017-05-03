@@ -1,4 +1,4 @@
-package es.uam.eps.dadm.myapplication;
+package es.uam.eps.dadm;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
@@ -21,6 +21,6 @@ public class ExampleInstrumentedTest {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getTargetContext();
 
-        assertEquals("es.uam.eps.dadm.myapplication", appContext.getPackageName());
+        assertEquals("es.uam.eps.dadm", appContext.getPackageName());
     }
 }
