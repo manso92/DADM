@@ -220,12 +220,11 @@ public class LoginActivity extends AppCompatActivity {
                     public void onLogin(String userUUID) {
                         if (!((DataBase)localRepository).existUser(user))
                             ((DataBase) localRepository).register(user, pass, userUUID, null);
-                        //PreferenceActivity.setPlayerUUID(LoginActivity.this, userUUID);
-                        //PreferenceActivity.setPlayerName(LoginActivity.this, user);
+                        PreferenceActivity.setPlayerUUID(LoginActivity.this, userUUID);
+                        PreferenceActivity.setPlayerName(LoginActivity.this, user);
                         startActivity(new Intent(LoginActivity.this, RoundListActivity.class));
                         finish();
                     }
-
                     @Override
                     public void onError(String error) {
                         // Mostramos el error y volvemos a mostrar el formulario
@@ -248,8 +247,8 @@ public class LoginActivity extends AppCompatActivity {
                 new RoundRepository.LoginRegisterCallback() {
                     @Override
                     public void onLogin(String userUUID) {
-                        //PreferenceActivity.setPlayerUUID(LoginActivity.this, userUUID);
-                        //PreferenceActivity.setPlayerName(LoginActivity.this, user);
+                        PreferenceActivity.setPlayerUUID(LoginActivity.this, userUUID);
+                        PreferenceActivity.setPlayerName(LoginActivity.this, user);
                         startActivity(new Intent(LoginActivity.this, RoundListActivity.class));
                         finish();
                     }
@@ -305,8 +304,8 @@ public class LoginActivity extends AppCompatActivity {
                     public void onLogin(String userUUID) {
                         // Si se ha registrado con éxito en el servidor, lo registramos en local
                         ((DataBase) localRepository).register(user, pass, userUUID, null);
-                        //PreferenceActivity.setPlayerUUID(LoginActivity.this, userUUID);
-                        //PreferenceActivity.setPlayerName(LoginActivity.this, user);
+                        PreferenceActivity.setPlayerUUID(LoginActivity.this, userUUID);
+                        PreferenceActivity.setPlayerName(LoginActivity.this, user);
                         // Mostramos las partidas disponibles para este jugador
                         startActivity(new Intent(LoginActivity.this, RoundListActivity.class));
                         finish();
