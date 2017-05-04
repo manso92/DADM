@@ -4,16 +4,13 @@
     <item
         android:id="@+id/menu_item_settings"
         android:icon="@drawable/menu_settings"
-        android:title="@string/menu.settings"
-        app:showAsAction="ifRoom" />
+        android:title="@string/menu.settings" />
     <item
         android:id="@+id/menu_item_help"
         android:icon="@drawable/menu_help"
-        android:title="@string/menu.help"
-        app:showAsAction="ifRoom" />
+        android:title="@string/menu.help" />
     <item
         android:id="@+id/menu_item_signout"
         android:icon="@drawable/menu_signout"
-        android:title="@string/menu.signout"
-        app:showAsAction="ifRoom" />
+        android:title="@string/menu.signout" />
 </menu>
