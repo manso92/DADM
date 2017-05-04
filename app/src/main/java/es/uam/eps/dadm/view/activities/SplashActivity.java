@@ -19,7 +19,7 @@ public class SplashActivity extends AppCompatActivity {
     /**
      * Timeout por defecto después del cual se llamará a la actividad de login
      */
-    private static int SPLASH_TIME_OUT = 3000;
+    private static int SPLASH_TIME_OUT = 3;
 
     /**
      * Prepara todos lo necesario para la correcta creación de la vista
