@@ -277,6 +277,27 @@ public class DataBase implements RoundRepository {
     }
 
     /**
+     * Indica si está registrado un usario en la base de datos o no
+     * @param user Nombre de usuario a comprobar
+     * @return Si se existe o no existe
+     */
+    public boolean existUser(String user){
+        // Sentencia sql que nos devolverá la información
+        String sql = "SELECT * FROM " +
+                UserTable.NAME + " " +
+                "WHERE " +
+                UserTable.Cols.PLAYERNAME + "=\"" + user + "\";";
+
+        // Ejecutamos la consulta...
+        Cursor cursor = db.rawQuery(sql, null);
+
+        // Comprobamos si existe el nombre de usuario y devolvemos el valor
+        boolean retorno = (cursor.getCount() > 0);
+        cursor.close();
+        return retorno;
+    }
+
+    /**
      * Rellena los datos de un contendor para insertar en la base de datos
      * @param round Ronda de la que obtener los datos
      * @return Contenedor listo para insertar en la base de datos
