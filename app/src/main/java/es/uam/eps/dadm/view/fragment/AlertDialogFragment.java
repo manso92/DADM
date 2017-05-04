@@ -8,10 +8,12 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 
 import es.uam.eps.dadm.R;
-import es.uam.eps.dadm.activities.RoundActivity;
+import es.uam.eps.dadm.view.activities.PreferenceActivity;
+import es.uam.eps.dadm.view.activities.RoundActivity;
 import es.uam.eps.dadm.model.Round;
 import es.uam.eps.dadm.model.RoundRepository;
 import es.uam.eps.dadm.model.RoundRepositoryFactory;
+import es.uam.eps.dadm.view.activities.RoundListActivity;
 
 /**
  * AlertDialogFragment es un dialog que se mostrará al final de las partidas para preguntar si se

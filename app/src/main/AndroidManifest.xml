@@ -26,12 +26,17 @@
             android:label="@string/login.activity_title"
             android:theme="@style/AppThemeNoBar"/>
         <activity
+            android:name=".view.activities.RoundActivity"
+            android:label="@string/preference.activity_title"
+            android:parentActivityName=".view.activities.RoundListActivity"/>
+        <activity
             android:name=".view.activities.PreferenceActivity"
-            android:label="@string/preference.activity_title" />
+            android:label="@string/preference.activity_title"
+            android:parentActivityName=".view.activities.RoundListActivity"/>
         <activity
             android:name=".view.activities.HelpActivity"
             android:label="@string/help.activity_title"
-            android:parentActivityName=".view.activities.PreferenceActivity"/>
+            android:parentActivityName=".view.activities.RoundListActivity"/>
     </application>
 
 </manifest>
