@@ -1,22 +1,17 @@
-package es.uam.eps.dadm.views;
+package es.uam.eps.dadm.view.views;
 
 
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.media.AudioManager;
-import android.media.SoundPool;
 import android.support.design.widget.Snackbar;
-import android.support.graphics.drawable.VectorDrawableCompat;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 
 import java.util.ArrayList;
-import java.util.IllegalFormatCodePointException;
 
 import es.uam.eps.dadm.R;
-import es.uam.eps.dadm.activities.PreferenceActivity;
 import es.uam.eps.dadm.model.Casilla;
 import es.uam.eps.dadm.model.ColorManager;
 import es.uam.eps.dadm.model.Ficha;
@@ -178,10 +173,10 @@ public class TableroView extends View {
 
         // Dibujamos el cuadrado del tablero
         canvas.drawRect((casilla.col()*(int) widthOfTile),
-                        (casilla.row()*(int) heightOfTile),
-                        ((casilla.col() + 1)*(int) widthOfTile),
-                        ((casilla.row() + 1)*(int) heightOfTile),
-                        paint);
+                (casilla.row()*(int) heightOfTile),
+                ((casilla.col() + 1)*(int) widthOfTile),
+                ((casilla.row() + 1)*(int) heightOfTile),
+                paint);
 
         // Si la casilla tiene una ficha, la pintamos también
         if (casilla.tieneFicha())
