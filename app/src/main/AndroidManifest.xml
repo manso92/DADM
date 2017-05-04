@@ -8,7 +8,7 @@
     <application
         android:allowBackup="true"
         android:icon="@drawable/loading_board"
-        android:label="@string/app_name"
+        android:label="@string/app.title"
         android:roundIcon="@drawable/loading_board"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
@@ -20,22 +20,22 @@
         </activity>
         <activity
             android:name=".view.activities.LoginActivity"
-            android:label="@string/login.activity_title" />
+            android:label="@string/login.title" />
         <activity
             android:name=".view.activities.RoundListActivity"
-            android:label="@string/login.activity_title"
+            android:label="@string/roundlist.title"
             android:theme="@style/AppThemeNoBar"/>
         <activity
             android:name=".view.activities.RoundActivity"
-            android:label="@string/preference.activity_title"
+            android:label="@string/round.title"
             android:parentActivityName=".view.activities.RoundListActivity"/>
         <activity
             android:name=".view.activities.PreferenceActivity"
-            android:label="@string/preference.activity_title"
+            android:label="@string/settings.title"
             android:parentActivityName=".view.activities.RoundListActivity"/>
         <activity
             android:name=".view.activities.HelpActivity"
-            android:label="@string/help.activity_title"
+            android:label="@string/help.title"
             android:parentActivityName=".view.activities.RoundListActivity"/>
     </application>
 

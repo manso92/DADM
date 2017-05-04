@@ -108,7 +108,7 @@ public class RoundListFragment extends Fragment {
                              */
                             @Override
                             public void onError(String error) {
-                                Snackbar.make(getView(), R.string.repository_no_round_founded,
+                                Snackbar.make(getView(), R.string.repository_round_not_founded,
                                         Snackbar.LENGTH_LONG).show();
                             }
                         };

@@ -48,7 +48,7 @@ public class HelpActivity extends AppCompatActivity {
 
         // Iniciamos el progres dialog, le colocamos las propiedades y lo mostramos
         progressDialog = new ProgressDialog(HelpActivity.this);
-        progressDialog.setMessage(getString(R.string.help_help_text));
+        progressDialog.setMessage(getString(R.string.help_loading));
         progressDialog.setCancelable(false);
         progressDialog.show();
 

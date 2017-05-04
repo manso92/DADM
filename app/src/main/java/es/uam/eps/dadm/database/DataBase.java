@@ -2,7 +2,6 @@ package es.uam.eps.dadm.database;
 
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.res.Resources;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
@@ -56,6 +55,9 @@ public class DataBase implements RoundRepository {
      */
     private SQLiteDatabase db;
 
+    /**
+     * Contex que invoca la base de datos
+     */
     private Context contexto;
 
     /**
@@ -78,7 +80,7 @@ public class DataBase implements RoundRepository {
          * a la clase DataBase
          * @param context Referencia a la clase que nos está creando
          */
-        public DatabaseHelper(Context context) {
+        DatabaseHelper(Context context) {
             super(context, DATABASE_NAME, null, DATABASE_VERSION);
         }
 
@@ -416,7 +418,7 @@ public class DataBase implements RoundRepository {
             callback.onResponse(rounds);
         // Si no hay rondas o error, enviamos un error
         else
-            callback.onError(contexto.getString(R.string.repository_no_round_founded));
+            callback.onError(contexto.getString(R.string.repository_round_not_founded));
     }
 
     /**
@@ -459,6 +461,6 @@ public class DataBase implements RoundRepository {
             callback.onResponse(players, scores);
         // Si no hay se lo indicamos con el error
         else
-            callback.onError(contexto.getString(R.string.repository_no_users_founded));
+            callback.onError(contexto.getString(R.string.repository_users_not_founded));
     }
 }

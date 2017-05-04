@@ -65,7 +65,7 @@ public class RoundListActivity extends AppCompatActivity implements RoundListFra
         ButterKnife.bind(this);
 
         // Colocamos el título a la barra superior y la colocamos en la vista
-        toolbar.setTitle(getString(R.string.app_name));
+        toolbar.setTitle(getString(R.string.round_title));
         setSupportActionBar(toolbar);
 
         // Configuramos el contenido del viewpager y cargamos esos datos en el tablayout

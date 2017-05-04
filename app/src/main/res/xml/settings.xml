@@ -1,29 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-    <PreferenceCategory android:title="@string/settings.settings_summary">
+    <PreferenceCategory android:title="@string/settings.game.title">
         <ListPreference
             android:defaultValue="@string/levelsDefault"
             android:entries="@array/levelsArray"
             android:entryValues="@array/levelsValues"
             android:key="boardsize"
-            android:summary="@string/settings.board_size_summary"
-            android:title="@string/settings.board_size_title" />
+            android:title="@string/settings.game.board_size.title"
+            android:summary="@string/settings.game.board_size.summary" />
         <ListPreference
             android:defaultValue="@string/colorsDefault"
             android:entries="@array/colorsArray"
             android:entryValues="@array/colorsValues"
             android:key="colorscheme"
-            android:summary="@string/settings.color_scheme_summary"
-            android:title="@string/settings.color_scheme_title" />
+            android:title="@string/settings.game.color_scheme.title"
+            android:summary="@string/settings.game.color_scheme.summary" />
         <CheckBoxPreference
             android:key="onlinegame"
-            android:summary="@string/settings.online_game_summary"
-            android:title="@string/settings.online_game_title" />
-        <Preference
-            android:key="scores"
-            android:title="@string/settings.scores" />
-        <Preference
-            android:key="help"
-            android:title="@string/settings.see_help" />
+            android:title="@string/settings.game.online.title"
+            android:summary="@string/settings.game.online.summary" />
     </PreferenceCategory>
 </PreferenceScreen>

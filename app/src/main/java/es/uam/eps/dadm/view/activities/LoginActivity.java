@@ -106,7 +106,7 @@ public class LoginActivity extends AppCompatActivity {
                         Toast.LENGTH_SHORT).show();
         } else
             // Si no hay conexión se lo indicamos al usuario
-            Toast.makeText(LoginActivity.this, R.string.repository_internet_noconnection,
+            Toast.makeText(LoginActivity.this, R.string.repository_server_internet_needed,
                     Toast.LENGTH_SHORT).show();
 
         // Creamos una instancia del repositorio de datos local

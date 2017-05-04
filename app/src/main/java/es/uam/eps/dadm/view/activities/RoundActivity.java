@@ -225,7 +225,7 @@ public class RoundActivity extends AppCompatActivity implements PartidaListener 
                 // Actualizamos el tablero y llamamos al callback que hay que llamar cuando se actualiza la ronda
                 boardView.invalidate();
                 // Indicamos al jugador que la partida ha acabado
-                Snackbar.make(coordinatorRound, R.string.game_game_over, Snackbar.LENGTH_SHORT).show();
+                Snackbar.make(coordinatorRound, R.string.game_game_over_title, Snackbar.LENGTH_SHORT).show();
                 new AlertDialogFragment().show(getSupportFragmentManager(),"ALERT DIALOG");
                 break;
         }
@@ -248,7 +248,7 @@ public class RoundActivity extends AppCompatActivity implements PartidaListener 
             public void onResponse(boolean response) {
                 // Si se produce un error al actualizar la partida, se lo comunicamos al usuario
                 if (!response)
-                    Snackbar.make(coordinatorRound, R.string.repository_round_error_updating,
+                    Snackbar.make(coordinatorRound, R.string.repository_round_update_error,
                             Snackbar.LENGTH_LONG).show();
             }
         };

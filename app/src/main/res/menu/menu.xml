@@ -1,16 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/menu_item_settings"
         android:icon="@drawable/menu_settings"
-        android:title="@string/menu.settings" />
+        android:title="@string/roundlist.menu.settings" />
     <item
         android:id="@+id/menu_item_help"
         android:icon="@drawable/menu_help"
-        android:title="@string/menu.help" />
+        android:title="@string/roundlist.menu.help" />
     <item
         android:id="@+id/menu_item_signout"
         android:icon="@drawable/menu_signout"
-        android:title="@string/menu.signout" />
+        android:title="@string/roundlist.menu.signout" />
 </menu>

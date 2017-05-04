@@ -255,7 +255,7 @@ public class TableroView extends View {
                 // Si no hay un movimiento válido con esa primer casilla, se lo indicamos al usuario y limpiamos el movimiento
                 if (this.board.mismoComienzo(this.movimiento).size() == 0) {
                     this.movimiento = null;
-                    Snackbar.make((View) this.getParent(), R.string.game_impossible_move, Snackbar.LENGTH_SHORT).show();
+                    Snackbar.make((View) this.getParent(), R.string.game_move_invalid, Snackbar.LENGTH_SHORT).show();
                 }
             } else {
                 // Añadimos el nuevo destino

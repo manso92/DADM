@@ -34,7 +34,7 @@ public class AlertDialogFragment extends DialogFragment {
         // Creamos el constructor del diálogo
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
         // Ponemos un título al dialog
-        alertDialogBuilder.setTitle(R.string.game_game_over);
+        alertDialogBuilder.setTitle(R.string.game_game_over_title);
         // Añadimos el mensaje que mostrará
         alertDialogBuilder.setMessage(R.string.game_game_over_message);
 
