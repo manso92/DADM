@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="center_horizontal"
-    android:padding="@dimen/default_layout_margin"
+    android:padding="@dimen/layout_margin"
     tools:context="es.uam.eps.dadm.view.activities.LoginActivity">
 
     <ProgressBar
