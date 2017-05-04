@@ -43,7 +43,7 @@ public class PreferenceActivity extends AppCompatActivity {
     /**
      * Preferencias de audio por defecto para el usuario
      */
-    public final static boolean ONLINE_GAME_DEFAULT = true;
+    public final static boolean ONLINE_GAME_DEFAULT = false;
 
     /**
      * Clave para registrar el tamaño del tablero
@@ -107,12 +107,6 @@ public class PreferenceActivity extends AppCompatActivity {
         editor.commit();
     }
 
-    public static boolean isOnline(Context context) {
-        ConnectivityManager connMgr = (ConnectivityManager)
-                context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
-        return (networkInfo != null && networkInfo.isConnected());
-    }
 
     public static boolean isLoggedIn(Context context) {
         return (!PreferenceActivity.getPlayerUUID(context).equals(PLAYERUUID_DEFAULT));
