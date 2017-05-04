@@ -13,10 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:focusable="true"
-        android:paddingLeft="16dp"
-        android:paddingRight="16dp"
-        android:paddingTop="10dp"
-        android:paddingBottom="10dp"
+        android:padding="@dimen/layout_margin"
         android:clickable="true"
         android:background="?android:attr/selectableItemBackground"
         android:orientation="vertical">
@@ -33,7 +30,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/list_item_id" />
-        <es.uam.eps.dadm.views.TableroView
+        <es.uam.eps.dadm.view.views.TableroView
             android:id="@+id/tableroViewThumb"
             android:layout_width="@dimen/tableroView.thumbnail"
             android:layout_height="@dimen/tableroView.thumbnail"
