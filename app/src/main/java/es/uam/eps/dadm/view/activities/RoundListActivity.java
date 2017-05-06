@@ -20,6 +20,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import es.uam.eps.dadm.R;
 import es.uam.eps.dadm.model.Round;
+import es.uam.eps.dadm.model.RoundRepositoryFactory;
 import es.uam.eps.dadm.view.fragment.BlankFragment;
 import es.uam.eps.dadm.view.fragment.RoundListFragment;
 
@@ -82,9 +83,10 @@ public class RoundListActivity extends AppCompatActivity implements RoundListFra
         // Creamos un adapter que contendrá nuestros fragmentos
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
         // Añadimos los fragmentos que vamos a tener en nuestro adapter
-        adapter.addFragment(new RoundListFragment(), "Local");
-        adapter.addFragment(new BlankFragment(), "Servidor");
+        adapter.addFragment(RoundListFragment.newInstance(RoundRepositoryFactory.createRepository(this,false)), "Local");
+        adapter.addFragment(RoundListFragment.newInstance(RoundRepositoryFactory.createRepository(this,true)), "Servidor");
         adapter.addFragment(new BlankFragment(), "Partidas disponibles");
+        adapter.addFragment(new BlankFragment(), "Partidas a la espera");
         adapter.addFragment(new BlankFragment(), "Estadísticas");
         // Vinculamos el adapter al viewpager
         viewPager.setAdapter(adapter);
