@@ -16,11 +16,12 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
+import butterknife.Unbinder;
 import es.uam.eps.dadm.R;
 import es.uam.eps.dadm.model.Round;
 import es.uam.eps.dadm.model.RoundRepository;
 import es.uam.eps.dadm.model.RoundRepositoryFactory;
-import es.uam.eps.dadm.view.activities.LoginActivity;
 import es.uam.eps.dadm.view.activities.PreferenceActivity;
 import es.uam.eps.dadm.view.listeners.RecyclerItemClickListener;
 import es.uam.eps.dadm.view.views.TableroView;
@@ -36,7 +37,23 @@ public class RoundListFragment extends Fragment {
     /**
      * Instancia del recycler
      */
-    private RecyclerView roundRecyclerView;
+    @BindView(R.id.round_recycler_view)
+    RecyclerView roundRecyclerView;
+
+    /**
+     * Clave del parámetro del repositorio por defecto del que coger los datos
+     */
+    private static final String REPOSITORY_KEY  = "repository_key";
+
+    /**
+     * Repositorio por defecto del que coger los datos
+     */
+    private RoundRepository repository;
+
+    /**
+     * Instancia necesaria de Butterknife para realizar el unbinding
+     */
+    private Unbinder unbinder;
 
     /**
      * Adapter que manejará nuestra lista personalizada
@@ -56,6 +73,21 @@ public class RoundListFragment extends Fragment {
     }
 
     /**
+     * Crea una nueva instancia del fragmento en el que se incluye el repositorio
+     * @param repository Repositorio de datos para el framento
+     * @return Fragment con los parámetros añadidos
+     */
+    public static RoundListFragment newInstance(RoundRepository repository) {
+        // Creamos un fragmento y un bundle para los argumentos
+        RoundListFragment fragment = new RoundListFragment();
+        Bundle bundle = new Bundle();
+        // Añadimos el repositorio, colocamos los valores y devolvemos el fragmento
+        bundle.putSerializable(REPOSITORY_KEY, repository);
+        fragment.setArguments(bundle);
+        return fragment;
+    }
+
+    /**
      * Crea todo lo necesario para la correcta ejecución del fragmento
      * @param savedInstanceState Pares clave valor que nos pasa la actividad que nos invoca
      */
@@ -63,62 +95,12 @@ public class RoundListFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         // Llamamos al constructor
         super.onCreate(savedInstanceState);
-    }
 
-    /**
-     * Ejecutará las acciones necesarias para cuando se cree la vista
-     * @param inflater Clase que se encargará de mostrar los elementos del fragment
-     * @param container Contenedor del fragment
-     * @param savedInstanceState Pares clave valor que se nos dan como parámetro
-     * @return View que se acaba de crear
-     */
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Cargamos el layout del fragmento
-        final View view = inflater.inflate(R.layout.fragment_round_list, container, false);
-        // Cogemos el recycler view de la vista
-        roundRecyclerView = (RecyclerView) view.findViewById(R.id.round_recycler_view);
-        // Cogemos el layout manager y le ajustamos un linearlayout para la lista
-        RecyclerView.LayoutManager linearLayoutManager = new
-                LinearLayoutManager(getActivity());
-        roundRecyclerView.setLayoutManager(linearLayoutManager);
-        roundRecyclerView.setItemAnimator(new DefaultItemAnimator());
-
-        // Añadimos el listener de la lista
-        roundRecyclerView.addOnItemTouchListener(new
-                RecyclerItemClickListener(getActivity(), new
-                RecyclerItemClickListener.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(View view, final int position) {
-                        RoundRepository repository = RoundRepositoryFactory.createRepository(getActivity(),false);
-                        RoundRepository.RoundsCallback roundsCallback = new RoundRepository.RoundsCallback() {
-                            /**
-                             * Gestiona la lista de partidas del repositorio
-                             * @param rounds Lista de partidas
-                             */
-                            @Override
-                            public void onResponse(List<Round> rounds) {
-                                callbacks.onRoundSelected(rounds.get(position));
-                            }
-
-                            /**
-                             * Gestiona el error al consultar la lista de partidas del repositorio
-                             * @param error Mensaje de error que se mandará
-                             */
-                            @Override
-                            public void onError(String error) {
-                                Snackbar.make(getView(), R.string.repository_round_not_founded,
-                                        Snackbar.LENGTH_LONG).show();
-                            }
-                        };
-                        String playeruuid = PreferenceActivity.getPlayerUUID(getActivity());
-                        repository.getRounds(playeruuid, null, null, roundsCallback);
-                    }
-                }));
-        // Actualizamos la interfaz y devolvemos la vista
-        updateUI();
-        return view;
+        // Obtenemos el repositorio, si no hay, pues lo creamos
+        if ((getArguments() != null) && (getArguments().containsKey(REPOSITORY_KEY)))
+            this.repository = (RoundRepository) getArguments().getSerializable(REPOSITORY_KEY);
+        if (this.repository == null)
+            this.repository = RoundRepositoryFactory.createRepository(getActivity());
     }
 
     /**
@@ -132,18 +114,73 @@ public class RoundListFragment extends Fragment {
     }
 
     /**
+     * Ejecutará las acciones necesarias para cuando se cree la vista
+     * @param inflater Clase que se encargará de mostrar los elementos del fragment
+     * @param container Contenedor del fragment
+     * @param savedInstanceState Pares clave valor que se nos dan como parámetro
+     * @return View que se acaba de crear
+     */
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Cargamos el layout del fragmento y hacemos binding de las vistas
+        final View view = inflater.inflate(R.layout.fragment_round_list, container, false);
+        unbinder = ButterKnife.bind(this, view);
+
+        // Configuramos el recycler view y devolvemos la vista
+        setupRecyclerView();
+        return view;
+    }
+
+    /**
+     * Función que se ejecutará cuando se destruya la view
+     */
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        // Hacemos unbinding de todas las vistas que Butterknife utilizara antes
+        unbinder.unbind();
+    }
+
+    /**
+     * Configura el recyvlerview con la lista de partidas que toque
+     */
+    public void setupRecyclerView(){
+        // Cogemos el layout manager y le ajustamos un linearlayout para la lista
+        roundRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        roundRecyclerView.setItemAnimator(new DefaultItemAnimator());
+
+        // Añadimos el listener de la lista
+        roundRecyclerView.addOnItemTouchListener(new
+                RecyclerItemClickListener(getActivity(), new
+                RecyclerItemClickListener.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(View view, final int position) {
+                        RoundRepository.RoundsCallback roundsCallback = new RoundRepository.RoundsCallback() {
+                            @Override
+                            public void onResponse(List<Round> rounds) {
+                                callbacks.onRoundSelected(rounds.get(position));
+                            }
+                            @Override
+                            public void onError(String error) {
+                                Snackbar.make(roundRecyclerView, R.string.repository_round_not_founded,
+                                        Snackbar.LENGTH_LONG).show();
+                            }
+                        };
+                        String playeruuid = PreferenceActivity.getPlayerUUID(getActivity());
+                        repository.getRounds(playeruuid, null, null, roundsCallback);
+                    }
+                }));
+    }
+
+    /**
      * Actualiza la interfaz, la lista de las partidas disponibles
      */
     public void updateUI() {
-        // Instanciamos el repositorio de datos y creamos un callback para cuando pedimos la lista
-        // de partidas disponibles
-        RoundRepository repository = RoundRepositoryFactory.createRepository(this.getActivity(),false);
-        RoundRepository.RoundsCallback roundsCallback = new RoundRepository.RoundsCallback(){
+        RoundRepository.RoundsCallback roundsCallback = new RoundRepository.RoundsCallback() {
             @Override
             public void onResponse(List<Round> rounds) {
-                roundAdapter = new RoundAdapter(rounds);
-                roundRecyclerView.setAdapter(roundAdapter);
-                /*if (roundAdapter == null) {
+                if (roundAdapter == null) {
                     // Pasamos al adapter la lista de rondas y se lo colocamos al recyclerview
                     roundAdapter = new RoundAdapter(rounds);
                     roundRecyclerView.setAdapter(roundAdapter);
@@ -151,19 +188,18 @@ public class RoundListFragment extends Fragment {
                 // Indicamos al roundadapter que los datos han cambiado
                 else {
                     roundAdapter.setRounds(rounds);
-                    roundAdapter.notifyDataSetChanged();
-                }*/
+                    roundRecyclerView.setAdapter(roundAdapter);
+                }
             }
             @Override
             public void onError(String error) {
                 // Mostramos el error que nos indican al llamar al callback
-                Snackbar.make(getActivity().findViewById(R.id.viewpager), error
-                        , Snackbar.LENGTH_LONG).show();
+                Snackbar.make(roundRecyclerView, error, Snackbar.LENGTH_LONG).show();
             }
         };
         // Regcargamos la lista de rondas disponibles
         repository.getRounds(PreferenceActivity.getPlayerUUID(this.getActivity()),
-                             null,null,roundsCallback);
+                null, null, roundsCallback);
 
     }
 
@@ -188,6 +224,36 @@ public class RoundListFragment extends Fragment {
         callbacks = null;
     }
 
+    @OnClick(R.id.add_found_fab)
+    public void newRound(View v) {
+        // Creamos un callback booleano que gestione la respuesta
+        RoundRepository.BooleanCallback booleanCallback = new RoundRepository.BooleanCallback() {
+            /**
+             * Gestiona la respuesta a la creación de una nueva partida
+             * @param ok Boolean respuesta a cómo se ha ejecutado la función
+             */
+            @Override
+            public void onResponse(boolean ok) {
+                // Sacamos un Snackbar que muestre el resultado de la operación
+                if (ok)
+                    Snackbar.make(roundRecyclerView,
+                            R.string.repository_round_create_success, Snackbar.LENGTH_LONG).show();
+                else
+                    Snackbar.make(roundRecyclerView,
+                            R.string.repository_round_create_error, Snackbar.LENGTH_LONG).show();
+            }
+        };
+
+        // Creamos una partida nueva y le colocamos los datos del jugador que la va a jugar
+        Round round = new Round(PreferenceActivity.getSize(this.getContext()));
+        round.setPlayerName(PreferenceActivity.getPlayerName(this.getContext()));
+        round.setPlayerUUID(PreferenceActivity.getPlayerUUID(this.getContext()));
+
+        // Añadimos la partida al repositorio de datos y actualizamos la interfaz
+        repository.addRound(round, booleanCallback);
+        updateUI();
+    }
+
 
     /**
      * Adaptador que se encargará de controlar la interfaz de la lista de partidas
@@ -196,6 +262,7 @@ public class RoundListFragment extends Fragment {
      * @version 13/03/2017
      */
     public class RoundAdapter extends RecyclerView.Adapter<RoundAdapter.RoundHolder> {
+
         /**
          * Lista de partidas que se vana mostrar
          */
@@ -267,6 +334,7 @@ public class RoundListFragment extends Fragment {
 
         public void setRounds(List<Round> rounds) {
             this.rounds = rounds;
+            this.notifyDataSetChanged();
         }
 
         /**

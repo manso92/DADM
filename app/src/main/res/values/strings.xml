@@ -47,6 +47,8 @@
     <string name="settings.game.online.summary">Click if you like to play online</string>
 
     <!--  REPOSITORY  -->
+    <string name="repository.round.create.success">Error updating round</string>
+    <string name="repository.round.create.error">Error updating round</string>
     <string name="repository.round.update.error">Error updating round</string>
     <string name="repository.round.not_founded">No rounds found in database</string>
     <string name="repository.users.not_founded">No users found in database</string>

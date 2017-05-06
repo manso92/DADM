@@ -1,5 +1,6 @@
 package es.uam.eps.dadm.model;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -10,7 +11,7 @@ import java.util.List;
  * @author Pablo Manso
  * @version 12/04/2017
  */
-public interface RoundRepository {
+public interface RoundRepository extends Serializable {
     /**
      * Abre una conexión con el gestor
      * @throws Exception Se lanzará una excepción en caso de que haya algún error
