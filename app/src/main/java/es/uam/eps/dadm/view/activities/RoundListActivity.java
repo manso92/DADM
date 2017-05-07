@@ -146,8 +146,7 @@ public class RoundListActivity extends AppCompatActivity implements RoundListFra
     @Override
     public void onRoundSelected(Round round) {
         // Si estamos en una pantalla pequeña, creamos la actividad y la arrancamos
-        Intent intent = RoundActivity.newIntent(this, round.getId(),round.getSecondUserName(),
-                round.getSecondUserUUID(), round.getTitle(),round.getSize(),round.getDate(),round.getBoard().tableroToString());
+        Intent intent = RoundActivity.newIntent(this, round);
         startActivity(intent);
     }
 

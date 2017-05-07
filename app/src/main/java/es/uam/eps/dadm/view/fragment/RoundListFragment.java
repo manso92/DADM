@@ -276,7 +276,7 @@ public class RoundListFragment extends Fragment {
         // Creamos una partida nueva y le colocamos los datos del jugador que la va a jugar
         // TODO modificar para que se coja con el contexto del repositorio que nos ha creado
         Round round = new Round(PreferenceActivity.getSize(this.getContext()), this.type);
-        round.setFirstUser(PreferenceActivity.getPlayerName(this.getContext()),
+        round.setSecondUser(PreferenceActivity.getPlayerName(this.getContext()),
                            PreferenceActivity.getPlayerUUID(this.getContext()));
 
         // Añadimos la partida al repositorio de datos y actualizamos la interfaz

@@ -136,22 +136,20 @@ public class RoundActivity extends AppCompatActivity implements PartidaListener 
     /**
      * Crea un intent que contiene los datos que la acitividad necesitará para ejecutarse
      * @param packageContext Actividad que nos invocará
-     * @param roundId Partida que esta actividad mostrará
+     * @param round Partida que esta actividad mostrará
      * @return Intenta para invocar esta actividad
      */
-    public static Intent newIntent(Context packageContext, String roundId, String playerName,
-                                   String playerUUID, String roundTitle, int roundSize,
-                                   String roundDate, String roundBoard) {
+    public static Intent newIntent(Context packageContext, Round round) {
         // Creamos un intent entre el contexto que nos pasan y esta clase
         Intent intent = new Intent(packageContext, RoundActivity.class);
         // Adjuntamos la ronda con la clave que tenemos en la clase y devolvemos el intent
-        intent.putExtra(ARG_ROUND_ID, roundId);
-        intent.putExtra(ARG_FIRST_PLAYER_NAME, playerName);
-        intent.putExtra(ARG_FIRST_PLAYER_UUID, playerUUID);
-        intent.putExtra(ARG_ROUND_TITLE, roundTitle);
-        intent.putExtra(ARG_ROUND_SIZE, Integer.toString(roundSize));
-        intent.putExtra(ARG_ROUND_DATE, roundDate);
-        intent.putExtra(ARG_ROUND_BOARD, roundBoard);
+        intent.putExtra(ARG_ROUND_ID, round.getId());
+        intent.putExtra(ARG_FIRST_PLAYER_NAME, round.getSecondUserName());
+        intent.putExtra(ARG_FIRST_PLAYER_UUID, round.getSecondUserUUID());
+        intent.putExtra(ARG_ROUND_TITLE, round.getTitle());
+        intent.putExtra(ARG_ROUND_SIZE, Integer.toString(round.getSize()));
+        intent.putExtra(ARG_ROUND_DATE, round.getDate());
+        intent.putExtra(ARG_ROUND_BOARD, round.getBoard().tableroToString());
         return intent;
     }
 

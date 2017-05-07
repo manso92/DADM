@@ -25,6 +25,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import es.uam.eps.dadm.R;
 import es.uam.eps.dadm.database.DataBase;
+import es.uam.eps.dadm.model.Round;
 import es.uam.eps.dadm.model.RoundRepository;
 import es.uam.eps.dadm.model.RoundRepositoryFactory;
 
@@ -350,18 +351,15 @@ public class LoginActivity extends AppCompatActivity {
 
     /**
      * Captura los toques que se realicen sobre el botón de login
-     *
      * @param v View del botón que se ha pulsado
      */
     @OnClick(R.id.offline_game_button)
     public void offlineGame(View v) {
-        // TODO hacer que sea jugable una partida nueva
-        //Round round = new Round(PreferenceActivity.BOARD_SIZE_DEFAULT);
-
-        /*Intent i = RoundActivity.newIntent(this,round.getId(),PreferenceActivity.PLAYERNAME_DEFAULT,
-                PreferenceActivity.PLAYERUUID_DEFAULT, round.getTitle(), round.getSize(),
-                round.getDate(), round.getBoard().tableroToString());*/
-        //startActivity(i);
+        Round round = new Round(PreferenceActivity.BOARD_SIZE_DEFAULT, Round.Type.LOCAL);
+        round.setUserRandom();
+        round.setSecondUser(PreferenceActivity.PLAYERNAME_DEFAULT,PreferenceActivity.PLAYERUUID_DEFAULT);
+        Intent i = RoundActivity.newIntent(this,round);
+        startActivity(i);
     }
 
     /**
