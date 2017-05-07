@@ -16,6 +16,10 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.UnsupportedEncodingException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -195,7 +199,7 @@ public class LoginActivity extends AppCompatActivity {
 
         // Cogemos el nombre de usuario y la contraseña que se han introducido
         String user = userEditText.getText().toString();
-        String pass = passEditText.getText().toString();
+        String pass = md5Java(passEditText.getText().toString());
 
         // Ocultamos el formulario y mostramos el progress
         showProgress(true);
@@ -278,7 +282,7 @@ public class LoginActivity extends AppCompatActivity {
 
         // Cogemos el nombre de usuario y la contraseña que se han introducido
         String user = userEditText.getText().toString();
-        String pass = passEditText.getText().toString();
+        String pass = md5Java(passEditText.getText().toString());
 
         // Si no estamos conectado, indicamos al usuario que no se puede registrar sin internet
         if (!Jarvis.isOnline(this))
@@ -358,6 +362,29 @@ public class LoginActivity extends AppCompatActivity {
                 PreferenceActivity.PLAYERUUID_DEFAULT, round.getTitle(), round.getSize(),
                 round.getDate(), round.getBoard().tableroToString());*/
         //startActivity(i);
+    }
+
+    /**
+     * Calcula la función hash md5 de una cadena de texto para una contraseña
+     * @param message Mensaje del que calcular el hash
+     * @return Cadena hash del mensaje recibido
+     */
+    public String md5Java(String message){
+        String digest = null;
+        MessageDigest md = null;
+        byte[] hash = new byte[0];
+        try {
+            md = MessageDigest.getInstance("MD5");
+            hash = md.digest(message.getBytes("UTF-8"));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        StringBuilder sb = new StringBuilder(2*hash.length);
+        for(byte b : hash) sb.append(String.format("%02x", b&0xff));
+
+        digest = sb.toString();
+        return digest;
     }
 }
 
