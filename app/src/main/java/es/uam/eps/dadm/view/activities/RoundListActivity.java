@@ -20,6 +20,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import es.uam.eps.dadm.R;
 import es.uam.eps.dadm.model.Round;
+import es.uam.eps.dadm.model.RoundRepository;
 import es.uam.eps.dadm.model.RoundRepositoryFactory;
 import es.uam.eps.dadm.view.fragment.BlankFragment;
 import es.uam.eps.dadm.view.fragment.RoundListFragment;
@@ -82,11 +83,13 @@ public class RoundListActivity extends AppCompatActivity implements RoundListFra
     private void setupViewPager(ViewPager viewPager) {
         // Creamos un adapter que contendrá nuestros fragmentos
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
+        RoundRepository localRepo = RoundRepositoryFactory.createRepository(this,false);
+        RoundRepository serverRepo = RoundRepositoryFactory.createRepository(this,true);
         // Añadimos los fragmentos que vamos a tener en nuestro adapter
-        adapter.addFragment(RoundListFragment.newInstance(RoundRepositoryFactory.createRepository(this,false)), "Local");
-        adapter.addFragment(RoundListFragment.newInstance(RoundRepositoryFactory.createRepository(this,true)), "Servidor");
-        adapter.addFragment(new BlankFragment(), "Partidas disponibles");
-        adapter.addFragment(new BlankFragment(), "Partidas a la espera");
+        adapter.addFragment(RoundListFragment.newInstance(localRepo,Round.Type.LOCAL), "Local");
+        adapter.addFragment(RoundListFragment.newInstance(serverRepo, Round.Type.ACTIVE), "Servidor");
+        adapter.addFragment(RoundListFragment.newInstance(serverRepo, Round.Type.OPEN), "A la espera");
+        adapter.addFragment(RoundListFragment.newInstance(serverRepo, Round.Type.FINISHED), "Finalizadas");
         adapter.addFragment(new BlankFragment(), "Estadísticas");
         // Vinculamos el adapter al viewpager
         viewPager.setAdapter(adapter);
@@ -143,8 +146,8 @@ public class RoundListActivity extends AppCompatActivity implements RoundListFra
     @Override
     public void onRoundSelected(Round round) {
         // Si estamos en una pantalla pequeña, creamos la actividad y la arrancamos
-        Intent intent = RoundActivity.newIntent(this, round.getId(),round.getPlayerName(),
-                round.getPlayerUUID(), round.getTitle(),round.getSize(),round.getDate(),round.getBoard().tableroToString());
+        Intent intent = RoundActivity.newIntent(this, round.getId(),round.getSecondUserName(),
+                round.getSecondUserUUID(), round.getTitle(),round.getSize(),round.getDate(),round.getBoard().tableroToString());
         startActivity(intent);
     }
 
