@@ -88,15 +88,15 @@ public interface RoundRepository extends Serializable {
      * Devolverá la lista de partidas disponibles en el gestor que pertenecen al usuario
      * @param playeruuid Identificador de usuario
      * @param orderByField Orden en el que se devolverán las partidas
-     * @param group No voy a mentir, aún no sé para que es esto
+     * @param filter No voy a mentir, aún no sé para que es esto
      * @param callback Callback a ejecutar al que se le notificará cómo funcionó la función
      */
-    void getRounds(String playeruuid, String orderByField, String group,
+    void getRounds(String playeruuid, String orderByField, Round.Type filter,
                    RoundsCallback callback);
 
     /**
      * Interfaz que deberán implementar el callback que pasaremos a las funciones
-     * {@link #getRounds(String, String, String, RoundsCallback)}
+     * {@link #getRounds(String, String, Round.Type, RoundsCallback)}
      */
     interface RoundsCallback {
 
@@ -115,28 +115,9 @@ public interface RoundRepository extends Serializable {
     }
 
     /**
-     * Busca en el repositorio los usuarios registrados y el número de partidas que está jugando
-     * y se lo manda al callback
-     * @param callback Callback al que se le mandará la información
+     * Identifica el filtro por defecto que se utilizará para recuperar las partidas
+     * @return Tipo por defecto del friltro para seleccionar partidas
      */
-    void getScores(ScoresCallback callback);
+    Round.Type getDefaultFilter();
 
-    /**
-     * Callback que manejará la respuesta de {@link #getScores(ScoresCallback)}
-     */
-    interface ScoresCallback {
-
-        /**
-         * Maneja la lísta de usuarios y sus partidas
-         * @param players Lista de jugadores
-         * @param rounds Lista de partidas
-         */
-        void onResponse(List<String> players, List<Integer> rounds);
-
-        /**
-         * Maneja el error de que no haya datos de usuarios en el repositorio
-         * @param error Mensaje de error para mostrarse
-         */
-        void onError(String error);
-    }
 }

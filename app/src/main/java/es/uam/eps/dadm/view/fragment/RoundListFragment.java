@@ -46,9 +46,19 @@ public class RoundListFragment extends Fragment {
     private static final String REPOSITORY_KEY  = "repository_key";
 
     /**
+     * Clave del parámetro del filtro de las rondas que queremos dels servidor
+     */
+    private static final String ROUNDTYPE_KEY  = "roundtype_key";
+
+    /**
      * Repositorio por defecto del que coger los datos
      */
     private RoundRepository repository;
+
+    /**
+     * Repositorio por defecto del que coger los datos
+     */
+    private Round.Type type;
 
     /**
      * Instancia necesaria de Butterknife para realizar el unbinding
@@ -77,12 +87,13 @@ public class RoundListFragment extends Fragment {
      * @param repository Repositorio de datos para el framento
      * @return Fragment con los parámetros añadidos
      */
-    public static RoundListFragment newInstance(RoundRepository repository) {
+    public static RoundListFragment newInstance(RoundRepository repository, Round.Type type) {
         // Creamos un fragmento y un bundle para los argumentos
         RoundListFragment fragment = new RoundListFragment();
         Bundle bundle = new Bundle();
         // Añadimos el repositorio, colocamos los valores y devolvemos el fragmento
         bundle.putSerializable(REPOSITORY_KEY, repository);
+        bundle.putSerializable(ROUNDTYPE_KEY, type);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -101,6 +112,12 @@ public class RoundListFragment extends Fragment {
             this.repository = (RoundRepository) getArguments().getSerializable(REPOSITORY_KEY);
         if (this.repository == null)
             this.repository = RoundRepositoryFactory.createRepository(getActivity());
+
+        // Obtenemos el tipo de partidas que queremos
+        if ((getArguments() != null) && (getArguments().containsKey(ROUNDTYPE_KEY)))
+            this.type = (Round.Type) getArguments().getSerializable(ROUNDTYPE_KEY);
+        else
+            this.type = this.repository.getDefaultFilter();
     }
 
     /**
@@ -168,7 +185,7 @@ public class RoundListFragment extends Fragment {
                             }
                         };
                         String playeruuid = PreferenceActivity.getPlayerUUID(getActivity());
-                        repository.getRounds(playeruuid, null, null, roundsCallback);
+                        repository.getRounds(playeruuid, null, type, roundsCallback);
                     }
                 }));
     }
@@ -199,7 +216,7 @@ public class RoundListFragment extends Fragment {
         };
         // Regcargamos la lista de rondas disponibles
         repository.getRounds(PreferenceActivity.getPlayerUUID(this.getActivity()),
-                null, null, roundsCallback);
+                null, this.type, roundsCallback);
 
     }
 
@@ -245,9 +262,10 @@ public class RoundListFragment extends Fragment {
         };
 
         // Creamos una partida nueva y le colocamos los datos del jugador que la va a jugar
-        Round round = new Round(PreferenceActivity.getSize(this.getContext()));
-        round.setPlayerName(PreferenceActivity.getPlayerName(this.getContext()));
-        round.setPlayerUUID(PreferenceActivity.getPlayerUUID(this.getContext()));
+        // TODO modificar para que se coja con el contexto del repositorio que nos ha creado
+        Round round = new Round(PreferenceActivity.getSize(this.getContext()), this.type);
+        round.setFirstUser(PreferenceActivity.getPlayerName(this.getContext()),
+                           PreferenceActivity.getPlayerUUID(this.getContext()));
 
         // Añadimos la partida al repositorio de datos y actualizamos la interfaz
         repository.addRound(round, booleanCallback);

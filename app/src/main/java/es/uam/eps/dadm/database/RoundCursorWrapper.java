@@ -41,17 +41,12 @@ public class RoundCursorWrapper extends CursorWrapper {
         String playeruuid = getString(getColumnIndex(UserTable.Cols.PLAYERUUID));
         String rounduuid =  getString(getColumnIndex(RoundTable.Cols.ROUNDUUID));
         String date =       getString(getColumnIndex(RoundTable.Cols.DATE));
-        String title =      getString(getColumnIndex(RoundTable.Cols.TITLE));
         String size =       getString(getColumnIndex(RoundTable.Cols.SIZE));
         String board =      getString(getColumnIndex(RoundTable.Cols.BOARD));
 
         // Creamos una ronda y se los asignamos uno a uno
-        Round round = new Round(Integer.parseInt(size));
-        round.setPlayerName(playername);
-        round.setPlayerUUID(playeruuid);
-        round.setId(rounduuid);
-        round.setDate(date);
-        round.setTitle(title);
+        Round round = new Round(rounduuid, Round.Type.LOCAL, date, Integer.parseInt(size));
+        round.setSecondUser(playername, playeruuid);
 
         try {
             round.getBoard().stringToTablero(board);

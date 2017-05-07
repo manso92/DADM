@@ -109,12 +109,14 @@ public class RoundActivity extends AppCompatActivity implements PartidaListener 
 
 
         // Creamos una ronda y vamos metiendo uno a uno todos los argumentos
-        this.round = new Round(Integer.parseInt(getIntent().getStringExtra(ARG_ROUND_SIZE)));
-        this.round.setId(getIntent().getStringExtra(ARG_ROUND_ID));
-        this.round.setPlayerName(getIntent().getStringExtra(ARG_FIRST_PLAYER_NAME));
-        this.round.setPlayerUUID(getIntent().getStringExtra(ARG_FIRST_PLAYER_UUID));
-        this.round.setTitle(getIntent().getStringExtra(ARG_ROUND_TITLE));
-        this.round.setDate(getIntent().getStringExtra(ARG_ROUND_DATE));
+        // TODO revisar esto para cuando las partidas sean Online y manejar el type en el intent
+        this.round = new Round(getIntent().getStringExtra(ARG_ROUND_ID),
+                Round.Type.LOCAL,
+                getIntent().getStringExtra(ARG_ROUND_DATE),
+                getIntent().getIntExtra(ARG_ROUND_SIZE, PreferenceActivity.getSize(this)));
+
+        this.round.setSecondUser(getIntent().getStringExtra(ARG_FIRST_PLAYER_NAME),
+                getIntent().getStringExtra(ARG_FIRST_PLAYER_UUID));
         try {
             this.round.getBoard().stringToTablero(getIntent().getStringExtra(ARG_ROUND_BOARD));
         } catch (ExcepcionJuego excepcionJuego) {

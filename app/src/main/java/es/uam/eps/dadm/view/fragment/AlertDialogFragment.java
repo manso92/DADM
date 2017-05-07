@@ -43,9 +43,9 @@ public class AlertDialogFragment extends DialogFragment {
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         // Creamos una nueva partida y la añadimos a nuestro repositorio
-                        Round round = new Round(PreferenceActivity.getSize(getContext()));
-                        round.setPlayerUUID(PreferenceActivity.getPlayerUUID(getContext()));
-                        round.setPlayerName(PreferenceActivity.getPlayerName(getContext()));
+                        Round round = new Round(PreferenceActivity.getSize(getContext()), Round.Type.LOCAL);
+                        round.setSecondUser(PreferenceActivity.getPlayerName(getContext()),
+                                PreferenceActivity.getPlayerUUID(getContext()));
                         RoundRepository repository = RoundRepositoryFactory.createRepository(getContext());
                         repository.addRound(round,null);
                         // Si estamos en pantalla dividida, actualizamos la lista de partidas

@@ -306,7 +306,7 @@ public class DataBase implements RoundRepository {
      */
     private ContentValues getContentValues(Round round) {
         ContentValues values = new ContentValues();
-        values.put(RoundTable.Cols.PLAYERUUID, round.getPlayerUUID());
+        values.put(RoundTable.Cols.PLAYERUUID, round.getSecondUserUUID());
         values.put(RoundTable.Cols.ROUNDUUID,  round.getId());
         values.put(RoundTable.Cols.DATE,       round.getDate());
         values.put(RoundTable.Cols.TITLE,      round.getTitle());
@@ -391,11 +391,11 @@ public class DataBase implements RoundRepository {
      *
      * @param playeruuid Identificador de usuario
      * @param orderByField Orden en el que se devolverán las partidas
-     * @param group No voy a mentir, aún no sé para que es esto
+     * @param filter No voy a mentir, aún no sé para que es esto
      * @param callback Callback a ejecutar al que se le notificará cómo funcionó la función
      */
     @Override
-    public void getRounds(String playeruuid, String orderByField, String group,
+    public void getRounds(String playeruuid, String orderByField, Round.Type filter,
                           RoundsCallback callback) {
         // Creamos una lista de rondas y obtenemos las partidas siponibles
         List<Round> rounds = new ArrayList<>();
@@ -406,7 +406,7 @@ public class DataBase implements RoundRepository {
             // Obtenemos la ronda correspondiente
             Round round = cursor.getRound();
             // Si nosotros jugamos la partida, la añadimos a la lista
-            if (round.getPlayerUUID().equals(playeruuid))
+            if (round.getSecondUserUUID().equals(playeruuid))
                 rounds.add(round);
             // Movemos al siguiente
             cursor.moveToNext();
@@ -422,45 +422,11 @@ public class DataBase implements RoundRepository {
     }
 
     /**
-     * Busca en la base de datos los usuarios registrados y el número de partidas que está jugando
-     * y se lo manda al callback
-     * @param callback Callback al que se le mandará la información
+     * Identifica el filtro por defecto que se utilizará para recuperar las partidas
+     * @return Tipo por defecto del friltro para seleccionar partidas
      */
     @Override
-    public void getScores(ScoresCallback callback) {
-        // Creamos una lista para cada una de las cosas
-        List<String> players = new ArrayList<>();
-        List<Integer> scores = new ArrayList<>();
+    public Round.Type getDefaultFilter() { return Round.Type.LOCAL; }
 
-        // Sentencia sql que nos devolverá la información
-        String sql = "SELECT " +
-                UserTable.Cols.PLAYERNAME + ", " +
-                "COUNT(" + RoundTable.Cols.ROUNDUUID + ") " +
-                "FROM " + UserTable.NAME + ", " +
-                RoundTable.NAME + " " +
-                "WHERE " + UserTable.Cols.PLAYERUUID + "=" +
-                RoundTable.Cols.PLAYERUUID + " " +
-                "GROUP BY " + UserTable.Cols.PLAYERUUID + " " +
-                "ORDER BY COUNT(" + RoundTable.Cols.ROUNDUUID + ") DESC ;";
 
-        // Ejecutamos la consulta...
-        Cursor cursor = db.rawQuery(sql, null);
-        // ... y vamos recuperando los datos
-        cursor.moveToFirst();
-        while (!cursor.isAfterLast()) {
-            // Introducimos los valores en listas y vamos al siguiente registro
-            players.add(cursor.getString(0));
-            scores.add(cursor.getInt(1));
-            cursor.moveToNext();
-        }
-        // Cerramos el cursor
-        cursor.close();
-
-        // Si hay valores, se los pasamos al callback
-        if (cursor.getCount() > 0)
-            callback.onResponse(players, scores);
-        // Si no hay se lo indicamos con el error
-        else
-            callback.onError(contexto.getString(R.string.repository_users_not_founded));
-    }
 }
