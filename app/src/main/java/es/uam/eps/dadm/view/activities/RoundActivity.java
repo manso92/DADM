@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -86,6 +87,8 @@ public class RoundActivity extends AppCompatActivity implements PartidaListener 
     TextView roundTitle;
     @BindView(R.id.coordinatorRound)
     CoordinatorLayout coordinatorRound;
+    @BindView(R.id.reset_round_fab)
+    FloatingActionButton resetRoundFab;
 
 
     /**
@@ -96,7 +99,6 @@ public class RoundActivity extends AppCompatActivity implements PartidaListener 
 
     /**
      * Crea todo lo necesario para la correcta ejecución de la actividad
-     *
      * @param savedInstanceState Pares clave valor que nos pasa la actividad que nos invoca
      */
     @Override
@@ -126,13 +128,15 @@ public class RoundActivity extends AppCompatActivity implements PartidaListener 
 
         roundTitle.setText(this.round.getTitle());
 
+        if (this.round.getTipo() != Round.Type.LOCAL)
+            resetRoundFab.setVisibility(View.GONE);
+
     }
 
     /**
      * Crea un intent que contiene los datos que la acitividad necesitará para ejecutarse
-     *
      * @param packageContext Actividad que nos invocará
-     * @param roundId        Partida que esta actividad mostrará
+     * @param roundId Partida que esta actividad mostrará
      * @return Intenta para invocar esta actividad
      */
     public static Intent newIntent(Context packageContext, String roundId, String playerName,
@@ -210,7 +214,6 @@ public class RoundActivity extends AppCompatActivity implements PartidaListener 
 
     /**
      * Capturamos los eventos que se producen en la partida
-     *
      * @param evento Evento del juego al que tenemos que preparar una salida
      */
     @Override

@@ -2,6 +2,7 @@ package es.uam.eps.dadm.view.fragment;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -39,6 +40,12 @@ public class RoundListFragment extends Fragment {
      */
     @BindView(R.id.round_recycler_view)
     RecyclerView roundRecyclerView;
+
+    /**
+     * Instancia del botón de añadir partida
+     */
+    @BindView(R.id.add_found_fab)
+    FloatingActionButton addFoundFab;
 
     /**
      * Clave del parámetro del repositorio por defecto del que coger los datos
@@ -146,6 +153,11 @@ public class RoundListFragment extends Fragment {
 
         // Configuramos el recycler view y devolvemos la vista
         setupRecyclerView();
+
+        // Miramos el tipo y ocultamos el botón si es necesario
+        if ((this.type == Round.Type.OPEN) || (this.type == Round.Type.FINISHED))
+            addFoundFab.setVisibility(View.GONE);
+
         return view;
     }
 
