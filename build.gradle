@@ -6,6 +6,7 @@ buildscript {
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:2.3.1'
+        classpath 'com.google.gms:google-services:3.0.0'
     }
 }
 
@@ -32,7 +33,7 @@ ext {
     supportLibraryVersion =  '25.3.1'
     constraintLibraryVersion =  '1.0.2'
     volleyLibraryVersion =  '1.0.0'
-    firebaseVersion = '9.0.2'
+    firebaseVersion = '10.2.4'
 
     circleImageViewVersion = '2.0.0'
     butterknifeVersion = '8.5.1'

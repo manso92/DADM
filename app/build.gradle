@@ -37,6 +37,8 @@ dependencies {
     compile "com.android.support:cardview-v7:$rootProject.ext.supportLibraryVersion"
     compile "com.android.support:support-v4:$rootProject.ext.supportLibraryVersion"
     compile "com.android.volley:volley:$rootProject.ext.volleyLibraryVersion"
+    compile "com.google.firebase:firebase-core:$rootProject.ext.firebaseVersion"
+    compile "com.google.firebase:firebase-messaging:$rootProject.ext.firebaseVersion"
 
     compile "org.greenrobot:eventbus:$rootProject.ext.eventbusVersion"
     compile "de.hdodenhof:circleimageview:$rootProject.ext.circleImageViewVersion"
@@ -48,3 +50,5 @@ dependencies {
 
     testCompile "junit:junit:$rootProject.ext.junitVersion"
 }
+
+apply plugin: 'com.google.gms.google-services'
