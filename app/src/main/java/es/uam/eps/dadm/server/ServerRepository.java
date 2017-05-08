@@ -6,7 +6,22 @@ import android.util.Log;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.StringTokenizer;
+
+import es.uam.eps.dadm.model.Round;
 import es.uam.eps.dadm.model.RoundRepository;
+import es.uam.eps.dadm.model.TableroDamas;
+import es.uam.eps.dadm.view.activities.PreferenceActivity;
+import es.uam.eps.multij.ExcepcionJuego;
+
+import static es.uam.eps.dadm.model.Round.*;
+import static es.uam.eps.dadm.model.Round.Type.*;
 
 /**
  * Clase controladora del servidor de usuarios y partidas. Implementa la interfaz
@@ -59,6 +74,11 @@ public class ServerRepository implements RoundRepository {
         return repository;
     }
 
+    @Override
+    public void open() throws Exception {}
+    @Override
+    public void close() {}
+
     /**
      * Loguea o registra un usuario en el servidor
      * @param playerName Nombre de usuario
@@ -72,16 +92,16 @@ public class ServerRepository implements RoundRepository {
         Response.Listener<String> response = new Response.Listener<String>() {
             @Override
             public void onResponse(String result) {
-                // Cogemos el uuid devuelto por el servidor
-                String uuid = result.trim();
+            // Cogemos el uuid devuelto por el servidor
+            String uuid = result.trim();
 
-                // Comprobamos si es un uuid correcto o no e invocamos al callback en consecuencia
-                if (uuid.equals("-1") || uuid.length() < 10)
-                    callback.onError("Error loggin in user " + playerName);
-                else {
-                    callback.onLogin(uuid);
-                    Log.d(DEBUG, "Logged in: " + result.trim());
-                }
+            // Comprobamos si es un uuid correcto o no e invocamos al callback en consecuencia
+            if (uuid.equals("-1") || uuid.length() < 10)
+                callback.onError("Error loggin in user " + playerName);
+            else {
+                callback.onLogin(uuid);
+                Log.d(DEBUG, "Logged in: " + uuid);
+            }
             }
         };
         // Registramos un listener para manejar el mal funcionamiento de la petición en el servidor
@@ -118,5 +138,256 @@ public class ServerRepository implements RoundRepository {
     public void register(String playerName, String password,
                          RoundRepository.LoginRegisterCallback callback) {
         loginOrRegister(playerName, password, true, callback);
+    }
+
+    /**
+     * Coge la respuesta del servidor y la convierte en una lista de partidas disponibles
+     * @param response Respuesta del servidor
+     * @param tipo Tipo de partidas que queremos filtrar
+     * @return Lista de partidas
+     */
+    private List<Round> roundsFromJSONArray(JSONArray response, Type tipo, boolean player) {
+        // Creamos la lista de partidas donde las iremos almacenando
+        List<Round> rounds = new ArrayList<>();
+        // Por cada uno de los objetos que tenemos recorremos e el iterador
+        for (int i = 0; i < response.length(); i++) {
+            try {
+                // Cogemos el siguiente objeto JSON devuelto por el servidor
+                JSONObject o = response.getJSONObject(i);
+
+                // Cogemos cada uno de sus componentes
+                // TODO ver que ostias se hace con el turn
+                int roundid = o.getInt(ServerInterface.ROUND_ID_TAG);
+                int numberofplayers = o.getInt(ServerInterface.ROUND_PLAYER_NUMBER_TAG);
+                String dateevent = o.getString(ServerInterface.ROUND_DATE_TAG);
+                String playernames = o.getString(ServerInterface.ROUND_PLAYER_NAMES_TAG);
+                int turn = o.getInt(ServerInterface.ROUND_TURN_TAG);
+                String codedboard = o.getString(ServerInterface.ROUND_CODEBOARD_TAG);
+
+                // Creamos la partida correspondiente con los datos propocionados
+                Round round = new Round(roundid, tipo, dateevent, PreferenceActivity.BOARD_SIZE_DEFAULT);
+                round.getBoard().stringToTablero(codedboard);
+
+                // Dependiendo del número de jugadores, rellenamos los nombres
+                switch (numberofplayers){
+                    case 1:
+                        round.setFirstUser(playernames,"");
+                        break;
+                    case 2:
+                        StringTokenizer stok = new StringTokenizer(playernames, ",");
+                        round.setFirstUser(stok.nextToken(),"");
+                        round.setSecondUser(stok.nextToken(),"");
+                        break;
+                }
+
+
+                if (((player) && (playernames.contains(PreferenceActivity.getPlayerName(this.context)))) ||
+                        ((!player) && (!playernames.contains(PreferenceActivity.getPlayerName(this.context)))))
+                    rounds.add(round);
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            } catch (ExcepcionJuego excepcionJuego) {
+                excepcionJuego.printStackTrace();
+                Log.d(DEBUG, "Error turning string into Tablero");
+            }
+        }
+        return rounds;
+    }
+
+    /**
+     * Devuelve una lista de partidas obtenida desde el servidor
+     * @param playeruuid Identificador de usuario
+     * @param orderByField Orden en el que se devolverán las partidas
+     * @param filter Filtra por el tipo de partida que se ha de buscar en el servidor
+     * @param callback Callback a ejecutar al que se le notificará cómo funcionó la función
+     */
+    @Override
+    public void getRounds(String playeruuid, String orderByField, Round.Type filter,
+                          final RoundsCallback callback) {
+        if (filter == null) filter = OPEN;
+
+        // Comprobamos que tipo de partida nos están pidiendo y solo buscamos esas en el servidor
+        switch (filter){
+            case LOCAL:
+                break;
+            case OPEN:
+                this.getOpenRounds(playeruuid,callback);
+                break;
+            case ACTIVE:
+                this.getActiveRounds(playeruuid,callback);
+                this.getMyOpenRounds(playeruuid,callback);
+                break;
+            case FINISHED:
+                this.getFinishedRounds(playeruuid,callback);
+                break;
+        }
+    }
+
+    /**
+     * Identifica el filtro por defecto que se utilizará para recuperar las partidas
+     * @return Tipo por defecto del friltro para seleccionar partidas
+     */
+    @Override
+    public Type getDefaultFilter() {
+        return Round.Type.ACTIVE;
+    }
+
+    /**
+     * Devuelve la lista de partidas abiertas a las que el usuario se puede añadir
+     * @param playeruuid Identificador del usuario
+     * @param callback Calback a ejecutar con la respuesta del servidor
+     */
+    public void getOpenRounds(String playeruuid, final RoundsCallback callback) {
+        // Registramos un listener para manejar el correcto funcionamiento de la petición en el servidor
+        Response.Listener<JSONArray> responseCallback = new Response.Listener<JSONArray>() {
+            @Override
+            public void onResponse(JSONArray response) {
+                // Obtenemos la lista de partidas y se las mandamos al callbacki
+                List<Round> rounds = roundsFromJSONArray(response, OPEN, false);
+                callback.onResponse(rounds);
+                Log.d(DEBUG, "Rounds downloaded from server");
+            }
+        };
+
+        // Registramos un listener para manejar el mal funcionamiento de la petición en el servidor
+        Response.ErrorListener errorCallback = new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                // Enviamos un error al callback
+                callback.onError("Error downloading rounds from server");
+                Log.d(DEBUG, "Error downloading rounds from server");
+            }
+        };
+
+        // Obtenemos la lista de partidas de la interfaz con el servidor
+        is.getOpenRounds(playeruuid, responseCallback, errorCallback);
+    }
+
+    /**
+     * Devuelve la lista de partidas abiertas que el usuario tiene para que se unan
+     * @param playeruuid Identificador del usuario
+     * @param callback Calback a ejecutar con la respuesta del servidor
+     */
+    public void getMyOpenRounds(String playeruuid, final RoundsCallback callback) {
+        // Registramos un listener para manejar el correcto funcionamiento de la petición en el servidor
+        Response.Listener<JSONArray> responseCallback = new Response.Listener<JSONArray>() {
+            @Override
+            public void onResponse(JSONArray response) {
+                // Obtenemos la lista de partidas y se las mandamos al callbacki
+                List<Round> rounds = roundsFromJSONArray(response, OPEN, true);
+                callback.onResponse(rounds);
+                Log.d(DEBUG, "Rounds downloaded from server");
+            }
+        };
+
+        // Registramos un listener para manejar el mal funcionamiento de la petición en el servidor
+        Response.ErrorListener errorCallback = new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                // Enviamos un error al callback
+                callback.onError("Error downloading rounds from server");
+                Log.d(DEBUG, "Error downloading rounds from server");
+            }
+        };
+
+        // Obtenemos la lista de partidas de la interfaz con el servidor
+        is.getOpenRounds(playeruuid, responseCallback, errorCallback);
+    }
+
+    /**
+     * Devuelve la lista de partidas disponibles con las que el usuario puede jugar
+     * @param playeruuid Identificador del usuario
+     * @param callback Calback a ejecutar con la respuesta del servidor
+     */
+    public void getActiveRounds(String playeruuid, final RoundsCallback callback) {
+        // Registramos un listener para manejar el correcto funcionamiento de la petición en el servidor
+        Response.Listener<JSONArray> responseCallback = new Response.Listener<JSONArray>() {
+            @Override
+            public void onResponse(JSONArray response) {
+                // Obtenemos la lista de partidas y se las mandamos al callbacki
+                List<Round> rounds = roundsFromJSONArray(response, ACTIVE, true);
+                callback.onResponse(rounds);
+                Log.d(DEBUG, "Rounds downloaded from server");
+            }
+        };
+
+        // Registramos un listener para manejar el mal funcionamiento de la petición en el servidor
+        Response.ErrorListener errorCallback = new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                // Enviamos un error al callback
+                callback.onError("Error downloading rounds from server");
+                Log.d(DEBUG, "Error downloading rounds from server");
+            }
+        };
+
+        // Obtenemos la lista de partidas de la interfaz con el servidor
+        is.getActiveRounds(playeruuid, responseCallback, errorCallback);
+    }
+
+    /**
+     * Devuelve la lista de partidas finalizadas
+     * @param playeruuid Identificador del usuario
+     * @param callback Calback a ejecutar con la respuesta del servidor
+     */
+    public void getFinishedRounds(String playeruuid, final RoundsCallback callback) {
+        // Registramos un listener para manejar el correcto funcionamiento de la petición en el servidor
+        Response.Listener<JSONArray> responseCallback = new Response.Listener<JSONArray>() {
+            @Override
+            public void onResponse(JSONArray response) {
+                // Obtenemos la lista de partidas y se las mandamos al callbacki
+                List<Round> rounds = roundsFromJSONArray(response, FINISHED, true);
+                callback.onResponse(rounds);
+                Log.d(DEBUG, "Rounds downloaded from server");
+            }
+        };
+
+        // Registramos un listener para manejar el mal funcionamiento de la petición en el servidor
+        Response.ErrorListener errorCallback = new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                // Enviamos un error al callback
+                callback.onError("Error downloading rounds from server");
+                Log.d(DEBUG, "Error downloading rounds from server");
+            }
+        };
+
+        // Obtenemos la lista de partidas de la interfaz con el servidor
+        is.getFinishedRounds(playeruuid, responseCallback, errorCallback);
+    }
+
+    /**
+     * Añade una ronda al servidor
+     * @param round Partida que queremos añadir
+     * @param callback Callback a ejecutar con la respuesta a la función
+     */
+    @Override
+    public void addRound(final Round round, final BooleanCallback callback) {
+
+        // Registramos un listener para manejar el correcto funcionamiento de la petición en el servidor
+        Response.Listener<String> responseCallback = new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                //TODO comprobar si se ha creado bien la ronda
+                // Enviamos un exito al callback
+                callback.onResponse(true);
+                Log.d(DEBUG, "Round created correctly");
+            }
+        };
+
+        // Registramos un listener para manejar el mal funcionamiento de la petición en el servidor
+        Response.ErrorListener errorCallback = new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                // Enviamos un error al callback
+                callback.onResponse(false);
+                Log.d(DEBUG, "Error creating round");
+            }
+        };
+
+        // Obtenemos la lista de partidas de la interfaz con el servidor
+        is.newRound(round.getFirstUserUUID()
+                , round.getBoard().tableroToString(), responseCallback, errorCallback);
     }
 }
