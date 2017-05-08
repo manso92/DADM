@@ -76,6 +76,16 @@ public class PreferenceActivity extends AppCompatActivity {
     public final static String PLAYERNAME_DEFAULT = "Player";
 
     /**
+     * Clave para registrar la contraseña de usuario
+     */
+    private final static String PLAYERPASSWORD_KEY = "playerpassword";
+
+    /**
+     * Nombre por defecto para el usuario
+     */
+    public final static String PLAYERPASSWORD_DEFAULT = "";
+
+    /**
      * Crea todo lo necesario para la correcta ejecución de la actividad
      * @param savedInstanceState Pares clave valor que nos pasa la actividad que nos invoca
      */
@@ -200,6 +210,24 @@ public class PreferenceActivity extends AppCompatActivity {
      */
     public static void setPlayerName(Context context, String name) {
         setKey(context, PreferenceActivity.PLAYERNAME_KEY, name);
+    }
+
+    /**
+     * Devuelve el valor del hash de la password de usuario que está registrado en las preferencias
+     * @param context Contexto desde el cual se quiere obtener el valor del usuario
+     * @return Hash de la password de usuario registrado | Default value para la password de usuario
+     */
+    public static String getPlayerPassword(Context context) {
+        return getKey(context, PLAYERPASSWORD_KEY, PLAYERPASSWORD_DEFAULT);
+    }
+
+    /**
+     * Registra la contraseña del usuario logueado en las preferencias de usuario
+     * @param context Contexto desde el cual se quiere registrar el valor
+     * @param password Contraseña del usuario
+     */
+    public static void setPlayerPassword(Context context, String password) {
+        setKey(context, PreferenceActivity.PLAYERPASSWORD_KEY, password);
     }
 
     /**
