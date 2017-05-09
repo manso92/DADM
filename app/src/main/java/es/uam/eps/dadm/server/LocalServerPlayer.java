@@ -157,7 +157,7 @@ public class LocalServerPlayer  implements Jugador, TableroView.OnPlayListener {
      * Añade la partida al jugador
      * @param game Partida de juego
      */
-    public void addPartida (Partida game){
+    public void setPartida(Partida game){
         this.game = game;
     }
 
