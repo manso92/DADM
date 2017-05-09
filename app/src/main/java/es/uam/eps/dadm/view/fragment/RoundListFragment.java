@@ -185,21 +185,8 @@ public class RoundListFragment extends Fragment {
                 RecyclerItemClickListener.OnItemClickListener() {
                     @Override
                     public void onItemClick(View view, final int position) {
-                        RoundRepository.RoundsCallback roundsCallback = new RoundRepository.RoundsCallback() {
-                            @Override
-                            public void onResponse(List<Round> rounds) {
-                                // Llamamos al callback con la ronda que se ha seleccionado
-                                callbacks.onRoundSelected(rounds.get(position), type);
-                            }
-                            @Override
-                            public void onError(String error) {
-                                // Mostramos el error que se ha producido al seleccionar el item
-                                Snackbar.make(roundRecyclerView, R.string.repository_round_not_founded,
-                                        Snackbar.LENGTH_LONG).show();
-                            }
-                        };
-                        String playeruuid = PreferenceActivity.getPlayerUUID(getActivity());
-                        repository.getRounds(playeruuid, null, type, roundsCallback);
+                        // Llamamos al callback con la ronda que se ha presionado
+                        callbacks.onRoundSelected(roundAdapter.getRound(position), type);
                     }
                 }));
     }
@@ -222,7 +209,8 @@ public class RoundListFragment extends Fragment {
                     roundAdapter.addRounds(rounds);
 
                 // Añadimos el adapter al recyclerview
-                roundRecyclerView.setAdapter(roundAdapter);
+                if (roundRecyclerView != null)
+                    roundRecyclerView.setAdapter(roundAdapter);
             }
             @Override
             public void onError(String error) {
@@ -397,6 +385,11 @@ public class RoundListFragment extends Fragment {
          */
         public void clear() {
             this.rounds = new ArrayList<Round>();
+        }
+
+
+        public Round getRound(int position) {
+            return this.rounds.get(position);
         }
 
         /**
