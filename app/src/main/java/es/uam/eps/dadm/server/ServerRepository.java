@@ -420,4 +420,30 @@ public class ServerRepository implements RoundRepository {
         };
         is.addPlayerToRound(Integer.parseInt(round.getId()),userUUID,responseCallback,errorCallback);
     }
+
+    @Override
+    public void updateRound(Round round, final BooleanCallback callback) {
+        // Registramos un listener para manejar el correcto funcionamiento de la petición en el servidor
+        Response.Listener<String> responseCallback = new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                //TODO comprobar si se ha creado bien la ronda
+                // Enviamos un exito al callback
+                callback.onResponse(true);
+                Log.d(DEBUG, "Round updated correctly");
+            }
+        };
+
+        // Registramos un listener para manejar el mal funcionamiento de la petición en el servidor
+        Response.ErrorListener errorCallback = new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                // Enviamos un error al callback
+                callback.onResponse(false);
+                Log.d(DEBUG, "Error updating round");
+            }
+        };
+        is.newMovement(Integer.parseInt(round.getId()), PreferenceActivity.getPlayerUUID(context),
+                round.getBoard().tableroToString(),responseCallback,errorCallback);
+    }
 }
