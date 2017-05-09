@@ -20,7 +20,6 @@ import es.uam.eps.dadm.model.JugadorHumano;
 import es.uam.eps.dadm.model.Round;
 import es.uam.eps.dadm.model.RoundRepository;
 import es.uam.eps.dadm.model.RoundRepositoryFactory;
-import es.uam.eps.dadm.view.fragment.AlertDialogFragment;
 import es.uam.eps.dadm.view.views.TableroView;
 import es.uam.eps.multij.Evento;
 import es.uam.eps.multij.ExcepcionJuego;
@@ -45,39 +44,14 @@ public class RoundActivity extends AppCompatActivity implements PartidaListener 
      */
     public static final String DEBUG = "DEBUG";
 
-    /**
-     * Id del argumento de la ronda
-     */
     public static final String ARG_ROUND_ID = "es.uam.eps.dadm.round_id";
-
-    /**
-     * Id del argumento del nombre del jugador
-     */
-    public static final String ARG_FIRST_PLAYER_NAME = "es.uam.eps.dadm.player_name";
-
-    /**
-     * Id del argumento del nombre del jugador
-     */
-    public static final String ARG_FIRST_PLAYER_UUID = "es.uam.eps.dadm.player_uuid";
-
-    /**
-     * Id del argumento del título de la partida
-     */
-    public static final String ARG_ROUND_TITLE = "es.uam.eps.dadm.round_title";
-
-    /**
-     * Id del argumento del tamaño de la partida
-     */
+    public static final String ARG_FIRST_PLAYER_NAME = "es.uam.eps.dadm.first_player_name";
+    public static final String ARG_FIRST_PLAYER_UUID = "es.uam.eps.dadm.first_player_uuid";
+    public static final String ARG_SECOND_PLAYER_NAME = "es.uam.eps.dadm.second_player_name";
+    public static final String ARG_SECOND_PLAYER_UUID = "es.uam.eps.dadm.second_player_uuid";
+    public static final String ARG_ROUND_TYPE = "es.uam.eps.dadm.round_type";
     public static final String ARG_ROUND_SIZE = "es.uam.eps.dadm.round_size";
-
-    /**
-     * Id del argumento de la fecha de la partida
-     */
     public static final String ARG_ROUND_DATE = "es.uam.eps.dadm.round_date";
-
-    /**
-     * Id del argumento del tablero
-     */
     public static final String ARG_ROUND_BOARD = "es.uam.eps.dadm.round_board";
 
 
@@ -112,19 +86,7 @@ public class RoundActivity extends AppCompatActivity implements PartidaListener 
 
         // Creamos una ronda y vamos metiendo uno a uno todos los argumentos
         // TODO revisar esto para cuando las partidas sean Online y manejar el type en el intent
-        this.round = new Round(getIntent().getStringExtra(ARG_ROUND_ID),
-                Round.Type.LOCAL,
-                getIntent().getStringExtra(ARG_ROUND_DATE),
-                getIntent().getIntExtra(ARG_ROUND_SIZE, PreferenceActivity.getSize(this)));
-
-        this.round.setSecondUser(getIntent().getStringExtra(ARG_FIRST_PLAYER_NAME),
-                getIntent().getStringExtra(ARG_FIRST_PLAYER_UUID));
-        try {
-            this.round.getBoard().stringToTablero(getIntent().getStringExtra(ARG_ROUND_BOARD));
-        } catch (ExcepcionJuego excepcionJuego) {
-            excepcionJuego.printStackTrace();
-            finish();
-        }
+        this.round = roundFromIntent();
 
         roundTitle.setText(this.round.getTitle());
 
@@ -144,13 +106,36 @@ public class RoundActivity extends AppCompatActivity implements PartidaListener 
         Intent intent = new Intent(packageContext, RoundActivity.class);
         // Adjuntamos la ronda con la clave que tenemos en la clase y devolvemos el intent
         intent.putExtra(ARG_ROUND_ID, round.getId());
-        intent.putExtra(ARG_FIRST_PLAYER_NAME, round.getSecondUserName());
-        intent.putExtra(ARG_FIRST_PLAYER_UUID, round.getSecondUserUUID());
-        intent.putExtra(ARG_ROUND_TITLE, round.getTitle());
+        intent.putExtra(ARG_ROUND_TYPE, round.getTipo());
+        intent.putExtra(ARG_FIRST_PLAYER_NAME, round.getFirstUserName());
+        intent.putExtra(ARG_FIRST_PLAYER_UUID, round.getFirstUserUUID());
+        intent.putExtra(ARG_SECOND_PLAYER_NAME, round.getSecondUserName());
+        intent.putExtra(ARG_SECOND_PLAYER_UUID, round.getSecondUserUUID());
         intent.putExtra(ARG_ROUND_SIZE, Integer.toString(round.getSize()));
         intent.putExtra(ARG_ROUND_DATE, round.getDate());
         intent.putExtra(ARG_ROUND_BOARD, round.getBoard().tableroToString());
         return intent;
+    }
+
+    private Round roundFromIntent() {
+        int size = Integer.parseInt(getIntent().getStringExtra(ARG_ROUND_SIZE));
+        Round round = new Round(getIntent().getStringExtra(ARG_ROUND_ID),
+                (Round.Type) getIntent().getSerializableExtra(ARG_ROUND_TYPE),
+                getIntent().getStringExtra(ARG_ROUND_DATE),
+                Integer.parseInt(getIntent().getStringExtra(ARG_ROUND_SIZE)));
+
+        round.setFirstUser(getIntent().getStringExtra(ARG_FIRST_PLAYER_NAME),
+                getIntent().getStringExtra(ARG_FIRST_PLAYER_UUID));
+        round.setSecondUser(getIntent().getStringExtra(ARG_SECOND_PLAYER_NAME),
+                getIntent().getStringExtra(ARG_SECOND_PLAYER_UUID));
+
+        try {
+            round.getBoard().stringToTablero(getIntent().getStringExtra(ARG_ROUND_BOARD));
+        } catch (ExcepcionJuego excepcionJuego) {
+            excepcionJuego.printStackTrace();
+            finish();
+        }
+        return round;
     }
 
 
@@ -187,8 +172,9 @@ public class RoundActivity extends AppCompatActivity implements PartidaListener 
     void startRound() {
         // Creamos un jugador aleatorio y uno local que manejará el juego y los metemos en una Lista
         ArrayList<Jugador> players = new ArrayList<Jugador>();
+
         JugadorAleatorio randomPlayer = new JugadorAleatorio("Random player");
-        JugadorHumano localPlayer = new JugadorHumano();
+        JugadorHumano localPlayer = new JugadorHumano(this,round);
         players.add(randomPlayer);
         players.add(localPlayer);
 
@@ -229,33 +215,8 @@ public class RoundActivity extends AppCompatActivity implements PartidaListener 
                 boardView.invalidate();
                 // Indicamos al jugador que la partida ha acabado
                 Snackbar.make(coordinatorRound, R.string.game_game_over_title, Snackbar.LENGTH_SHORT).show();
-                new AlertDialogFragment().show(getSupportFragmentManager(),"ALERT DIALOG");
+                this.finish();
                 break;
         }
-        // Actualizamos la partida en el repositorio
-        updateRound();
-    }
-
-    /**
-     * Actualiza la partida en el repositorio
-     */
-    private void updateRound() {
-        // Obtenemos una referencia al repositorio y creamos un booleancalback
-        RoundRepository repository = RoundRepositoryFactory.createRepository(this);
-        RoundRepository.BooleanCallback callback = new RoundRepository.BooleanCallback() {
-            /**
-             * Gestiona la respuesta del servidor a un evento de respuesta booelana
-             * @param response Correcta ejecución de la función en el servidor
-             */
-            @Override
-            public void onResponse(boolean response) {
-                // Si se produce un error al actualizar la partida, se lo comunicamos al usuario
-                if (!response)
-                    Snackbar.make(coordinatorRound, R.string.repository_round_update_error,
-                            Snackbar.LENGTH_LONG).show();
-            }
-        };
-        // Actualizamos la partida en la base de datos
-        repository.updateRound(round, callback);
     }
 }
