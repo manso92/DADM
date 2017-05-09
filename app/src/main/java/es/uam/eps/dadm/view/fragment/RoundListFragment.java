@@ -94,15 +94,14 @@ public class RoundListFragment extends Fragment {
 
     /**
      * Crea una nueva instancia del fragmento en el que se incluye el repositorio
-     * @param repository Repositorio de datos para el framento
+     * @param type Tipo de  Repositorio de datos para el framento
      * @return Fragment con los parámetros añadidos
      */
-    public static RoundListFragment newInstance(RoundRepository repository, Round.Type type) {
+    public static RoundListFragment newInstance(Round.Type type) {
         // Creamos un fragmento y un bundle para los argumentos
         RoundListFragment fragment = new RoundListFragment();
         Bundle bundle = new Bundle();
         // Añadimos el repositorio, colocamos los valores y devolvemos el fragmento
-        bundle.putSerializable(REPOSITORY_KEY, repository);
         bundle.putSerializable(ROUNDTYPE_KEY, type);
         fragment.setArguments(bundle);
         return fragment;
@@ -117,17 +116,15 @@ public class RoundListFragment extends Fragment {
         // Llamamos al constructor
         super.onCreate(savedInstanceState);
 
-        // Obtenemos el repositorio, si no hay, pues lo creamos
-        if ((getArguments() != null) && (getArguments().containsKey(REPOSITORY_KEY)))
-            this.repository = (RoundRepository) getArguments().getSerializable(REPOSITORY_KEY);
-        if (this.repository == null)
-            this.repository = RoundRepositoryFactory.createRepository(getActivity());
-
         // Obtenemos el tipo de partidas que queremos
         if ((getArguments() != null) && (getArguments().containsKey(ROUNDTYPE_KEY)))
             this.type = (Round.Type) getArguments().getSerializable(ROUNDTYPE_KEY);
         else
             this.type = this.repository.getDefaultFilter();
+
+        // Creamos un repositorio en base a lo que nos hayan mandado
+        this.repository =
+                RoundRepositoryFactory.createRepository(this.getContext(), this.type != Round.Type.LOCAL);
     }
 
     /**
