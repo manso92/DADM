@@ -2,6 +2,7 @@ package es.uam.eps.dadm.view.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -22,6 +23,7 @@ import es.uam.eps.dadm.R;
 import es.uam.eps.dadm.model.Round;
 import es.uam.eps.dadm.model.RoundRepository;
 import es.uam.eps.dadm.model.RoundRepositoryFactory;
+import es.uam.eps.dadm.server.ServerRepository;
 import es.uam.eps.dadm.view.fragment.BlankFragment;
 import es.uam.eps.dadm.view.fragment.RoundListFragment;
 
@@ -35,7 +37,7 @@ import es.uam.eps.dadm.view.fragment.RoundListFragment;
  * @author Pablo Manso
  * @version 02/05/2017
  */
-public class RoundListActivity extends AppCompatActivity implements RoundListFragment.Callbacks {//, RoundFragment.Callbacks {
+public class RoundListActivity extends AppCompatActivity implements RoundListFragment.Callbacks {
 
     /**
      * Barra superior por defecto de las vistas android
@@ -144,26 +146,37 @@ public class RoundListActivity extends AppCompatActivity implements RoundListFra
      * @param round Partida que el jugador ha seleccionado
      */
     @Override
-    public void onRoundSelected(Round round) {
-        // Si estamos en una pantalla pequeña, creamos la actividad y la arrancamos
-        Intent intent = RoundActivity.newIntent(this, round);
-        startActivity(intent);
-    }
+    public void onRoundSelected(Round round, Round.Type tipo) {
+        switch (tipo){
+            case LOCAL:
+                startActivity(RoundActivity.newIntent(this, round));
+                break;
+            case OPEN:
+                RoundRepository server = RoundRepositoryFactory.createRepository(this,true);
+                RoundRepository.BooleanCallback callback = new RoundRepository.BooleanCallback() {
+                    @Override
+                    public void onResponse(boolean ok) {
+                        if (ok) {
+                            Snackbar.make(viewPager, R.string.repository_round_add_user_success,
+                                    Snackbar.LENGTH_LONG).show();
+                            ((RoundListFragment)((ViewPagerAdapter)viewPager.getAdapter()).getItem(1)).updateUI();
+                            ((RoundListFragment)((ViewPagerAdapter)viewPager.getAdapter()).getItem(2)).updateUI();
+                        }
+                        else
+                            Snackbar.make(viewPager, R.string.repository_round_add_user_success,
+                                Snackbar.LENGTH_LONG).show();
+                    }
+                };
+                ((ServerRepository) server).addPlayerToRound(round,PreferenceActivity.getPlayerUUID(this),callback);
+                break;
+            case ACTIVE:
+                startActivity(RoundActivity.newIntent(this, round));
+                break;
+            case FINISHED:
+                break;
+        }
 
-    /**
-     * Función que gestionará las modificaciones necesarias en caso de que se actualice la ronda
-     */
-    //@Override
-    public void onRoundUpdated() {
-        // Obtenemos el FragmentManager
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        // Obtenemos el fragmento de la lista de partidas
-        RoundListFragment roundListFragment = (RoundListFragment)
-                fragmentManager.findFragmentById(R.id.fragment_container);
-        // Actualizamos la lista de partidas
-        roundListFragment.updateUI();
     }
-
 
     /**
      * ViewPagerAdapter manejará las páginas que tendrá nuestro viewpage, permitiento añadir nuevos

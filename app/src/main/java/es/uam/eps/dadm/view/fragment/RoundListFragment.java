@@ -24,6 +24,8 @@ import es.uam.eps.dadm.R;
 import es.uam.eps.dadm.model.Round;
 import es.uam.eps.dadm.model.RoundRepository;
 import es.uam.eps.dadm.model.RoundRepositoryFactory;
+import es.uam.eps.dadm.server.ServerInterface;
+import es.uam.eps.dadm.server.ServerRepository;
 import es.uam.eps.dadm.view.activities.PreferenceActivity;
 import es.uam.eps.dadm.view.listeners.RecyclerItemClickListener;
 import es.uam.eps.dadm.view.views.TableroView;
@@ -87,7 +89,7 @@ public class RoundListFragment extends Fragment {
      * Interfaz que deberá implementar la clase que quiere que le avisemos de la selección de un item
      */
     public interface Callbacks {
-        void onRoundSelected(Round round);
+        void onRoundSelected(Round round, Round.Type tipo);
     }
 
     /**
@@ -190,7 +192,7 @@ public class RoundListFragment extends Fragment {
                             @Override
                             public void onResponse(List<Round> rounds) {
                                 // Llamamos al callback con la ronda que se ha seleccionado
-                                callbacks.onRoundSelected(rounds.get(position));
+                                callbacks.onRoundSelected(rounds.get(position), type);
                             }
                             @Override
                             public void onError(String error) {

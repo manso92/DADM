@@ -363,7 +363,7 @@ public class ServerRepository implements RoundRepository {
      * @param callback Callback a ejecutar con la respuesta a la función
      */
     @Override
-    public void addRound(final Round round, final BooleanCallback callback) {
+    public void addRound(Round round, final BooleanCallback callback) {
 
         // Registramos un listener para manejar el correcto funcionamiento de la petición en el servidor
         Response.Listener<String> responseCallback = new Response.Listener<String>() {
@@ -389,5 +389,35 @@ public class ServerRepository implements RoundRepository {
         // Obtenemos la lista de partidas de la interfaz con el servidor
         is.newRound(round.getFirstUserUUID()
                 , round.getBoard().tableroToString(), responseCallback, errorCallback);
+    }
+
+    /**
+     * Añade un nuevo jugador a una partida
+     * @param round Ronda a la que añadiremos el jugador
+     * @param userUUID UUID del jugador que queremos añadir
+     * @param callback Callbacka ejecutar con la respuesta al función
+     */
+    public void addPlayerToRound(Round round, String userUUID, final BooleanCallback callback) {
+        // Registramos un listener para manejar el correcto funcionamiento de la petición en el servidor
+        Response.Listener<String> responseCallback = new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                //TODO comprobar si se ha creado bien la ronda
+                // Enviamos un exito al callback
+                callback.onResponse(true);
+                Log.d(DEBUG, "Round created correctly");
+            }
+        };
+
+        // Registramos un listener para manejar el mal funcionamiento de la petición en el servidor
+        Response.ErrorListener errorCallback = new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                // Enviamos un error al callback
+                callback.onResponse(false);
+                Log.d(DEBUG, "Error creating round");
+            }
+        };
+        is.addPlayerToRound(Integer.parseInt(round.getId()),userUUID,responseCallback,errorCallback);
     }
 }
