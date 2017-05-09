@@ -51,6 +51,8 @@
     <string name="repository.round.create.error">Error creating round</string>
     <string name="repository.round.update.error">Error updating round</string>
     <string name="repository.round.not_founded">No rounds found in database</string>
+    <string name="repository.round.add_user.success">You\'ve correctly enter on game</string>
+    <string name="repository.round.add_user.error">Error entering game</string>
     <string name="repository.users.not_founded">No users found in database</string>
     <string name="repository.server.notavailable">Server not available</string>
     <string name="repository.server.internet_needed">Not internet connection. Unable to connect to server</string>
