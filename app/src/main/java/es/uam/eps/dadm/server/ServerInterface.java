@@ -29,18 +29,18 @@ import java.util.Map;
 public class ServerInterface {
 
     // PARÁMETROS PARA LOS SCRIPTS DEL SERVIDOR
-    public static final String PLAYER_NAME_TAG = "playername";
-    public static final String PLAYER_PASSWORD_TAG = "playerpassword";
-    public static final String PLAYER_ID_TAG = "playerid";
-    public static final String GOOGLE_CLOUT_TAG = "gcmregid";
-    public static final String LOGIN_TAG = "login";
-    public static final String GAMEID_TAG = "gameid";
-    public static final String ROUND_ID_TAG = "roundid";
-    public static final String ROUND_PLAYER_NUMBER_TAG = "numberofplayers";
-    public static final String ROUND_DATE_TAG = "dateevent";
-    public static final String ROUND_PLAYER_NAMES_TAG = "playernames";
-    public static final String ROUND_TURN_TAG = "turn";
-    public static final String ROUND_CODEBOARD_TAG = "codedboard";
+    private static final String PLAYER_NAME_TAG = "playername";
+    private static final String PLAYER_PASSWORD_TAG = "playerpassword";
+    private static final String PLAYER_ID_TAG = "playerid";
+    private static final String GOOGLE_CLOUT_TAG = "gcmregid";
+    private static final String LOGIN_TAG = "login";
+    private static final String GAMEID_TAG = "gameid";
+    static final String ROUND_ID_TAG = "roundid";
+    static final String ROUND_PLAYER_NUMBER_TAG = "numberofplayers";
+    static final String ROUND_DATE_TAG = "dateevent";
+    static final String ROUND_PLAYER_NAMES_TAG = "playernames";
+    static final String ROUND_TURN_TAG = "turn";
+    static final String ROUND_CODEBOARD_TAG = "codedboard";
 
     // TAG PARA DEBUGGEAR
     private static final String DEBUG = "DEBUG";
@@ -73,7 +73,7 @@ public class ServerInterface {
     /**
      * Identificador del juego en el servidor
      */
-    public static final int GAME_ID = 17;
+    private static final int GAME_ID = 17;
 
     /**
      * Queue de peticiones con la que mandaremos mensajes al servidor
