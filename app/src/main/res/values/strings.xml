@@ -62,6 +62,7 @@
     <string name="game.round.finished">This round is finished</string>
     <string name="game.round.restarted">Round restarted</string>
     <string name="game.move.invalid">Invalid movement</string>
+    <string name="game.not_turn">It\'s not your turn</string>
     <string name="game.game_over.title">Game over</string>
     <string name="game.game_over.message">Would you like to create a new round?</string>
     <string name="game.game_over.pos">Yes</string>
