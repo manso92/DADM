@@ -14,10 +14,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
 
+import es.uam.eps.dadm.model.Preferences;
 import es.uam.eps.dadm.model.Round;
 import es.uam.eps.dadm.model.RoundRepository;
-import es.uam.eps.dadm.model.TableroDamas;
-import es.uam.eps.dadm.view.activities.PreferenceActivity;
 import es.uam.eps.multij.ExcepcionJuego;
 
 import static es.uam.eps.dadm.model.Round.*;
@@ -165,7 +164,7 @@ public class ServerRepository implements RoundRepository {
                 String codedboard = o.getString(ServerInterface.ROUND_CODEBOARD_TAG);
 
                 // Creamos la partida correspondiente con los datos propocionados
-                Round round = new Round(roundid, tipo, dateevent, PreferenceActivity.BOARD_SIZE_DEFAULT);
+                Round round = new Round(roundid, tipo, dateevent, Preferences.BOARD_SIZE_DEFAULT);
                 round.getBoard().stringToTablero(codedboard);
 
                 // Dependiendo del número de jugadores, rellenamos los nombres
@@ -181,8 +180,8 @@ public class ServerRepository implements RoundRepository {
                 }
 
 
-                if (((player) && (playernames.contains(PreferenceActivity.getPlayerName(this.context)))) ||
-                        ((!player) && (!playernames.contains(PreferenceActivity.getPlayerName(this.context)))))
+                if (((player) && (playernames.contains(Preferences.getPlayerName(this.context)))) ||
+                        ((!player) && (!playernames.contains(Preferences.getPlayerName(this.context)))))
                     rounds.add(round);
 
             } catch (JSONException e) {
@@ -443,7 +442,7 @@ public class ServerRepository implements RoundRepository {
                 Log.d(DEBUG, "Error updating round");
             }
         };
-        is.newMovement(Integer.parseInt(round.getId()), PreferenceActivity.getPlayerUUID(context),
+        is.newMovement(Integer.parseInt(round.getId()), Preferences.getPlayerUUID(context),
                 round.getBoard().tableroToString(),responseCallback,errorCallback);
     }
 }

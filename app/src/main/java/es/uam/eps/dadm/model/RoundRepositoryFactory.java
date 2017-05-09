@@ -5,8 +5,6 @@ import android.support.annotation.Nullable;
 
 import es.uam.eps.dadm.database.DataBase;
 import es.uam.eps.dadm.server.ServerRepository;
-import es.uam.eps.dadm.view.activities.PreferenceActivity;
-
 
 /**
  * Clase manejadora de el almacenamiento de datos, con la cual crearemos de forma estática una
@@ -26,7 +24,7 @@ public class RoundRepositoryFactory {
     @Nullable
     public static RoundRepository createRepository(Context context) {
         // Creamos una referencia de la base de datos, local o en remoto
-        RoundRepository repository = PreferenceActivity.getOnlineGame(context) ?
+        RoundRepository repository = Preferences.getOnlineGame(context) ?
                 ServerRepository.getInstance(context) :
                 new DataBase(context);
         try {

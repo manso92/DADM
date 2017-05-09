@@ -16,15 +16,14 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import es.uam.eps.dadm.R;
 import es.uam.eps.dadm.database.DataBase;
+import es.uam.eps.dadm.model.Preferences;
 import es.uam.eps.dadm.model.Round;
 import es.uam.eps.dadm.model.RoundRepository;
 import es.uam.eps.dadm.model.RoundRepositoryFactory;
@@ -84,7 +83,7 @@ public class LoginActivity extends AppCompatActivity {
         ButterKnife.bind(this);
 
         // Si el usuario está logueado, nos saltamos el paso del login
-        if (PreferenceActivity.isLoggedIn(this)) {
+        if (Preferences.isLoggedIn(this)) {
             // Mostramos al usuario su lista de partidas disponibles
             startActivity(new Intent(LoginActivity.this, RoundListActivity.class));
             finish();
@@ -225,8 +224,8 @@ public class LoginActivity extends AppCompatActivity {
                     public void onLogin(String userUUID) {
                         if (!((DataBase)localRepository).existUser(user))
                             ((DataBase) localRepository).register(user, pass, userUUID, null);
-                        PreferenceActivity.setPlayerUUID(LoginActivity.this, userUUID);
-                        PreferenceActivity.setPlayerName(LoginActivity.this, user);
+                        Preferences.setPlayerUUID(LoginActivity.this, userUUID);
+                        Preferences.setPlayerName(LoginActivity.this, user);
                         startActivity(new Intent(LoginActivity.this, RoundListActivity.class));
                         finish();
                     }
@@ -252,8 +251,8 @@ public class LoginActivity extends AppCompatActivity {
                 new RoundRepository.LoginRegisterCallback() {
                     @Override
                     public void onLogin(String userUUID) {
-                        PreferenceActivity.setPlayerUUID(LoginActivity.this, userUUID);
-                        PreferenceActivity.setPlayerName(LoginActivity.this, user);
+                        Preferences.setPlayerUUID(LoginActivity.this, userUUID);
+                        Preferences.setPlayerName(LoginActivity.this, user);
                         startActivity(new Intent(LoginActivity.this, RoundListActivity.class));
                         finish();
                     }
@@ -309,8 +308,9 @@ public class LoginActivity extends AppCompatActivity {
                     public void onLogin(String userUUID) {
                         // Si se ha registrado con éxito en el servidor, lo registramos en local
                         ((DataBase) localRepository).register(user, pass, userUUID, null);
-                        PreferenceActivity.setPlayerUUID(LoginActivity.this, userUUID);
-                        PreferenceActivity.setPlayerName(LoginActivity.this, user);
+                        Preferences.setPlayerUUID(LoginActivity.this, userUUID);
+                        Preferences.setPlayerName(LoginActivity.this, user);
+                        Preferences.setPlayerPassword(LoginActivity.this, pass);
                         // Mostramos las partidas disponibles para este jugador
                         startActivity(new Intent(LoginActivity.this, RoundListActivity.class));
                         finish();
@@ -355,9 +355,9 @@ public class LoginActivity extends AppCompatActivity {
      */
     @OnClick(R.id.offline_game_button)
     public void offlineGame(View v) {
-        Round round = new Round(PreferenceActivity.BOARD_SIZE_DEFAULT, Round.Type.LOCAL);
+        Round round = new Round(Preferences.BOARD_SIZE_DEFAULT, Round.Type.LOCAL);
         round.setUserRandom();
-        round.setSecondUser(PreferenceActivity.PLAYERNAME_DEFAULT,PreferenceActivity.PLAYERUUID_DEFAULT);
+        round.setSecondUser(Preferences.PLAYERNAME_DEFAULT,Preferences.PLAYERUUID_DEFAULT);
         Intent i = RoundActivity.newIntent(this,round);
         startActivity(i);
     }

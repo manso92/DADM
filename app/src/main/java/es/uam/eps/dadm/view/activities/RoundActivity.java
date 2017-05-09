@@ -17,9 +17,8 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import es.uam.eps.dadm.R;
 import es.uam.eps.dadm.model.JugadorHumano;
+import es.uam.eps.dadm.model.Preferences;
 import es.uam.eps.dadm.model.Round;
-import es.uam.eps.dadm.model.RoundRepository;
-import es.uam.eps.dadm.model.RoundRepositoryFactory;
 import es.uam.eps.dadm.server.LocalServerPlayer;
 import es.uam.eps.dadm.server.RemotePlayer;
 import es.uam.eps.dadm.view.views.TableroView;
@@ -40,7 +39,6 @@ import es.uam.eps.multij.Tablero;
  */
 public class RoundActivity extends AppCompatActivity implements PartidaListener {
 
-
     /**
      * Tag para escribir en el log
      */
@@ -55,7 +53,6 @@ public class RoundActivity extends AppCompatActivity implements PartidaListener 
     public static final String ARG_ROUND_SIZE = "es.uam.eps.dadm.round_size";
     public static final String ARG_ROUND_DATE = "es.uam.eps.dadm.round_date";
     public static final String ARG_ROUND_BOARD = "es.uam.eps.dadm.round_board";
-
 
     @BindView(R.id.board_view)
     TableroView boardView;
@@ -201,22 +198,21 @@ public class RoundActivity extends AppCompatActivity implements PartidaListener 
         if (game.getTablero().getEstado() == Tablero.EN_CURSO) game.comenzar();
     }
     void startServerRound() {
-        // Creamos un jugador aleatorio y uno local que manejará el juego y los metemos en una Lista
+        // Creamosdps jugadores, uno local y uno en servidor
         ArrayList<Jugador> players = new ArrayList<Jugador>();
-
         Jugador firstPlayer = null, secondPlayer = null;
 
-        if (this.round.turn(PreferenceActivity.getPlayerName(this)) == 1){
+        if (this.round.turn(Preferences.getPlayerName(this)) == 1){
             firstPlayer = new LocalServerPlayer(coordinatorRound,round);
             secondPlayer = new RemotePlayer(round.getSecondUserName());
-        } else if (this.round.turn(PreferenceActivity.getPlayerName(this)) == 2){
+        } else if (this.round.turn(Preferences.getPlayerName(this)) == 2){
             secondPlayer = new LocalServerPlayer(coordinatorRound,round);
             firstPlayer = new RemotePlayer(round.getFirstUserName());
         } else {
             this.finish();
         }
 
-
+        // Añadimos los jugadores al arraylist
         players.add(firstPlayer);
         players.add(secondPlayer);
 
@@ -229,7 +225,7 @@ public class RoundActivity extends AppCompatActivity implements PartidaListener 
 
         // Instanciamos el tablero de juego, le pasamos el tablero y el jugador que jugará la partida
         this.boardView.setBoard(round.getBoard());
-        if (this.round.turn(PreferenceActivity.getPlayerName(this)) == 1){
+        if (this.round.turn(Preferences.getPlayerName(this)) == 1){
             ((LocalServerPlayer)firstPlayer).setPartida(game);
             this.boardView.setOnPlayListener(((LocalServerPlayer)firstPlayer));
         } else {

@@ -1,11 +1,7 @@
 package es.uam.eps.dadm.model;
 
-import android.content.Intent;
-
 import java.util.Date;
 import java.util.UUID;
-
-import es.uam.eps.dadm.view.activities.PreferenceActivity;
 
 /**
  * Esta clase almacenará los datos de una partida de la aplicación
@@ -144,8 +140,8 @@ public class Round {
         this.firstUserName = firstUserName;
     }
     public void setUserRandom() {
-        this.firstUserUUID = PreferenceActivity.PLAYERUUID_DEFAULT;
-        this.firstUserName = PreferenceActivity.PLAYERNAME_DEFAULT;
+        this.firstUserUUID = Preferences.PLAYERUUID_DEFAULT;
+        this.firstUserName = Preferences.PLAYERNAME_DEFAULT;
     }
 
     public String getSecondUserName() {return secondUserName;}

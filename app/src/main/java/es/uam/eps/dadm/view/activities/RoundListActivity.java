@@ -20,6 +20,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import es.uam.eps.dadm.R;
+import es.uam.eps.dadm.model.Preferences;
 import es.uam.eps.dadm.model.Round;
 import es.uam.eps.dadm.model.RoundRepository;
 import es.uam.eps.dadm.model.RoundRepositoryFactory;
@@ -120,7 +121,7 @@ public class RoundListActivity extends AppCompatActivity implements RoundListFra
         switch (item.getItemId()) {
             case R.id.menu_item_settings:
                 // Abrimos las preferencias para que cambie los valores de los juegos
-                startActivity(new Intent(this, PreferenceActivity.class));
+                startActivity(new Intent(this, Preferences.class));
                 return true;
             case R.id.menu_item_help:
                 // Abrimos la ayuda
@@ -128,7 +129,7 @@ public class RoundListActivity extends AppCompatActivity implements RoundListFra
                 return true;
             case R.id.menu_item_signout:
                 // Reseteamos las preferencias
-                PreferenceActivity.resetPreferences(this);
+                Preferences.resetPreferences(this);
                 // Arrancamos la activity del login y finalizamos esta
                 startActivity(new Intent(this, LoginActivity.class));
                 this.finish();
@@ -167,7 +168,7 @@ public class RoundListActivity extends AppCompatActivity implements RoundListFra
                                 Snackbar.LENGTH_LONG).show();
                     }
                 };
-                ((ServerRepository) server).addPlayerToRound(round,PreferenceActivity.getPlayerUUID(this),callback);
+                ((ServerRepository) server).addPlayerToRound(round, Preferences.getPlayerUUID(this),callback);
                 break;
             case ACTIVE:
                 startActivity(RoundActivity.newIntent(this, round));

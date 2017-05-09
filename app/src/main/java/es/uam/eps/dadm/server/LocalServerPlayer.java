@@ -11,10 +11,10 @@ import org.json.JSONObject;
 
 import es.uam.eps.dadm.R;
 import es.uam.eps.dadm.model.MovimientoDamas;
+import es.uam.eps.dadm.model.Preferences;
 import es.uam.eps.dadm.model.Round;
 import es.uam.eps.dadm.model.RoundRepository;
 import es.uam.eps.dadm.model.RoundRepositoryFactory;
-import es.uam.eps.dadm.view.activities.PreferenceActivity;
 import es.uam.eps.dadm.view.views.TableroView;
 import es.uam.eps.multij.*;
 
@@ -137,7 +137,7 @@ public class LocalServerPlayer  implements Jugador, TableroView.OnPlayListener {
 
         // Preguntamos al servidor si es nuestro turno
         ServerInterface is = ServerInterface.getServer(view.getContext());
-        is.isMyTurn(Integer.parseInt(round.getId()), PreferenceActivity.getPlayerUUID(view.getContext()),
+        is.isMyTurn(Integer.parseInt(round.getId()), Preferences.getPlayerUUID(view.getContext()),
                 responseListener, errorListener);
     }
 

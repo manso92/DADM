@@ -3,12 +3,11 @@ package es.uam.eps.dadm.model;
 import android.content.Context;
 
 import es.uam.eps.dadm.R;
-import es.uam.eps.dadm.view.activities.PreferenceActivity;
 
 
 public class ColorManager {
     public static int casillaClara(Context context){
-        switch (PreferenceActivity.getColorScheme(context)) {
+        switch (Preferences.getColorScheme(context)) {
             case "wood":           return R.color.wood_casillaClara;
             case "byn":            return R.color.byn_casillaClara;
             case "hightcontrast":  return R.color.hightcontrast_casillaClara;
@@ -16,7 +15,7 @@ public class ColorManager {
         }
     }
     public static int casillaOscura(Context context){
-        switch (PreferenceActivity.getColorScheme(context)) {
+        switch (Preferences.getColorScheme(context)) {
             case "wood":           return R.color.wood_casillaOscura;
             case "byn":            return R.color.byn_casillaOscura;
             case "hightcontrast":  return R.color.hightcontrast_casillaOscura;
@@ -24,7 +23,7 @@ public class ColorManager {
         }
     }
     public static int casillaSugerida(Context context){
-        switch (PreferenceActivity.getColorScheme(context)) {
+        switch (Preferences.getColorScheme(context)) {
             case "wood":           return R.color.wood_casillaSugerida;
             case "byn":            return R.color.byn_casillaSugerida;
             case "hightcontrast":  return R.color.hightcontrast_casillaSugerida;
@@ -32,7 +31,7 @@ public class ColorManager {
         }
     }
     public static int fichaBlanca(Context context){
-        switch (PreferenceActivity.getColorScheme(context)) {
+        switch (Preferences.getColorScheme(context)) {
             case "wood":           return R.color.wood_fichablanca;
             case "byn":            return R.color.byn_fichablanca;
             case "hightcontrast":  return R.color.hightcontrast_fichablanca;
@@ -40,7 +39,7 @@ public class ColorManager {
         }
     }
     public static int fichaNega(Context context){
-        switch (PreferenceActivity.getColorScheme(context)) {
+        switch (Preferences.getColorScheme(context)) {
             case "wood":           return R.color.wood_fichanegra;
             case "byn":            return R.color.byn_fichanegra;
             case "hightcontrast":  return R.color.hightcontrast_fichanegra;

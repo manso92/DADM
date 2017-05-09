@@ -24,9 +24,7 @@ import es.uam.eps.dadm.R;
 import es.uam.eps.dadm.model.Round;
 import es.uam.eps.dadm.model.RoundRepository;
 import es.uam.eps.dadm.model.RoundRepositoryFactory;
-import es.uam.eps.dadm.server.ServerInterface;
-import es.uam.eps.dadm.server.ServerRepository;
-import es.uam.eps.dadm.view.activities.PreferenceActivity;
+import es.uam.eps.dadm.model.Preferences;
 import es.uam.eps.dadm.view.listeners.RecyclerItemClickListener;
 import es.uam.eps.dadm.view.views.TableroView;
 
@@ -219,7 +217,7 @@ public class RoundListFragment extends Fragment {
             }
         };
         // Regcargamos la lista de rondas disponibles
-        repository.getRounds(PreferenceActivity.getPlayerUUID(this.getActivity()),
+        repository.getRounds(Preferences.getPlayerUUID(this.getActivity()),
                 null, this.type, roundsCallback);
     }
 
@@ -272,13 +270,13 @@ public class RoundListFragment extends Fragment {
         };
 
         // Creamos una partida nueva y le colocamos los datos del jugador que la va a jugar
-        Round round = new Round(PreferenceActivity.getSize(this.getContext()), this.type);
+        Round round = new Round(Preferences.getSize(this.getContext()), this.type);
         if (this.type == Round.Type.LOCAL)
-            round.setSecondUser(PreferenceActivity.getPlayerName(this.getContext()),
-                    PreferenceActivity.getPlayerUUID(this.getContext()));
+            round.setSecondUser(Preferences.getPlayerName(this.getContext()),
+                    Preferences.getPlayerUUID(this.getContext()));
         else
-            round.setFirstUser(PreferenceActivity.getPlayerName(this.getContext()),
-                    PreferenceActivity.getPlayerUUID(this.getContext()));
+            round.setFirstUser(Preferences.getPlayerName(this.getContext()),
+                    Preferences.getPlayerUUID(this.getContext()));
 
         // Añadimos la partida al repositorio de datos y actualizamos la interfaz
         repository.addRound(round, booleanCallback);
