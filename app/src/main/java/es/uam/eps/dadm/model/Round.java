@@ -1,5 +1,7 @@
 package es.uam.eps.dadm.model;
 
+import android.content.Intent;
+
 import java.util.Date;
 import java.util.UUID;
 
@@ -111,7 +113,11 @@ public class Round {
 
     public String getTitle() {return title;}
     private String titleFromID(int id) {return "ROUND " + Integer.toString(id);}
-    private String titleFromID(String id) {return "ROUND " + id.toString().substring(19, 23).toUpperCase();}
+    private String titleFromID(String id) {
+        if (id.length() > 23)
+            return "ROUND " + id.toString().substring(19, 23).toUpperCase();
+        return "ROUND " + id;
+    }
 
     public Type getTipo() {return tipo;}
     public void setTipo(Type tipo) {this.tipo = tipo;}
@@ -122,6 +128,14 @@ public class Round {
     public int getSize() {return board.size;}
     public TableroDamas getBoard() {return board;}
     public void setBoard(TableroDamas board) {this.board = board;}
+
+    public int turn (String username){
+        if (this.getFirstUserName().equals(username))
+            return 1;
+        if (this.getSecondUserName().equals(username))
+            return 2;
+        return 0;
+    }
 
     public String getFirstUserName() {return firstUserName;}
     public String getFirstUserUUID() {return firstUserUUID;}
