@@ -85,14 +85,14 @@ public class RoundListActivity extends AppCompatActivity implements RoundListFra
     private void setupViewPager(ViewPager viewPager) {
         // Creamos un adapter que contendrá nuestros fragmentos
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
-        RoundRepository localRepo = RoundRepositoryFactory.createRepository(this,false);
-        RoundRepository serverRepo = RoundRepositoryFactory.createRepository(this,true);
+
         // Añadimos los fragmentos que vamos a tener en nuestro adapter
-        adapter.addFragment(RoundListFragment.newInstance(localRepo, Round.Type.LOCAL), "Local");
-        adapter.addFragment(RoundListFragment.newInstance(serverRepo, Round.Type.ACTIVE), "Mis partidas");
-        adapter.addFragment(RoundListFragment.newInstance(serverRepo, Round.Type.OPEN), "Partidas abiertas");
-        adapter.addFragment(RoundListFragment.newInstance(serverRepo, Round.Type.FINISHED), "Finalizadas");
+        adapter.addFragment(RoundListFragment.newInstance(Round.Type.LOCAL), "Local");
+        adapter.addFragment(RoundListFragment.newInstance(Round.Type.ACTIVE), "Mis partidas");
+        adapter.addFragment(RoundListFragment.newInstance(Round.Type.OPEN), "Partidas abiertas");
+        adapter.addFragment(RoundListFragment.newInstance(Round.Type.FINISHED), "Finalizadas");
         adapter.addFragment(new BlankFragment(), "Estadísticas");
+
         // Vinculamos el adapter al viewpager
         viewPager.setAdapter(adapter);
     }
