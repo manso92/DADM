@@ -20,6 +20,8 @@ import es.uam.eps.dadm.model.JugadorHumano;
 import es.uam.eps.dadm.model.Round;
 import es.uam.eps.dadm.model.RoundRepository;
 import es.uam.eps.dadm.model.RoundRepositoryFactory;
+import es.uam.eps.dadm.server.LocalServerPlayer;
+import es.uam.eps.dadm.server.RemotePlayer;
 import es.uam.eps.dadm.view.views.TableroView;
 import es.uam.eps.multij.Evento;
 import es.uam.eps.multij.ExcepcionJuego;
@@ -147,7 +149,10 @@ public class RoundActivity extends AppCompatActivity implements PartidaListener 
         // Llamamos al padre
         super.onStart();
         // Comenzamos la partida
-        startRound();
+        if (this.round.getTipo() == Round.Type.LOCAL)
+            startLocalRound();
+        else
+            startServerRound();
     }
 
     @OnClick(R.id.reset_round_fab)
@@ -169,7 +174,7 @@ public class RoundActivity extends AppCompatActivity implements PartidaListener 
     /**
      * Comienza una nueva partida a través de lo que nos ha indicado la actividad que nos invocó
      */
-    void startRound() {
+    void startLocalRound() {
         // Creamos un jugador aleatorio y uno local que manejará el juego y los metemos en una Lista
         ArrayList<Jugador> players = new ArrayList<Jugador>();
 
@@ -191,6 +196,46 @@ public class RoundActivity extends AppCompatActivity implements PartidaListener 
         // Instanciamos el tablero de juego, le pasamos el tablero y el jugador que jugará la partida
         this.boardView.setBoard(round.getBoard());
         this.boardView.setOnPlayListener(localPlayer);
+
+        // Si la partida no ha comenzado, la empezamos
+        if (game.getTablero().getEstado() == Tablero.EN_CURSO) game.comenzar();
+    }
+    void startServerRound() {
+        // Creamos un jugador aleatorio y uno local que manejará el juego y los metemos en una Lista
+        ArrayList<Jugador> players = new ArrayList<Jugador>();
+
+        Jugador firstPlayer = null, secondPlayer = null;
+
+        if (this.round.turn(PreferenceActivity.getPlayerName(this)) == 1){
+            firstPlayer = new LocalServerPlayer(coordinatorRound,round);
+            secondPlayer = new RemotePlayer(round.getSecondUserName());
+        } else if (this.round.turn(PreferenceActivity.getPlayerName(this)) == 2){
+            secondPlayer = new LocalServerPlayer(coordinatorRound,round);
+            firstPlayer = new RemotePlayer(round.getFirstUserName());
+        } else {
+            this.finish();
+        }
+
+
+        players.add(firstPlayer);
+        players.add(secondPlayer);
+
+        // Creamos una partida con el tablero que nos han indicado y con los jugadores que hemos creado
+        Partida game = new Partida(round.getBoard(), players);
+
+        // Nos ponemos como observadores de modo que nos indiquen los cambios de la partida para
+        // poder ponerlos en la interfaz gráfica
+        game.addObservador(this);
+
+        // Instanciamos el tablero de juego, le pasamos el tablero y el jugador que jugará la partida
+        this.boardView.setBoard(round.getBoard());
+        if (this.round.turn(PreferenceActivity.getPlayerName(this)) == 1){
+            ((LocalServerPlayer)firstPlayer).setPartida(game);
+            this.boardView.setOnPlayListener(((LocalServerPlayer)firstPlayer));
+        } else {
+            ((LocalServerPlayer)secondPlayer).setPartida(game);
+            this.boardView.setOnPlayListener(((LocalServerPlayer)secondPlayer));
+        }
 
         // Si la partida no ha comenzado, la empezamos
         if (game.getTablero().getEstado() == Tablero.EN_CURSO) game.comenzar();
