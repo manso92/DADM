@@ -1,4 +1,4 @@
-package es.uam.eps.dadm.helpers;
+package es.uam.eps.dadm.events;
 
 import  org.greenrobot.eventbus.EventBus;
 

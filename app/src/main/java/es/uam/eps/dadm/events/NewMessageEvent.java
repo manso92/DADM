@@ -1,4 +1,4 @@
-package es.uam.eps.dadm.helpers;
+package es.uam.eps.dadm.events;
 
 /**
  * Clase que se encargará de contener los datos de los mensajes que nos lleguen por parte de firebase

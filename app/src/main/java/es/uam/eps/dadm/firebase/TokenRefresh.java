@@ -1,4 +1,4 @@
-package es.uam.eps.dadm.helpers;
+package es.uam.eps.dadm.firebase;
 
 import android.util.Log;
 
@@ -31,4 +31,7 @@ public class TokenRefresh  extends FirebaseInstanceIdService {
         sendRegistrationToServer(refreshedToken);
     }
 
+    private void sendRegistrationToServer(String token) {
+        // TODO guardar el token en las preferencias y volver a hacer login para que lo sepa el servidor
+    }
 }

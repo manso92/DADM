@@ -1,4 +1,4 @@
-package es.uam.eps.dadm.helpers;
+package es.uam.eps.dadm.firebase;
 
 import android.util.Log;
 import com.google.firebase.messaging.FirebaseMessagingService;
