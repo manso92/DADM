@@ -1,5 +1,10 @@
 package es.uam.eps.dadm.model;
 
+import android.content.Context;
+import android.support.design.widget.Snackbar;
+import android.util.Log;
+
+import es.uam.eps.dadm.R;
 import es.uam.eps.dadm.view.views.TableroView;
 import es.uam.eps.multij.*;
 
@@ -21,16 +26,30 @@ public class JugadorHumano implements Jugador, TableroView.OnPlayListener{
     private String nombre = "Local player";
 
     /**
+     * Repositorio de datos donde iremos actualizando la partida
+     */
+    private RoundRepository repository;
+
+    /**
+     * Ronda que se está jugando
+     */
+    private Round round;
+
+    /**
      * Construye un jugador humano con el nombre por defecto
      */
-    public JugadorHumano() {}
+    public JugadorHumano(Context context, Round round) {
+        this.repository = RoundRepositoryFactory.createRepository(context,false);
+        this.round = round;
+    }
 
     /**
      * Construye un jugador humano
-     * @param string Nombre del jugador
+     * @param nombre Nombre del jugador
      */
-    public JugadorHumano(String string) {
-        this.nombre=string;
+    public JugadorHumano(String nombre, Round round, Context context) {
+        this(context, round);
+        this.nombre = nombre;
     }
 
     /**
@@ -89,6 +108,25 @@ public class JugadorHumano implements Jugador, TableroView.OnPlayListener{
 
             // Indicamos al juego que el jugador quiere hacer el movimiento
             this.game.realizaAccion(new AccionMover(this, movimientoDamas));
+            this.updateRound();
         } catch (Exception e) {}
+    }
+
+    public void updateRound(){
+
+        RoundRepository.BooleanCallback callback = new RoundRepository.BooleanCallback() {
+            /**
+             * Gestiona la respuesta del servidor a un evento de respuesta booelana
+             * @param response Correcta ejecución de la función en el servidor
+             */
+            @Override
+            public void onResponse(boolean response) {
+                // Si se produce un error al actualizar la partida, se lo comunicamos al usuario
+                if (!response) Log.d("","");
+                    // TODO, evento eventbus para mostrar mensaje
+            }
+        };
+        // Actualizamos la partida en la base de datos
+        repository.updateRound(round, callback);
     }
 }
