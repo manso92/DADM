@@ -207,7 +207,8 @@ public class RoundListFragment extends Fragment {
                     @Override
                     public void onItemClick(View view, final int position) {
                         // Llamamos al callback con la ronda que se ha presionado
-                        callbacks.onRoundSelected(roundAdapter.getRound(position), type);
+                        if (position < roundAdapter.getItemCount())
+                            callbacks.onRoundSelected(roundAdapter.getRound(position), type);
                     }
                 }));
     }
