@@ -12,6 +12,11 @@ import java.util.UUID;
 public class Round {
 
     /**
+     * Tag para escribir en el log
+     */
+    public static final String DEBUG = "Damas.Round";
+
+    /**
      * Tipos de partida que puede haber y su estado
      */
     public enum Type{LOCAL, OPEN, ACTIVE, FINISHED};

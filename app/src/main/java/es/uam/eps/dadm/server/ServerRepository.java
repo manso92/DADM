@@ -32,9 +32,9 @@ import static es.uam.eps.dadm.model.Round.Type.*;
 public class ServerRepository implements RoundRepository {
 
     /**
-     * Tag de debug para escribir en el log
+     * Tag para escribir en el log
      */
-    private static final String DEBUG = "ServerRepository";
+    public static final String DEBUG = "Damas.SRepository";
 
     /**
      * Instancia de nosotros mismos para implementar el singleton

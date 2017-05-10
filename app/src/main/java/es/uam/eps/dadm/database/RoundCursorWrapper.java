@@ -18,10 +18,9 @@ import es.uam.eps.multij.ExcepcionJuego;
 public class RoundCursorWrapper extends CursorWrapper {
 
     /**
-     * Etiqueta que define la escritura en el DEBUG
+     * Tag para escribir en el log
      */
-    private final String DEBUG = "DEBUG";
-
+    public static final String DEBUG = "Damas.RoundCuWr";
 
     /**
      * Constructor de la clase

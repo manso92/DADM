@@ -21,6 +21,11 @@ import es.uam.eps.dadm.R;
 public class HelpActivity extends AppCompatActivity {
 
     /**
+     * Tag para escribir en el log
+     */
+    public static final String DEBUG = "Damas.HelpAct";
+
+    /**
      * Ventana emergente que mostrará el mensaje de que la página se está cargando
      */
     ProgressDialog progressDialog;

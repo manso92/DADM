@@ -31,9 +31,9 @@ import static es.uam.eps.dadm.database.RoundDataBaseSchema.UserTable;
 public class DataBase implements RoundRepository {
 
     /**
-     * TAG que utilizaremos para escribir en el log
+     * Tag para escribir en el log
      */
-    private final String DEBUG_TAG = "DEBUG";
+    public static final String DEBUG = "Damas.Database";
 
     /**
      * Nombre que le daremos a la base de datos en el sistema de ficheros
@@ -168,7 +168,7 @@ public class DataBase implements RoundRepository {
     public void login(String playername, String playerpassword,
                       LoginRegisterCallback callback) {
         // Registra en el log el usuario que quiere hacer login
-        Log.d(DEBUG_TAG, "Login " + playername);
+        Log.d(DEBUG, "Login " + playername);
         // Consultamos a la base de datos por el nombre de usuario y la contraseña
         Cursor cursor = db.query(UserTable.NAME,
                 new String[]{UserTable.Cols.PLAYERUUID},

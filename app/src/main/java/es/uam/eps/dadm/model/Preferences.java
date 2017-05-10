@@ -15,6 +15,11 @@ import es.uam.eps.dadm.view.activities.PreferenceActivity;
 public class Preferences {
 
     /**
+     * Tag para escribir en el log
+     */
+    public static final String DEBUG = "Damas.Preferences";
+
+    /**
      * Clave para registrar las preferencias de audio
      */
     private final static String COLOR_SCHEME_KEY = "colorscheme";

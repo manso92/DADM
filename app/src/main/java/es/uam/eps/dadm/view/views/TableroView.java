@@ -28,6 +28,11 @@ import es.uam.eps.multij.Tablero;
 public class TableroView extends View {
 
     /**
+     * Tag para escribir en el log
+     */
+    public static final String DEBUG = "Damas.TableroView";
+
+    /**
      * Pincel que pintará el tablero de juego
      */
     private Paint brush = new Paint(Paint.ANTI_ALIAS_FLAG);

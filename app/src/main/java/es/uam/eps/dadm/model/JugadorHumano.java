@@ -16,6 +16,11 @@ import es.uam.eps.multij.*;
 public class JugadorHumano implements Jugador, TableroView.OnPlayListener{
 
     /**
+     * Tag para escribir en el log
+     */
+    public static final String DEBUG = "Damas.JugHumano";
+
+    /**
      * Partida que está jugando este jugador
      */
     private Partida game;

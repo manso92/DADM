@@ -42,7 +42,7 @@ public class RoundActivity extends AppCompatActivity implements PartidaListener 
     /**
      * Tag para escribir en el log
      */
-    public static final String DEBUG = "DEBUG";
+    public static final String DEBUG = "Damas.RoundAct";
 
     public static final String ARG_ROUND_ID = "es.uam.eps.dadm.round_id";
     public static final String ARG_FIRST_PLAYER_NAME = "es.uam.eps.dadm.first_player_name";

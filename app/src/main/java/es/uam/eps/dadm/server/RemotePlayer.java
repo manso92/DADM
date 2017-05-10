@@ -13,6 +13,11 @@ import es.uam.eps.multij.Tablero;
 public class RemotePlayer implements Jugador{
 
     /**
+     * Tag para escribir en el log
+     */
+    public static final String DEBUG = "Damas.RemPlayer";
+
+    /**
      * Nombre del jugador para mostrar si fuera necesario
      */
     private String name = "Remote player";

@@ -17,6 +17,11 @@ import es.uam.eps.dadm.R;
 public class SplashActivity extends AppCompatActivity {
 
     /**
+     * Tag para escribir en el log
+     */
+    public static final String DEBUG = "Damas.SplashAct";
+
+    /**
      * Timeout por defecto después del cual se llamará a la actividad de login
      */
     private static int SPLASH_TIME_OUT = 3;

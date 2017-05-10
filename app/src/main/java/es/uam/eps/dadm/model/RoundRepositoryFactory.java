@@ -16,6 +16,11 @@ import es.uam.eps.dadm.server.ServerRepository;
 public class RoundRepositoryFactory {
 
     /**
+     * Tag para escribir en el log
+     */
+    public static final String DEBUG = "Damas.RoundReFa";
+
+    /**
      * Crea una instancia del almacenamiento de datos y lo devuelve para poder manejar toda la
      * lógica de la app
      * @param context Contexto desde el cual se invoca el almacenamiento

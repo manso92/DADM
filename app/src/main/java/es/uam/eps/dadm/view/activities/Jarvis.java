@@ -17,6 +17,11 @@ import android.view.inputmethod.InputMethodManager;
 class Jarvis {
 
     /**
+     * Tag para escribir en el log
+     */
+    public static final String DEBUG = "Damas.Jarvis";
+
+    /**
      * Indica si el móvil tiene conexión con internet o no
      * @param context Contexto desde el que se la invoca
      * @return Si el dispositivo está conectado a internet o no

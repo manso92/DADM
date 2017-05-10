@@ -41,6 +41,11 @@ import es.uam.eps.dadm.view.fragment.RoundListFragment;
 public class RoundListActivity extends AppCompatActivity implements RoundListFragment.Callbacks {
 
     /**
+     * Tag para escribir en el log
+     */
+    public static final String DEBUG = "Damas.RoundListAct";
+
+    /**
      * Barra superior por defecto de las vistas android
      */
     @BindView(R.id.toolbar)

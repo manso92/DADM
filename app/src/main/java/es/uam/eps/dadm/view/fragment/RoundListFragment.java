@@ -38,6 +38,11 @@ import es.uam.eps.dadm.view.views.TableroView;
 public class RoundListFragment extends Fragment {
 
     /**
+     * Tag para escribir en el log
+     */
+    public static final String DEBUG = "Damas.RoundListFrag";
+
+    /**
      * Instancia del recycler
      */
     @BindView(R.id.round_recycler_view)

@@ -28,6 +28,11 @@ import java.util.Map;
  */
 public class ServerInterface {
 
+    /**
+     * Tag para escribir en el log
+     */
+    public static final String DEBUG = "Damas.SInterface";
+
     // PARÁMETROS PARA LOS SCRIPTS DEL SERVIDOR
     private static final String PLAYER_NAME_TAG = "playername";
     private static final String PLAYER_PASSWORD_TAG = "playerpassword";
@@ -41,9 +46,6 @@ public class ServerInterface {
     static final String ROUND_PLAYER_NAMES_TAG = "playernames";
     static final String ROUND_TURN_TAG = "turn";
     static final String ROUND_CODEBOARD_TAG = "codedboard";
-
-    // TAG PARA DEBUGGEAR
-    private static final String DEBUG = "DEBUG";
 
     // URL BASE DONDE SE ENCUENTRAN TODOS LOS SCRIPTS
     private static final String BASE_URL = "http://ptha.ii.uam.es/dadm2017/";

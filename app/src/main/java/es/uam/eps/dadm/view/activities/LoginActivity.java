@@ -38,6 +38,11 @@ import es.uam.eps.dadm.model.RoundRepositoryFactory;
 public class LoginActivity extends AppCompatActivity {
 
     /**
+     * Tag para escribir en el log
+     */
+    public static final String DEBUG = "Damas.LoginAct";
+
+    /**
      * EditText donde el usuario introducirá su nombre de usuario
      */
     @BindView(R.id.userEditText)

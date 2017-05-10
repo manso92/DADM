@@ -27,9 +27,9 @@ import es.uam.eps.multij.*;
 public class LocalServerPlayer  implements Jugador, TableroView.OnPlayListener {
 
     /**
-     * Debug tag
+     * Tag para escribir en el log
      */
-    private static final String DEBUG = "Damas.LocalServerPlayer";
+    public static final String DEBUG = "Damas.LocSerPlayer";
 
     /**
      * Ronda que estamos jugando

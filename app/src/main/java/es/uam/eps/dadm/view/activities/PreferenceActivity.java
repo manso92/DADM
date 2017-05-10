@@ -26,6 +26,11 @@ import es.uam.eps.dadm.R;
 public class PreferenceActivity extends AppCompatActivity {
 
     /**
+     * Tag para escribir en el log
+     */
+    public static final String DEBUG = "Damas.PreferenceAct";
+
+    /**
      * Crea todo lo necesario para la correcta ejecución de la actividad
      * @param savedInstanceState Pares clave valor que nos pasa la actividad que nos invoca
      */

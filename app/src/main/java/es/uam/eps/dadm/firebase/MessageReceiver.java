@@ -14,9 +14,9 @@ import com.google.firebase.messaging.RemoteMessage;
 public class MessageReceiver extends FirebaseMessagingService {
 
     /**
-     * Debug DEBUG
+     * Tag para escribir en el log
      */
-    private static final String DEBUG = "Checkers.MsgReceiver";
+    public static final String DEBUG = "Damas.MsgReceiver";
 
     /**
      * Detecta los mensajes enviados y los procesa, haciéndolos llegar a quien corresponda

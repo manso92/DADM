@@ -10,6 +10,11 @@ package es.uam.eps.dadm.events;
 public class NewMessageEvent {
 
     /**
+     * Tag para escribir en el log
+     */
+    public static final String DEBUG = "Damas.Event.NMess";
+
+    /**
      * El mensaje que nos llega es un movimiento de una nueva ronda
      */
     public static final int newMovement = 1;

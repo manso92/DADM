@@ -11,6 +11,11 @@ import  org.greenrobot.eventbus.EventBus;
 public class GreenRobotEventBus{
 
     /**
+     * Tag para escribir en el log
+     */
+    public static final String DEBUG = "Damas.GREventBus";
+
+    /**
      * Instancia del singleton
      */
     private static GreenRobotEventBus greenRobotEventBus;

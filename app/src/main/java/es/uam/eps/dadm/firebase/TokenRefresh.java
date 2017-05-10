@@ -14,9 +14,9 @@ import com.google.firebase.iid.FirebaseInstanceIdService;
 public class TokenRefresh  extends FirebaseInstanceIdService {
 
     /**
-     * Debug tag
+     * Tag para escribir en el log
      */
-    private static final String DEBUG = "Checkers.TokenRefresh";
+    public static final String DEBUG = "Damas.TokenRefresh";
 
     /**
      * Nos indica que el token de Firebase ha cambiado y tenemos que refrescarlo

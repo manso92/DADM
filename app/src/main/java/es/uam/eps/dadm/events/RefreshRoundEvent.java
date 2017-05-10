@@ -10,6 +10,11 @@ import es.uam.eps.dadm.model.Round;
 public class RefreshRoundEvent {
 
     /**
+     * Tag para escribir en el log
+     */
+    public static final String DEBUG = "Damas.Event.RRound";
+
+    /**
      * Tipo de la ronda que deberemos actualizar
      */
     private Round.Type tipo;

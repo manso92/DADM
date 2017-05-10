@@ -11,6 +11,11 @@ import java.util.StringTokenizer;
  * @version 12/02/2017
  */
 public class TableroDamas extends Tablero {
+
+    /**
+     * Tag para escribir en el log
+     */
+    public static final String DEBUG = "Damas.Tablero";
 	
 	/**
 	 * Esta constante nos indica si está siendo compilado con ECLIPSE o no
