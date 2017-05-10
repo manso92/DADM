@@ -381,7 +381,7 @@ public class LoginActivity extends AppCompatActivity {
         Round round = new Round(Preferences.BOARD_SIZE_DEFAULT, Round.Type.LOCAL);
         round.setUserRandom();
         round.setSecondUser(Preferences.PLAYERNAME_DEFAULT,Preferences.PLAYERUUID_DEFAULT);
-        Intent i = RoundActivity.newIntent(this,round);
+        Intent i = RoundLocalActivity.newIntent(this,round);
         startActivity(i);
     }
 

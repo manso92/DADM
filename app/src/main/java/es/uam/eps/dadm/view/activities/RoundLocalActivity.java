@@ -17,7 +17,7 @@ import es.uam.eps.dadm.view.fragment.RoundFragment;
  * @author Pablo Manso
  * @version 13/03/2017
  */
-public class RoundActivity extends AppCompatActivity  {
+public class RoundLocalActivity extends AppCompatActivity  {
 
     /**
      * Tag para escribir en el log
@@ -52,7 +52,7 @@ public class RoundActivity extends AppCompatActivity  {
      */
     public static Intent newIntent(Context packageContext, Round round) {
         // Creamos un intent entre el contexto que nos pasan y esta clase
-        Intent intent = new Intent(packageContext, RoundActivity.class);
+        Intent intent = new Intent(packageContext, RoundLocalActivity.class);
         return round.roundToIntent(intent);
     }
 

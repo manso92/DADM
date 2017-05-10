@@ -25,6 +25,7 @@ import es.uam.eps.dadm.model.Round;
 import es.uam.eps.dadm.model.RoundRepository;
 import es.uam.eps.dadm.model.RoundRepositoryFactory;
 import es.uam.eps.dadm.server.ServerRepository;
+import es.uam.eps.dadm.view.adapters.ViewPagerAdapter;
 import es.uam.eps.dadm.view.fragment.BlankFragment;
 import es.uam.eps.dadm.view.fragment.RoundListFragment;
 
@@ -117,8 +118,8 @@ public class RoundListActivity extends AppCompatActivity implements RoundListFra
 
     /**
      * Manejará las acciones a realizar cuando se pulsen las distintas
-     * @param item
-     * @return
+     * @param item Item del menú que se ha pulsado
+     * @return Si se ha ejecutado correctamente o no el menú
      */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -148,120 +149,37 @@ public class RoundListActivity extends AppCompatActivity implements RoundListFra
 
     /**
      * Función que se ejecutará cuando se dispare el listener en una partida de la lista
-     *
      * @param round Partida que el jugador ha seleccionado
      */
     @Override
     public void onRoundSelected(Round round, Round.Type tipo) {
-        switch (tipo){
+        switch (tipo) {
             case LOCAL:
-                startActivity(RoundActivity.newIntent(this, round));
+                startActivity(RoundLocalActivity.newIntent(this, round));
                 break;
             case OPEN:
-                RoundRepository server = RoundRepositoryFactory.createRepository(this,true);
+                RoundRepository server = RoundRepositoryFactory.createRepository(this, true);
                 RoundRepository.BooleanCallback callback = new RoundRepository.BooleanCallback() {
                     @Override
                     public void onResponse(boolean ok) {
                         if (ok) {
                             Snackbar.make(viewPager, R.string.repository_round_add_user_success,
                                     Snackbar.LENGTH_LONG).show();
-                            ((RoundListFragment)((ViewPagerAdapter)viewPager.getAdapter()).getItem(1)).updateUI();
-                            ((RoundListFragment)((ViewPagerAdapter)viewPager.getAdapter()).getItem(2)).updateUI();
-                        }
-                        else
+                            ((RoundListFragment) ((ViewPagerAdapter) viewPager.getAdapter()).getItem(1)).updateUI();
+                            ((RoundListFragment) ((ViewPagerAdapter) viewPager.getAdapter()).getItem(2)).updateUI();
+                        } else
                             Snackbar.make(viewPager, R.string.repository_round_add_user_success,
-                                Snackbar.LENGTH_LONG).show();
+                                    Snackbar.LENGTH_LONG).show();
                     }
                 };
-                ((ServerRepository) server).addPlayerToRound(round, Preferences.getPlayerUUID(this),callback);
+                ((ServerRepository) server).addPlayerToRound(round, Preferences.getPlayerUUID(this), callback);
                 break;
             case ACTIVE:
-                startActivity(RoundActivity.newIntent(this, round));
+                startActivity(RoundServerActivity.newIntent(this, round));
                 break;
             case FINISHED:
                 break;
         }
 
-    }
-
-    /**
-     * ViewPagerAdapter manejará las páginas que tendrá nuestro viewpage, permitiento añadir nuevos
-     * fragments a nuestro contenedor y poder mostrar las partidas
-     */
-    class ViewPagerAdapter extends FragmentPagerAdapter {
-        /**
-         * Lista de fragmentos que tendrá nuestro viewpager
-         */
-        private final List<Fragment> mFragmentList = new ArrayList<>();
-
-        /**
-         * Titulos de los fragmentos que se verá en el tab
-         */
-        private final List<String> mFragmentTitleList = new ArrayList<>();
-
-        /**
-         * Construgtor de la clase
-         *
-         * @param manager FragmentManager de los fragments que tendrá nuestro viewpger
-         */
-        public ViewPagerAdapter(FragmentManager manager) {
-            super(manager);
-        }
-
-        /**
-         * Devuelve el fragmento que esta en una posición determinada
-         *
-         * @param position Posición del fragmento que queremos rescatar
-         * @return Fragmento rescatado de la posición indicada
-         */
-        @Override
-        public Fragment getItem(int position) {
-            return mFragmentList.get(position);
-        }
-
-        /**
-         * Devuelve el titulo del fragmento que esta en una posición determinada
-         *
-         * @param position Posición del fragmento del que queremos obtener el título
-         * @return Título del fragmento que está en la posición indicada
-         */
-        @Override
-        public CharSequence getPageTitle(int position) {
-            return mFragmentTitleList.get(position);
-        }
-
-        /**
-         * Indica el número de páginas que tendrá nuestro ViewPager
-         *
-         * @return Número de páginas
-         */
-        @Override
-        public int getCount() {
-            return mFragmentList.size();
-        }
-
-        /**
-         * Añade un nuevo fragmento a nuestro ViewPager
-         *
-         * @param fragment Fragmento a añadir
-         * @param title    Título del fragmento
-         */
-        public void addFragment(Fragment fragment, String title) {
-            // Añadimos el fragmento y el título a las listas donde se almacenan
-            mFragmentList.add(fragment);
-            mFragmentTitleList.add(title);
-            // Indicamos a la clase superior que han cambiado las páginas
-            this.notifyDataSetChanged();
-        }
-
-        /**
-         * Devuelve el ancho que tendrá la página
-         * @param position Posición del fragment del que queremos el ancho
-         * @return Ancho de la página que solicitábamos
-         */
-        @Override
-        public float getPageWidth(int position) {
-            return getResources().getBoolean(R.bool.viewPagerWidthTablet) ? 1f : 1f;
-        }
     }
 }

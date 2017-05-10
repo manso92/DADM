@@ -26,9 +26,14 @@
             android:label="@string/roundlist.title"
             android:theme="@style/AppThemeNoBar"/>
         <activity
-            android:name=".view.activities.RoundActivity"
+            android:name=".view.activities.RoundLocalActivity"
             android:label="@string/round.title"
             android:parentActivityName=".view.activities.RoundListActivity"/>
+        <activity
+            android:name=".view.activities.RoundServerActivity"
+            android:label="@string/round.title"
+            android:parentActivityName=".view.activities.RoundListActivity"
+            android:theme="@style/AppThemeNoBar"/>
         <activity
             android:name=".view.activities.PreferenceActivity"
             android:label="@string/settings.title"
