@@ -75,9 +75,19 @@ public class Preferences {
     private final static String PLAYERPASSWORD_KEY = "playerpassword";
 
     /**
-     * Nombre por defecto para el usuario
+     * Nombre por defecto para la contraseña de usuario
      */
     public final static String PLAYERPASSWORD_DEFAULT = "";
+
+    /**
+     * Clave para registrar el token de Firebase
+     */
+    private final static String FIREBASETOKEN_KEY = "firebasetoken";
+
+    /**
+     * Token por defecto de firebase
+     */
+    public final static String FIREBASETOKEN_DEFAULT = "";
 
     /**
      * Limpia las preferencias de usuario
@@ -204,6 +214,24 @@ public class Preferences {
      */
     public static void setPlayerPassword(Context context, String password) {
         setKey(context, PLAYERPASSWORD_KEY, password);
+    }
+
+    /**
+     * Devuelve el valor del token de firebase que tiene el teléfono
+     * @param context Contexto desde el cual se quiere obtener el valor del token
+     * @return Token de firebase | Default value
+     */
+    public static String getFirebaseToken(Context context) {
+        return getKey(context, FIREBASETOKEN_KEY, FIREBASETOKEN_DEFAULT);
+    }
+
+    /**
+     * Registra el token de Firebase que tiene el teléfono
+     * @param context Contexto desde el cual se quiere registrar el valor
+     * @param token Token de firebase
+     */
+    public static void setFirebaseToken(Context context, String token) {
+        setKey(context, FIREBASETOKEN_KEY, token);
     }
 
     /**
