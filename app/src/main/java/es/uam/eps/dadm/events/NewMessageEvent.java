@@ -25,43 +25,42 @@ public class NewMessageEvent {
     public static final int roundMessage = 3;
 
     /**
-     * UUID identificador de la ronda del mensaje
+     * Tipo de evento que hemos recibido
      */
-    private String uuid;
+    private int msgtype;
 
     /**
-     * Nombre de la persona que nos manda el mensaje
+     * UUID identificador del mensaje
      */
-    private String user;
+    private String sender;
 
     /**
      * Mensaje que se nos manda a través del evento
      */
-    private String data;
+    private String content;
 
     /**
-     * Tipo de evento que hemos recibido
+     * Constructor vacío del evento
      */
-    private int eventType;
+    public NewMessageEvent() {}
 
+    /**
+     * Constructor de un mensaje con todos sus datos
+     * @param msgtype Tipo de mensaje que he mos recibido
+     * @param sender Quien envía el mensaje o a donde va dirigido
+     * @param content Contenido del mensaje
+     */
+    public NewMessageEvent(int msgtype, String sender, String content) {
+        this.msgtype = msgtype;
+        this.sender = sender;
+        this.content = content;
+    }
 
     // GETTERS Y SETTERS
-    public String getUuid() {
-        return uuid;
-    }
-    public void setUuid(String uuid) {
-        this.uuid = uuid;
-    }
-    public String getData() {
-        return data;
-    }
-    public void setData(String data) {
-        this.data = data;
-    }
-    public int getEventType() {
-        return eventType;
-    }
-    public void setEventType(int eventType) {
-        this.eventType = eventType;
-    }
+    public int getMsgtype() { return msgtype; }
+    public void setMsgtype(int msgtype) { this.msgtype = msgtype; }
+    public String getSender() { return sender; }
+    public void setSender(String sender) { this.sender = sender; }
+    public String getContent() { return content; }
+    public void setContent(String content) { this.content = content;}
 }
