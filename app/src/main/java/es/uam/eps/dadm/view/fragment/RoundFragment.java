@@ -5,10 +5,14 @@ import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 
@@ -16,7 +20,10 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
+
 import es.uam.eps.dadm.R;
+import es.uam.eps.dadm.events.GreenRobotEventBus;
+import es.uam.eps.dadm.events.NewMessageEvent;
 import es.uam.eps.dadm.model.JugadorHumano;
 import es.uam.eps.dadm.model.Preferences;
 import es.uam.eps.dadm.model.Round;
@@ -147,6 +154,8 @@ public class RoundFragment extends Fragment implements PartidaListener {
     public void onStart() {
         // Llamamos al padre
         super.onStart();
+        // Empezamos a capturar los eventos
+        GreenRobotEventBus.getInstance().register(this);
         // Comenzamos la partida
         if (this.round.getTipo() == Round.Type.LOCAL)
             startLocalRound();
@@ -154,6 +163,16 @@ public class RoundFragment extends Fragment implements PartidaListener {
             startServerRound();
     }
 
+    /**
+     * Ejecución con el fin del fragmento
+     */
+    @Override
+    public void onStop() {
+        super.onStop();
+
+        // Dejamos de campturar eventos
+        GreenRobotEventBus.getInstance().unregister(this);
+    }
     /**
      * Comienza una partida local
      */
@@ -273,5 +292,16 @@ public class RoundFragment extends Fragment implements PartidaListener {
 
         // Llamamos al callback de la actualización y le indicamos al jugador que el cambio de ha hecho
         Snackbar.make(coordinatorRound, R.string.game_round_restarted, Snackbar.LENGTH_SHORT).show();
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onEvent(NewMessageEvent msg) throws ExcepcionJuego {
+        Log.d(DEBUG, "Mensaje recibido en el roundgrafment: " + msg.toString());
+
+        if ((msg.getMsgtype() == NewMessageEvent.newMovement) && (msg.getSender().equals(this.round.getId()))){
+            Log.d(DEBUG, msg.toString());
+            this.round.getBoard().stringToTablero(msg.getContent());
+            boardView.invalidate();
+        }
     }
 }
