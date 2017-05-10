@@ -16,6 +16,8 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.iid.FirebaseInstanceId;
+
 import java.security.MessageDigest;
 
 import butterknife.BindView;
@@ -87,18 +89,34 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
         ButterKnife.bind(this);
 
+        // Arrancamos los repositorios de datos
+        setupRepositories();
+
+        // Capturamos los eventos del botón del teclado
+        setupKeyboard();
+
+
         // Si el usuario está logueado, nos saltamos el paso del login
         if (Preferences.isLoggedIn(this)) {
-            // Mostramos al usuario su lista de partidas disponibles
-            startActivity(new Intent(LoginActivity.this, RoundListActivity.class));
-            finish();
+            // Si el token de firebase no está actualizado, volvemos a hacer login
+            if (!Preferences.getFirebaseToken(this).equals(FirebaseInstanceId.getInstance().getToken())){
+                Preferences.setFirebaseToken(this,FirebaseInstanceId.getInstance().getToken());
+
+                // Ocultamos el formulario y mostramos el progress
+                showProgress(true);
+
+                // Rehacemos login en el server
+                serverLogin(Preferences.getPlayerName(this), Preferences.getPlayerPassword(this));
+            } else {
+                // Mostramos al usuario su lista de partidas disponibles
+                startActivity(new Intent(LoginActivity.this, RoundListActivity.class));
+                finish();
+            }
             return;
         }
 
-        // Arrancamos los repositorios de datos
-        setupRepositories();
-        // Capturamos los eventos del botón del teclado
-        setupKeyboard();
+        // Configuramos el token de Firebase
+        Preferences.setFirebaseToken(this,FirebaseInstanceId.getInstance().getToken());
     }
 
     /**

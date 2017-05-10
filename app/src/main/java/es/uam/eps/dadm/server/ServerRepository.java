@@ -112,7 +112,7 @@ public class ServerRepository implements RoundRepository {
             }
         };
         // Hacemos login contra la interfaz del servidor
-        is.login(playerName, password, null, login, response, error);
+        is.login(playerName, password, Preferences.getFirebaseToken(context), login, response, error);
     }
 
     /**
