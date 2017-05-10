@@ -68,4 +68,7 @@
     <string name="game.game_over.pos">Yes</string>
     <string name="game.game_over.neg">No</string>
 
+    <!--  Chat  -->
+    <string name="chat.sendbutton.description">Icon to send messages</string>
+
 </resources>
