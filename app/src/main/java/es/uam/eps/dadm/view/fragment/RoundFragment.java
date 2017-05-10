@@ -23,13 +23,7 @@ import es.uam.eps.dadm.model.Round;
 import es.uam.eps.dadm.server.LocalServerPlayer;
 import es.uam.eps.dadm.server.RemotePlayer;
 import es.uam.eps.dadm.view.views.TableroView;
-import es.uam.eps.multij.Evento;
-import es.uam.eps.multij.ExcepcionJuego;
-import es.uam.eps.multij.Jugador;
-import es.uam.eps.multij.JugadorAleatorio;
-import es.uam.eps.multij.Partida;
-import es.uam.eps.multij.PartidaListener;
-import es.uam.eps.multij.Tablero;
+import es.uam.eps.multij.*;
 
 /**
  * RoundFragment es un fragmento que mostrará el tablero de las damas con el que el jugador comenzará la partida
@@ -44,24 +38,32 @@ public class RoundFragment extends Fragment implements PartidaListener {
      */
     public static final String DEBUG = "Damas.RoundFrag";
 
-    public static final String ARG_ROUND_ID = "es.uam.eps.dadm.round_id";
-    public static final String ARG_FIRST_PLAYER_NAME = "es.uam.eps.dadm.first_player_name";
-    public static final String ARG_FIRST_PLAYER_UUID = "es.uam.eps.dadm.first_player_uuid";
-    public static final String ARG_SECOND_PLAYER_NAME = "es.uam.eps.dadm.second_player_name";
-    public static final String ARG_SECOND_PLAYER_UUID = "es.uam.eps.dadm.second_player_uuid";
-    public static final String ARG_ROUND_TYPE = "es.uam.eps.dadm.round_type";
-    public static final String ARG_ROUND_SIZE = "es.uam.eps.dadm.round_size";
-    public static final String ARG_ROUND_DATE = "es.uam.eps.dadm.round_date";
-    public static final String ARG_ROUND_BOARD = "es.uam.eps.dadm.round_board";
-
-
+    /**
+     * Instancia de Butterknife para hacer unbinding más adelante
+     */
     Unbinder unbinder;
+
+    /**
+     * Vista del tablero
+     */
     @BindView(R.id.board_view)
     TableroView boardView;
+
+    /**
+     * Título de la partida
+     */
     @BindView(R.id.round_title)
     TextView roundTitle;
+
+    /**
+     * Botón para reiniciar la partida
+     */
     @BindView(R.id.reset_round_fab)
     FloatingActionButton resetRoundFab;
+
+    /**
+     * Layout contenedor de toda la vista
+     */
     @BindView(R.id.coordinatorRound)
     CoordinatorLayout coordinatorRound;
 
@@ -70,72 +72,45 @@ public class RoundFragment extends Fragment implements PartidaListener {
      */
     private Round round;
 
-
     /**
      * Constructor vacío del fragmento
      */
-    public RoundFragment() {
-    }
+    public RoundFragment() {}
 
+    /**
+     * Devuelve una instancia del fragment con los datos cargados necesarios para arrancar
+     * @param round Ronda que jugaremos en el fragment
+     * @return Instnacia del fragment
+     */
     public static RoundFragment newInstance(Round round) {
         // Creamos un contenedor para los argumentos
         Bundle args = new Bundle();
-
-        // Ponemos uno a uno todos los argumentos en el contenedor
-        args.putString(ARG_ROUND_ID, round.getId());
-        args.putSerializable(ARG_ROUND_TYPE, round.getTipo());
-        args.putString(ARG_FIRST_PLAYER_NAME, round.getFirstUserName());
-        args.putString(ARG_FIRST_PLAYER_UUID, round.getFirstUserUUID());
-        args.putString(ARG_SECOND_PLAYER_NAME, round.getSecondUserName());
-        args.putString(ARG_SECOND_PLAYER_UUID, round.getSecondUserUUID());
-        args.putString(ARG_ROUND_SIZE, Integer.toString(round.getSize()));
-        args.putString(ARG_ROUND_DATE, round.getDate());
-        args.putString(ARG_ROUND_BOARD, round.getBoard().tableroToString());
-
         // Creamos una instancia del fragmento, ponemos los argumentos y la devolvemos
         RoundFragment roundFragment = new RoundFragment();
-        roundFragment.setArguments(args);
+        roundFragment.setArguments(round.roundToBundle(args));
         return roundFragment;
-    }
-
-    private Round roundFromBundle() {
-        int size = Integer.parseInt(getArguments().getString(ARG_ROUND_SIZE));
-        Round round = new Round(getArguments().getString(ARG_ROUND_ID),
-                (Round.Type) getArguments().getSerializable(ARG_ROUND_TYPE),
-                getArguments().getString(ARG_ROUND_DATE),
-                Integer.parseInt(getArguments().getString(ARG_ROUND_SIZE)));
-
-        round.setFirstUser(getArguments().getString(ARG_FIRST_PLAYER_NAME),
-                getArguments().getString(ARG_FIRST_PLAYER_UUID));
-        round.setSecondUser(getArguments().getString(ARG_SECOND_PLAYER_NAME),
-                getArguments().getString(ARG_SECOND_PLAYER_UUID));
-
-        try {
-            round.getBoard().stringToTablero(getArguments().getString(ARG_ROUND_BOARD));
-        } catch (ExcepcionJuego excepcionJuego) {
-            excepcionJuego.printStackTrace();
-            this.getActivity().finish();
-        }
-        return round;
     }
 
     /**
      * Prepara el fragmento para su ejecución
-     *
      * @param savedInstanceState Pares clave-valor con los datos que serán necesarios para la ejecución del fragmento
      */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // Creamos una ronda y vamos metiendo uno a uno todos los argumentos
-        this.round = this.roundFromBundle();
+        this.round = Round.bundleToRound(getArguments());
+
+        // Si hay un error con la ronda, finalizamos la actividad
+        if (this.round == null)
+            this.getActivity().finish();
+
     }
 
     /**
      * Ejecutará las acciones necesarias para cuando se cree la vista
-     *
-     * @param inflater           Clase que se encargará de mostrar los elementos del fragment
-     * @param container          Contenedor del fragment
+     * @param inflater Clase que se encargará de mostrar los elementos del fragment
+     * @param container Contenedor del fragment
      * @param savedInstanceState Pares clave valor que se nos dan como parámetro
      * @return View que se acaba de crear
      */
@@ -149,18 +124,21 @@ public class RoundFragment extends Fragment implements PartidaListener {
         // Cambiamos el título por el de la partida
         roundTitle.setText(this.round.getTitle());
 
+        // Si no es una partida local, no podremos reiniciarla
         if (this.round.getTipo() != Round.Type.LOCAL)
             resetRoundFab.setVisibility(View.GONE);
 
         return rootView;
     }
 
+    /**
+     * Maneja la destrucción de la vista para hacer unbinding de los componentes
+     */
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         unbinder.unbind();
     }
-
 
     /**
      * Ejecución al inicio del fragmento
@@ -176,28 +154,12 @@ public class RoundFragment extends Fragment implements PartidaListener {
             startServerRound();
     }
 
-
-    @OnClick(R.id.reset_round_fab)
-    public void onClick(View view) {
-        // Si la partida ya ha acabado se lo indicamos al usuario
-        if (round.getBoard().getEstado() != Tablero.EN_CURSO) {
-            Snackbar.make(coordinatorRound, R.string.game_round_finished, Snackbar.LENGTH_SHORT).show();
-            return;
-        }
-        boardView.reset();
-        // Reiniciamos el tablero y comenzamos la partida
-        round.getBoard().reset();
-        //
-        // TODO QUE OSTIAS HACER CON ESTO
-        // startRound();
-        // Llamamos al callback de la actualización y le indicamos al jugador que el cambio de ha hecho
-        Snackbar.make(coordinatorRound, R.string.game_round_restarted, Snackbar.LENGTH_SHORT).show();
-    }
-
+    /**
+     * Comienza una partida local
+     */
     void startLocalRound() {
         // Creamos un jugador aleatorio y uno local que manejará el juego y los metemos en una Lista
         ArrayList<Jugador> players = new ArrayList<Jugador>();
-
         JugadorAleatorio randomPlayer = new JugadorAleatorio("Random player");
         JugadorHumano localPlayer = new JugadorHumano(this.getContext(), round);
         players.add(randomPlayer);
@@ -221,11 +183,15 @@ public class RoundFragment extends Fragment implements PartidaListener {
         if (game.getTablero().getEstado() == Tablero.EN_CURSO) game.comenzar();
     }
 
+    /**
+     * Comienza una partida con el servidor
+     */
     void startServerRound() {
         // Creamosdps jugadores, uno local y uno en servidor
         ArrayList<Jugador> players = new ArrayList<Jugador>();
         Jugador firstPlayer = null, secondPlayer = null;
 
+        // Miramos quien es el jugador local y quien el servidor y los creamos
         if (this.round.turn(Preferences.getPlayerName(this.getContext())) == 1) {
             firstPlayer = new LocalServerPlayer(coordinatorRound, round);
             secondPlayer = new RemotePlayer(round.getSecondUserName());
@@ -272,17 +238,40 @@ public class RoundFragment extends Fragment implements PartidaListener {
         switch (evento.getTipo()) {
             // Evento de que hay un cambio de de turno
             case Evento.EVENTO_CAMBIO:
-                // Actualizamos el tablero y llamamos al callback que hay que llamar cuando se actualiza la ronda
+                // Actualizamos el tablero
                 boardView.invalidate();
                 break;
             // Evento de que hay un fin de partida
             case Evento.EVENTO_FIN:
-                // Actualizamos el tablero y llamamos al callback que hay que llamar cuando se actualiza la ronda
+                // Actualizamos el tablero
                 boardView.invalidate();
                 // Indicamos al jugador que la partida ha acabado
                 Snackbar.make(coordinatorRound, R.string.game_game_over_title, Snackbar.LENGTH_SHORT).show();
                 this.getActivity().finish();
                 break;
         }
+    }
+
+    /**
+     * Captura las pulsaciones que se hacen en el fab para reiniciar la partida
+     * @param view View del fab
+     */
+    @OnClick(R.id.reset_round_fab)
+    public void onClick(View view) {
+        // Si la partida ya ha acabado se lo indicamos al usuario
+        if (round.getBoard().getEstado() != Tablero.EN_CURSO) {
+            Snackbar.make(coordinatorRound, R.string.game_round_finished, Snackbar.LENGTH_SHORT).show();
+            return;
+        }
+
+        // Reiniciamos la vista
+        boardView.reset();
+
+        // Reiniciamos el tablero y comenzamos la partida
+        round.getBoard().reset();
+        startLocalRound();
+
+        // Llamamos al callback de la actualización y le indicamos al jugador que el cambio de ha hecho
+        Snackbar.make(coordinatorRound, R.string.game_round_restarted, Snackbar.LENGTH_SHORT).show();
     }
 }
