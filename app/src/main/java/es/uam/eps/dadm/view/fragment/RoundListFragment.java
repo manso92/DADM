@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -47,6 +48,12 @@ public class RoundListFragment extends Fragment {
      */
     @BindView(R.id.add_found_fab)
     FloatingActionButton addFoundFab;
+
+    /**
+     * Instancia del layout para refrescar la lista de partidas
+     */
+    @BindView(R.id.swiperefresh)
+    SwipeRefreshLayout refreshLayout;
 
     /**
      * Clave del parámetro del repositorio por defecto del que coger los datos
@@ -156,6 +163,17 @@ public class RoundListFragment extends Fragment {
         if ((this.type == Round.Type.OPEN) || (this.type == Round.Type.FINISHED))
             addFoundFab.setVisibility(View.GONE);
 
+
+        // Iniciar la tarea asíncrona al revelar el indicador
+        refreshLayout.setOnRefreshListener(
+                new SwipeRefreshLayout.OnRefreshListener() {
+                    @Override
+                    public void onRefresh() {
+                        updateUI();
+                    }
+                }
+        );
+
         return view;
     }
 
@@ -209,6 +227,10 @@ public class RoundListFragment extends Fragment {
                 // Añadimos el adapter al recyclerview
                 if (roundRecyclerView != null)
                     roundRecyclerView.setAdapter(roundAdapter);
+
+                // Parar la animación del indicador
+                if (refreshLayout != null)
+                    refreshLayout.setRefreshing(false);
             }
             @Override
             public void onError(String error) {
