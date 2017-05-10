@@ -4,6 +4,11 @@ import android.util.Log;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
+import org.json.JSONObject;
+
+import es.uam.eps.dadm.events.GreenRobotEventBus;
+import es.uam.eps.dadm.events.NewMessageEvent;
+
 /**
  * Clase que se encargará de manejar el itentfilter que detecta los nuevos mensajes que nos manda el
  * servidor y de enviarlos donde sean necesarios
@@ -24,23 +29,19 @@ public class MessageReceiver extends FirebaseMessagingService {
      */
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
-
-        Log.d(DEBUG, "From: " + remoteMessage.getFrom());
-
         if (remoteMessage.getData().size() > 0) {
-            Log.d(DEBUG, "Message data payload: " + remoteMessage.getData());
-        }
-        if (remoteMessage.getNotification() != null) {
-            Log.d(DEBUG, "Message Notification Body: " + remoteMessage.getNotification().getBody());
-        }
+            try {
+                // Creamos un objeto JSON de la respuesta del mensaje
+                JSONObject o = new JSONObject(remoteMessage.getData());
+                
+                // Creamos un mensaje eventbus con el mensaje que viene del servidor
+                NewMessageEvent msg =
+                        new NewMessageEvent(o.getInt("msgtype"), o.getString("sender"), o.getString("content"));
+                Log.d(DEBUG, "Message data payload: " + msg.toString());
 
-        Log.d(DEBUG, "FCM Message Id: " + remoteMessage.getMessageId());
-        Log.d(DEBUG, "FCM Notification Message: " + remoteMessage.getNotification());
-        Log.d(DEBUG, "FCM Data Message: " + remoteMessage.getData());
-        Log.d(DEBUG, "FCM From: " + remoteMessage.getFrom());
-        Log.d(DEBUG, "FCM To: " + remoteMessage.getTo());
-        Log.d(DEBUG, "FCM CollapseKey: " + remoteMessage.getCollapseKey());
-        Log.d(DEBUG, "FCM Message Type: " + remoteMessage.getMessageType());
-        Log.d(DEBUG, "FCM To String: " + remoteMessage.toString());
+                // Enviamos el mensaje a EventBus
+                GreenRobotEventBus.getInstance().post(msg);
+            } catch (Exception e){}
+        }
     }
 }
