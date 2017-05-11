@@ -30,7 +30,7 @@ import es.uam.eps.dadm.model.RoundRepositoryFactory;
 import es.uam.eps.dadm.server.ServerRepository;
 import es.uam.eps.dadm.view.activities.Jarvis;
 import es.uam.eps.dadm.view.adapters.Message;
-import es.uam.eps.dadm.view.adapters.MessagesListAdapter;
+import es.uam.eps.dadm.view.adapters.MessagesAdapter;
 import es.uam.eps.multij.ExcepcionJuego;
 
 /**
@@ -66,7 +66,7 @@ public class MessageFragment extends Fragment {
     /**
      * Adaptador donde colocaremos todas nuestros mensajes
      */
-    private MessagesListAdapter adapter;
+    private MessagesAdapter adapter;
 
     /**
      * Instancia necesaria para hacer unbinding de los componentes
@@ -177,7 +177,7 @@ public class MessageFragment extends Fragment {
             public void onResponse(List<Message> messages) {
                 // Si no hay adapter lo creamos, y si lo hay, las añadimos
                 if (adapter == null)
-                    adapter = new MessagesListAdapter(messages);
+                    adapter = new MessagesAdapter(messages);
                 else
                     adapter.addMessages(messages);
 
