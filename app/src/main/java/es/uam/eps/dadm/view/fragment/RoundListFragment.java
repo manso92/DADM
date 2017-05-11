@@ -156,7 +156,7 @@ public class RoundListFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Cargamos el layout del fragmento y hacemos binding de las vistas
-        final View view = inflater.inflate(R.layout.fragment_round_list, container, false);
+        final View view = inflater.inflate(R.layout.fragment_recycler, container, false);
         this.unbinder = ButterKnife.bind(this, view);
 
         // Configuramos el recycler view y devolvemos la vista

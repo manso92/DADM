@@ -27,10 +27,11 @@ import es.uam.eps.dadm.model.RoundRepositoryFactory;
 import es.uam.eps.dadm.server.ServerRepository;
 import es.uam.eps.dadm.view.adapters.ViewPagerAdapter;
 import es.uam.eps.dadm.view.fragment.BlankFragment;
+import es.uam.eps.dadm.view.fragment.MessageListFragment;
 import es.uam.eps.dadm.view.fragment.RoundListFragment;
 
 /**
- * RoundListActivity es una pantalla que muestra las partidas disponibles para el usuario, de momento
+ * MainActivity es una pantalla que muestra las partidas disponibles para el usuario, de momento
  * tres
  * - Lista de partidas locales disponibles
  * - Lista de partidas en el servidor
@@ -39,7 +40,7 @@ import es.uam.eps.dadm.view.fragment.RoundListFragment;
  * @author Pablo Manso
  * @version 02/05/2017
  */
-public class RoundListActivity extends AppCompatActivity implements RoundListFragment.Callbacks {
+public class MainActivity extends AppCompatActivity implements RoundListFragment.Callbacks {
 
     /**
      * Tag para escribir en el log
@@ -94,11 +95,12 @@ public class RoundListActivity extends AppCompatActivity implements RoundListFra
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
 
         // Añadimos los fragmentos que vamos a tener en nuestro adapter
-        adapter.addFragment(RoundListFragment.newInstance(Round.Type.LOCAL), "Local");
+        adapter.addFragment(RoundListFragment.newInstance(Round.Type.LOCAL), "Offline");
         adapter.addFragment(RoundListFragment.newInstance(Round.Type.ACTIVE), "Mis partidas");
         adapter.addFragment(RoundListFragment.newInstance(Round.Type.OPEN), "Partidas abiertas");
         adapter.addFragment(RoundListFragment.newInstance(Round.Type.FINISHED), "Finalizadas");
         adapter.addFragment(new BlankFragment(), "Estadísticas");
+        adapter.addFragment(new MessageListFragment(), "Mensajes");
 
         // Vinculamos el adapter al viewpager
         viewPager.setAdapter(adapter);

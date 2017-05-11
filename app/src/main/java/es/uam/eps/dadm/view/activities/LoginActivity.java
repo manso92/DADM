@@ -109,7 +109,7 @@ public class LoginActivity extends AppCompatActivity {
                 serverLogin(Preferences.getPlayerName(this), Preferences.getPlayerPassword(this));
             } else {
                 // Mostramos al usuario su lista de partidas disponibles
-                startActivity(new Intent(LoginActivity.this, RoundListActivity.class));
+                startActivity(new Intent(LoginActivity.this, MainActivity.class));
                 finish();
             }
             return;
@@ -249,7 +249,7 @@ public class LoginActivity extends AppCompatActivity {
                             ((DataBase) localRepository).register(user, pass, userUUID, null);
                         Preferences.setPlayerUUID(LoginActivity.this, userUUID);
                         Preferences.setPlayerName(LoginActivity.this, user);
-                        startActivity(new Intent(LoginActivity.this, RoundListActivity.class));
+                        startActivity(new Intent(LoginActivity.this, MainActivity.class));
                         finish();
                     }
                     @Override
@@ -276,7 +276,7 @@ public class LoginActivity extends AppCompatActivity {
                     public void onLogin(String userUUID) {
                         Preferences.setPlayerUUID(LoginActivity.this, userUUID);
                         Preferences.setPlayerName(LoginActivity.this, user);
-                        startActivity(new Intent(LoginActivity.this, RoundListActivity.class));
+                        startActivity(new Intent(LoginActivity.this, MainActivity.class));
                         finish();
                     }
 
@@ -335,7 +335,7 @@ public class LoginActivity extends AppCompatActivity {
                         Preferences.setPlayerName(LoginActivity.this, user);
                         Preferences.setPlayerPassword(LoginActivity.this, pass);
                         // Mostramos las partidas disponibles para este jugador
-                        startActivity(new Intent(LoginActivity.this, RoundListActivity.class));
+                        startActivity(new Intent(LoginActivity.this, MainActivity.class));
                         finish();
                     }
                     @Override
