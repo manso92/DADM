@@ -15,6 +15,7 @@ import es.uam.eps.dadm.R;
 import es.uam.eps.dadm.model.Round;
 import es.uam.eps.dadm.view.adapters.ViewPagerAdapter;
 import es.uam.eps.dadm.view.fragment.BlankFragment;
+import es.uam.eps.dadm.view.fragment.MessageFragment;
 import es.uam.eps.dadm.view.fragment.RoundFragment;
 
 /**
@@ -86,7 +87,7 @@ public class RoundServerActivity extends AppCompatActivity  {
 
         // Añadimos los fragmentos que vamos a tener en nuestro adapter
         adapter.addFragment(RoundFragment.newInstance(this.round), "Partida");
-        adapter.addFragment(new BlankFragment(), "Mensajes");
+        adapter.addFragment(new MessageFragment(), "Mensajes");
 
         // Vinculamos el adapter al viewpager
         viewPager.setAdapter(adapter);
