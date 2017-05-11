@@ -540,7 +540,7 @@ public class ServerRepository implements RoundRepository {
      * @param round Si los mensajes son de una ronda o si es de un usuario
      * @param callback Callback que gestionará la respuesta
      */
-    public void getMessages(String id, boolean round, final MessagesCallback callback) {
+    private void getMessages(String id, boolean round, final MessagesCallback callback) {
         // Registramos un listener para manejar el correcto funcionamiento de la petición en el servidor
         Response.Listener<JSONArray> responseCallback = new Response.Listener<JSONArray>() {
             @Override
