@@ -5,7 +5,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.3.1'
+        classpath 'com.android.tools.build:gradle:2.3.2'
         classpath 'com.google.gms:google-services:3.0.0'
     }
 }
@@ -35,10 +35,7 @@ ext {
     volleyLibraryVersion =  '1.0.0'
     firebaseVersion = '10.2.4'
 
-    circleImageViewVersion = '2.0.0'
     butterknifeVersion = '8.5.1'
     eventbusVersion = '3.0.0'
-    glideVersion = '3.6.1'
-    jsoupVersion = '1.9.2'
     junitVersion = '4.12'
 }
