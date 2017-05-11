@@ -46,6 +46,13 @@ public class ServerInterface {
     static final String ROUND_PLAYER_NAMES_TAG = "playernames";
     static final String ROUND_TURN_TAG = "turn";
     static final String ROUND_CODEBOARD_TAG = "codedboard";
+    static final String MSG_FROM_TAG = PLAYER_ID_TAG;
+    static final String MSG_PLAYER_TAG = PLAYER_ID_TAG;
+    static final String MSG_ROUND_TAG = ROUND_ID_TAG;
+    static final String MSG_TO_PLAYER_TAG = "to";
+    static final String MSG_TO_ROUND_TAG = "toround";
+    static final String MSG_DATA_TAG = "msg";
+    static final String MSG_DATE_TAG = "fromdate";
 
     // URL BASE DONDE SE ENCUENTRAN TODOS LOS SCRIPTS
     private static final String BASE_URL = "http://ptha.ii.uam.es/dadm2017/";
@@ -312,16 +319,60 @@ public class ServerInterface {
      * @param errorCallback Callback a ejecutar en caso de que haya un error al ejecutar la petición
      */
     public void newMovement(int roundid, String playerid, String codedboard,
-                          Response.Listener<String> callback, ErrorListener errorCallback) {
+                            Response.Listener<String> callback, ErrorListener errorCallback) {
         // Creamos la URL con todos los parámetros mediante GET
         String url = GAME_MOVEMENT_PHP + "?" +
-                     ROUND_ID_TAG  + "=" + roundid + "&" +
-                     PLAYER_ID_TAG + "=" + playerid + "&" +
-                     ROUND_CODEBOARD_TAG + "=" + codedboard;
+                ROUND_ID_TAG  + "=" + roundid + "&" +
+                PLAYER_ID_TAG + "=" + playerid + "&" +
+                ROUND_CODEBOARD_TAG + "=" + codedboard;
         Log.d(DEBUG, url);
 
         // Creamos una request para recibir una cadena con el tablero y añadimos la request a la cola
         StringRequest r = new StringRequest(url, callback, errorCallback);
+        queue.add(r);
+    }
+
+    /**
+     * Envía un mensaje a una ronda o a un usuario
+     * @param from UUID del usuario que manda el mensaje
+     * @param to Usuario al que se manda un mensaje o id de la ronda a la que se manda
+     * @param msg Mensaje que se manda
+     * @param round Si el mensaje que se manda es a una ronda o no
+     * @param callback Calback a ejecutar en caso de que todo se produzca de forma correcta
+     * @param errorCallback Callback a ejecutar en caso de que haya un error al ejecutar la petición
+     */
+    public void sendMessages(String from, String to, String msg, boolean round,
+                            Response.Listener<String> callback, ErrorListener errorCallback) {
+        // Creamos la URL con todos los parámetros mediante GET
+        String url = MESSAGE_SEND_PHP + "?" +
+                MSG_FROM_TAG  + "=" + from + "&" +
+                MSG_DATA_TAG + "=" + msg + "&" ;
+        if (round) url += MSG_TO_ROUND_TAG + "=" + to;
+        else       url += MSG_TO_PLAYER_TAG + "=" + to;
+        Log.d(DEBUG, url);
+
+        // Creamos una request para recibir un JSONArray y añadimos la request a la cola
+        StringRequest r = new StringRequest(url, callback, errorCallback);
+        queue.add(r);
+    }
+
+    /**
+     * Recibe todos los mensajes enviados a una ronda o a un usuario
+     * @param id UUID del usuario o id de la ronda
+     * @param round Si se reciben mensajes de una ronda o no
+     * @param callback Calback a ejecutar en caso de que todo se produzca de forma correcta
+     * @param errorCallback Callback a ejecutar en caso de que haya un error al ejecutar la petición
+     */
+    public void getMessages(String id, boolean round, Response.Listener<JSONArray> callback,
+                            ErrorListener errorCallback) {
+        // Creamos la URL con todos los parámetros mediante GET
+        String url = MESSAGE_GET_PHP + "?" ;
+        if (round) url += MSG_ROUND_TAG + "=" + id;
+        else       url += MSG_PLAYER_TAG + "=" + id;
+        Log.d(DEBUG, url);
+
+        // Creamos una request para recibir una cadena con el tablero y añadimos la request a la cola
+        JsonArrayRequest r = new JsonArrayRequest(url, callback, errorCallback);
         queue.add(r);
     }
 }

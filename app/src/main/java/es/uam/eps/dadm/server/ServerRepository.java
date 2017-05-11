@@ -11,12 +11,15 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.StringTokenizer;
 
 import es.uam.eps.dadm.model.Preferences;
 import es.uam.eps.dadm.model.Round;
 import es.uam.eps.dadm.model.RoundRepository;
+import es.uam.eps.dadm.view.adapters.Message;
 import es.uam.eps.multij.ExcepcionJuego;
 
 import static es.uam.eps.dadm.model.Round.*;
@@ -50,6 +53,14 @@ public class ServerRepository implements RoundRepository {
      * Instancia de la interfaz del servidor al que mandaremos las peticiones
      */
     private ServerInterface is;
+
+    /**
+     * Interfaz que se deberá implementar cuando se solicitan mensajes
+     */
+    public interface MessagesCallback {
+        void onResponse(List<Message> messages);
+        void onError(String error);
+    }
 
     /**
      * Constructor de la clase privado para garantizar el singleton
@@ -420,6 +431,11 @@ public class ServerRepository implements RoundRepository {
         is.addPlayerToRound(Integer.parseInt(round.getId()),userUUID,responseCallback,errorCallback);
     }
 
+    /**
+     * Actualiza una ronda en el servidor
+     * @param round Partida que queremos actualizar
+     * @param callback Callback a ejecutar con la respuesta a la función
+     */
     @Override
     public void updateRound(Round round, final BooleanCallback callback) {
         // Registramos un listener para manejar el correcto funcionamiento de la petición en el servidor
@@ -444,5 +460,147 @@ public class ServerRepository implements RoundRepository {
         };
         is.newMovement(Integer.parseInt(round.getId()), Preferences.getPlayerUUID(context),
                 round.getBoard().tableroToString(),responseCallback,errorCallback);
+    }
+
+    /**
+     * Envía un mensaje al chat de una ronda
+     * @param from UUID de quien manda el mensaje
+     * @param to Id de la ronda a la que se manda el mensaje
+     * @param msg Mensaje que se quiere mandar
+     * @param callback Callback que gestionará la respuesta
+     */
+    public void sendMessageToRound(String from, String to, String msg, BooleanCallback callback) {
+        this.sendMessage(from, to, msg, true, callback);
+    }
+
+    /**
+     * Envía un mensaje a un usuario en particular
+     * @param from UUID de quien manda el mensaje
+     * @param to Nombre de usuario al que queremos mandar el mensaje
+     * @param msg Mensaje que se quiere mandar
+     * @param callback Callback que gestionará la respuesta
+     */
+    public void sendMessageToUser(String from, String to, String msg, BooleanCallback callback) {
+        this.sendMessage(from, to, msg, false, callback);
+    }
+
+    /**
+     * Envía un mensaje al servidor, a una ronda o a un usuario
+     * @param from UUID de quien manda el mensaje
+     * @param to A quién se manda el mensaje
+     * @param msg Mensaje que se quiere mandar
+     * @param round Si el mensaje es para una ronda o si es para un usuario
+     * @param callback Callback que gestionará la respuesta
+     */
+    private void sendMessage(String from, String to, String msg, boolean round, final BooleanCallback callback) {
+        // Registramos un listener para manejar el correcto funcionamiento de la petición en el servidor
+        Response.Listener<String> responseCallback = new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                // Enviamos un exito al callback
+                callback.onResponse(response.trim().equals("1"));
+                Log.d(DEBUG, "SendMessage peticion response correctly");
+            }
+        };
+
+        // Registramos un listener para manejar el mal funcionamiento de la petición en el servidor
+        Response.ErrorListener errorCallback = new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                // Enviamos un error al callback
+                callback.onResponse(false);
+                Log.d(DEBUG, "Error enviando el mensaje");
+            }
+        };
+        // Enviamos el mensaje al servidor
+        is.sendMessages(from, to, msg, round, responseCallback, errorCallback);
+    }
+
+    /**
+     * Obtiene los mensajes que se han enviado a una ronda
+     * @param id Id de la ronda del que se quieren obtener los mensajes
+     * @param callback Callback que gestionará la respuesta
+     */
+    public void getRoundMessages(String id, final MessagesCallback callback) {
+        this.getMessages(id, true, callback);
+    }
+
+    /**
+     * Obtiene los mensajes que se han enviado con un usuario
+     * @param id UUID del usuario del que se quieren obtener los mensajes
+     * @param callback Callback que gestionará la respuesta
+     */
+    public void getUserMessages(String id, final MessagesCallback callback) {
+        this.getMessages(id, false, callback);
+    }
+
+    /**
+     * Obtiene todos los mensajes que se han enviado a un usuario o a una ronda
+     * @param id Id del usuario o de la ronda
+     * @param round Si los mensajes son de una ronda o si es de un usuario
+     * @param callback Callback que gestionará la respuesta
+     */
+    public void getMessages(String id, boolean round, final MessagesCallback callback) {
+        // Registramos un listener para manejar el correcto funcionamiento de la petición en el servidor
+        Response.Listener<JSONArray> responseCallback = new Response.Listener<JSONArray>() {
+            @Override
+            public void onResponse(JSONArray response) {
+                // Obtenemos la lista de mensajes que el servidor nos ha mandado
+                List<Message> messages = messagesFromJSONArray(response);
+                // Los ordenamos de forma que los más recientes sean los últimos
+                Collections.sort(messages, new Comparator<Message>() {
+                    @Override
+                    public int compare(Message first, Message second) {
+                        return first.getDate().compareTo(second.getDate());
+                    }
+                });
+
+                // Enviamos los mensajes al callback
+                callback.onResponse(messages);
+                Log.d(DEBUG, "Mensajes correctamente recibidos");
+            }
+        };
+
+        // Registramos un listener para manejar el mal funcionamiento de la petición en el servidor
+        Response.ErrorListener errorCallback = new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                // Enviamos un error al callback
+                callback.onError("Error al obtener los mensajes del servidor.");
+                Log.d(DEBUG, "Error al obtener los mensajes del servidor");
+            }
+        };
+
+        // Obtiene los mensajes de la interfaz
+        is.getMessages(id, round, responseCallback, errorCallback);
+    }
+
+    /**
+     * Convierte un JSONArray en una lista de mensajes
+     * @param response JSONArray que nos devuelve el servidor
+     * @return Lista de mensajes obtenidos del servidor
+     */
+    private List<Message> messagesFromJSONArray(JSONArray response) {
+        // Lista de mensajes que devolveremos
+        List<Message> messages = new ArrayList<>();
+
+        // Por cada uno de los objetos que tenemos recorremos e el iterador
+        for (int i = 0; i < response.length(); i++) {
+            try {
+                // Obtenemos el mensaje y sus propiedades
+                JSONObject o = response.getJSONObject(i);
+                String from = o.getString("playername");
+                String message = o.getString("message");
+                String date = o.getString("msgdate");
+                boolean self = from.equals(Preferences.getPlayerName(context));
+
+                // Creamos un mensaje y lo añadimos a la lista
+                Message msg = new Message(from, message, self, date);
+                messages.add(msg);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        return messages;
     }
 }
