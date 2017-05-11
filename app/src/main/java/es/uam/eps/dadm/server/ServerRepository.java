@@ -517,30 +517,40 @@ public class ServerRepository implements RoundRepository {
     }
 
     /**
+     * Convierte un JSONArray en una lista de mensajes
+     * @param response JSONArray que nos devuelve el servidor
+     * @return Lista de mensajes obtenidos del servidor
+     */
+    private List<Message> messagesFromJSONArray(JSONArray response) {
+        // Lista de mensajes que devolveremos
+        List<Message> messages = new ArrayList<>();
+
+        // Por cada uno de los objetos que tenemos recorremos e el iterador
+        for (int i = 0; i < response.length(); i++) {
+            try {
+                // Obtenemos el mensaje y sus propiedades
+                JSONObject o = response.getJSONObject(i);
+                String from = o.getString("playername");
+                String message = o.getString("message");
+                String date = o.getString("msgdate");
+                boolean self = from.equals(Preferences.getPlayerName(context));
+
+                // Creamos un mensaje y lo añadimos a la lista
+                Message msg = new Message(from, message, self, date);
+                messages.add(msg);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        return messages;
+    }
+
+    /**
      * Obtiene los mensajes que se han enviado a una ronda
      * @param id Id de la ronda del que se quieren obtener los mensajes
      * @param callback Callback que gestionará la respuesta
      */
     public void getRoundMessages(String id, final MessagesCallback callback) {
-        this.getMessages(id, true, callback);
-    }
-
-    /**
-     * Obtiene los mensajes que se han enviado con un usuario
-     * @param id UUID del usuario del que se quieren obtener los mensajes
-     * @param callback Callback que gestionará la respuesta
-     */
-    public void getUserMessages(String id, final MessagesCallback callback) {
-        this.getMessages(id, false, callback);
-    }
-
-    /**
-     * Obtiene todos los mensajes que se han enviado a un usuario o a una ronda
-     * @param id Id del usuario o de la ronda
-     * @param round Si los mensajes son de una ronda o si es de un usuario
-     * @param callback Callback que gestionará la respuesta
-     */
-    private void getMessages(String id, boolean round, final MessagesCallback callback) {
         // Registramos un listener para manejar el correcto funcionamiento de la petición en el servidor
         Response.Listener<JSONArray> responseCallback = new Response.Listener<JSONArray>() {
             @Override
@@ -572,35 +582,122 @@ public class ServerRepository implements RoundRepository {
         };
 
         // Obtiene los mensajes de la interfaz
-        is.getMessages(id, round, responseCallback, errorCallback);
+        is.getMessages(id, true, responseCallback, errorCallback);
     }
 
     /**
-     * Convierte un JSONArray en una lista de mensajes
-     * @param response JSONArray que nos devuelve el servidor
-     * @return Lista de mensajes obtenidos del servidor
+     * Obtiene los mensajes que se han enviado con un usuario
+     * @param user Username del usuario del que se quieren obtener los mensajes
+     * @param callback Callback que gestionará la respuesta
      */
-    private List<Message> messagesFromJSONArray(JSONArray response) {
-        // Lista de mensajes que devolveremos
-        List<Message> messages = new ArrayList<>();
+    public void getUserMessages(final String user, final MessagesCallback callback) {
+        // Registramos un listener para manejar el correcto funcionamiento de la petición en el servidor
+        Response.Listener<JSONArray> responseCallback = new Response.Listener<JSONArray>() {
+            @Override
+            public void onResponse(JSONArray response) {
+                // Obtenemos la lista de mensajes que el servidor nos ha mandado
+                List<Message> messages = messagesFromJSONArray(response);
 
-        // Por cada uno de los objetos que tenemos recorremos e el iterador
-        for (int i = 0; i < response.length(); i++) {
-            try {
-                // Obtenemos el mensaje y sus propiedades
-                JSONObject o = response.getJSONObject(i);
-                String from = o.getString("playername");
-                String message = o.getString("message");
-                String date = o.getString("msgdate");
-                boolean self = from.equals(Preferences.getPlayerName(context));
+                messages = filterUser(user, messages);
 
-                // Creamos un mensaje y lo añadimos a la lista
-                Message msg = new Message(from, message, self, date);
-                messages.add(msg);
-            } catch (JSONException e) {
-                e.printStackTrace();
+                // Los ordenamos de forma que los más recientes sean los últimos
+                Collections.sort(messages, new Comparator<Message>() {
+                    @Override
+                    public int compare(Message first, Message second) {
+                        return first.getDate().compareTo(second.getDate());
+                    }
+                });
+
+                // Enviamos los mensajes al callback
+                callback.onResponse(messages);
+                Log.d(DEBUG, "Mensajes correctamente recibidos");
             }
-        }
-        return messages;
+        };
+
+        // Registramos un listener para manejar el mal funcionamiento de la petición en el servidor
+        Response.ErrorListener errorCallback = new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                // Enviamos un error al callback
+                callback.onError("Error al obtener los mensajes del servidor.");
+                Log.d(DEBUG, "Error al obtener los mensajes del servidor");
+            }
+        };
+
+        // Obtiene los mensajes de la interfaz
+        is.getMessages(Preferences.getPlayerUUID(context), true, responseCallback, errorCallback);
+    }
+
+    /**
+     * Elimina todos los mensajes que no nos haya enviado un usuario
+     * @param user Usuario a filtrar
+     * @param messages Mensajes a filtrar
+     * @return Mensajes filtrados
+     */
+    private List<Message> filterUser(String user, List<Message> messages){
+        List <Message> returned = new ArrayList<>();
+        for (Message m : messages)
+            if (m.getFromName().equals(user))
+                returned.add(m);
+        return returned;
+    }
+
+    /**
+     * Busca el último mensaje de cada usuario
+     * @param callback Callback que gestionará la respuesta
+     */
+    public void getLastMessages(final MessagesCallback callback) {
+        // Registramos un listener para manejar el correcto funcionamiento de la petición en el servidor
+        Response.Listener<JSONArray> responseCallback = new Response.Listener<JSONArray>() {
+            @Override
+            public void onResponse(JSONArray response) {
+                // Obtenemos la lista de mensajes que el servidor nos ha mandado
+                List<Message> messages = messagesFromJSONArray(response);
+                // Los ordenamos de forma que los más recientes sean los últimos
+                Collections.sort(messages, new Comparator<Message>() {
+                    @Override
+                    public int compare(Message first, Message second) {
+                        return -1 * first.getDate().compareTo(second.getDate());
+                    }
+                });
+
+                messages = usersFromMessages(messages);
+
+                // Enviamos los mensajes al callback
+                callback.onResponse(messages);
+                Log.d(DEBUG, "Mensajes correctamente recibidos");
+            }
+        };
+
+        // Registramos un listener para manejar el mal funcionamiento de la petición en el servidor
+        Response.ErrorListener errorCallback = new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                // Enviamos un error al callback
+                callback.onError("Error al obtener los mensajes del servidor.");
+                Log.d(DEBUG, "Error al obtener los mensajes del servidor");
+            }
+        };
+
+        // Obtiene los mensajes de la interfaz
+        is.getMessages(Preferences.getPlayerUUID(context), false, responseCallback, errorCallback);
+    }
+
+    /**
+     * Devuelve el último mensaje de cada uno de los usuarios
+     * @param messages Mensajes a filtrar
+     * @return Mensajes filtrados
+     */
+    private List<Message> usersFromMessages(List<Message> messages){
+        List<String> users = new ArrayList<>();
+        List <Message> returned = new ArrayList<>();
+        for (Message m : messages)
+            if ((users.indexOf(m.getFromName()) == -1) &&
+                    (!m.getFromName().equals(Preferences.getPlayerName(context)))) {
+                users.add(m.getFromName());
+                returned.add(m);
+            }
+
+        return returned;
     }
 }
