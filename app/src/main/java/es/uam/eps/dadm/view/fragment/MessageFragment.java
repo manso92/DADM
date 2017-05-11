@@ -6,13 +6,15 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.ImageButton;
 
-import java.util.ArrayList;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import java.util.List;
 
 import butterknife.BindView;
@@ -20,13 +22,16 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
 import es.uam.eps.dadm.R;
+import es.uam.eps.dadm.events.GreenRobotEventBus;
+import es.uam.eps.dadm.events.NewMessageEvent;
 import es.uam.eps.dadm.model.Preferences;
-import es.uam.eps.dadm.model.Round;
 import es.uam.eps.dadm.model.RoundRepository;
 import es.uam.eps.dadm.model.RoundRepositoryFactory;
 import es.uam.eps.dadm.server.ServerRepository;
+import es.uam.eps.dadm.view.activities.Jarvis;
 import es.uam.eps.dadm.view.adapters.Message;
 import es.uam.eps.dadm.view.adapters.MessagesListAdapter;
+import es.uam.eps.multij.ExcepcionJuego;
 
 /**
  * RoundFragment es un fragmento que mostrará una lista de mensajes
@@ -133,6 +138,11 @@ public class MessageFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
+
+        // Empezamos a capturar los eventos
+        GreenRobotEventBus.getInstance().register(this);
+
+        // Actualizamos la lista de mensajes
         this.updateUI();
     }
 
@@ -144,6 +154,14 @@ public class MessageFragment extends Fragment {
         super.onDestroyView();
         // Hacemos unbinding de todas las vistas que Butterknife utilizara antes
         unbinder.unbind();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+
+        // Dejamos de campturar eventos
+        GreenRobotEventBus.getInstance().unregister(this);
     }
 
     /**
@@ -191,10 +209,13 @@ public class MessageFragment extends Fragment {
         RoundRepository.BooleanCallback booleanCallback = new RoundRepository.BooleanCallback() {
             @Override
             public void onResponse(boolean ok) {
-                // Sacamos un Snackbar que muestre el resultado de la operación
-                if (ok)
+                if (ok) {
                     adapter.addMessage(new Message(Preferences.getPlayerName(getContext()),
-                            editTxtMessage.getText().toString(),true));
+                            editTxtMessage.getText().toString(), true));
+                    editTxtMessage.setText("");
+                    Jarvis.hideKeyboard(getActivity());
+                    messageRecyclerView.scrollToPosition(adapter.getItemCount()-1);
+                }
                 else
                     // TODO change string
                     Snackbar.make(messageRecyclerView.getRootView(), R.string.repository_round_update_error,
@@ -205,4 +226,14 @@ public class MessageFragment extends Fragment {
         serverRepository.sendMessageToRound(Preferences.getPlayerUUID(this.getContext()),
                 this.recipient, editTxtMessage.getText().toString(),booleanCallback);
     }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onEvent(NewMessageEvent msg) throws ExcepcionJuego {
+        Log.d(DEBUG, "Mensaje recibido en el roundgrafment: " + msg.toString());
+
+        if ((msg.getMsgtype() == NewMessageEvent.roundMessage) && (msg.getSender().equals(this.recipient))){
+            updateUI();
+        }
+    }
 }
+

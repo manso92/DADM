@@ -154,6 +154,7 @@ public class RoundFragment extends Fragment implements PartidaListener {
     public void onStart() {
         // Llamamos al padre
         super.onStart();
+
         // Empezamos a capturar los eventos
         GreenRobotEventBus.getInstance().register(this);
         // Comenzamos la partida

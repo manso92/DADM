@@ -14,7 +14,7 @@ import android.view.inputmethod.InputMethodManager;
  * @author Pablo Manso
  * @version 12/04/2017
  */
-class Jarvis {
+public class Jarvis {
 
     /**
      * Tag para escribir en el log
@@ -37,7 +37,7 @@ class Jarvis {
      * Oculta el teclado del teléfono si está mostrado en la pantalla
      * @param activity Actividad desde la cual se quiere ocultar el teclado
      */
-    static void hideKeyboard(Activity activity) {
+    public static void hideKeyboard(Activity activity) {
         InputMethodManager imm = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
         View view = activity.getCurrentFocus();
         if (view == null) view = new View(activity);
