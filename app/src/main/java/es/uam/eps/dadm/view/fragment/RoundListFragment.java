@@ -43,13 +43,13 @@ public class RoundListFragment extends Fragment {
     /**
      * Instancia del recycler
      */
-    @BindView(R.id.round_recycler_view)
+    @BindView(R.id.recycler_view)
     RecyclerView roundRecyclerView;
 
     /**
      * Instancia del botón de añadir partida
      */
-    @BindView(R.id.add_found_fab)
+    @BindView(R.id.fab)
     FloatingActionButton addFoundFab;
 
     /**
@@ -272,7 +272,7 @@ public class RoundListFragment extends Fragment {
      *  el evento click en el botón de añadir ronda
      * @param v View del botón que se pulsa
      */
-    @OnClick(R.id.add_found_fab)
+    @OnClick(R.id.fab)
     public void newRound(View v) {
         // Creamos un callback booleano que gestione la respuesta
         RoundRepository.BooleanCallback booleanCallback = new RoundRepository.BooleanCallback() {
