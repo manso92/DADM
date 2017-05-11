@@ -12,6 +12,9 @@ import es.uam.eps.dadm.R;
 /**
  * ViewPagerAdapter manejará las páginas que tendrá nuestro viewpage, permitiento añadir nuevos
  * fragments a nuestro contenedor y poder mostrar las partidas
+ *
+ * @author Pablo Manso
+ * @version 11/05/2017
  */
 public class ViewPagerAdapter extends FragmentPagerAdapter {
     /**
