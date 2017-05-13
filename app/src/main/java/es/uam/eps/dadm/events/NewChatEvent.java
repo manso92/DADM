@@ -2,8 +2,9 @@ package es.uam.eps.dadm.events;
 
 /**
  * Clase que se encargará de indicar el nombre de usuario con el que queremos empezar a chatear
+ *
  * @author Pablo Manso
- * @version 12/05/2017
+ * @version 13/05/2017
  */
 public class NewChatEvent {
 
