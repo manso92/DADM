@@ -42,6 +42,10 @@
             android:name=".view.activities.HelpActivity"
             android:label="@string/help.title"
             android:parentActivityName=".view.activities.MainActivity"/>
+        <activity
+            android:name=".view.activities.ChatActivity"
+            android:label="@string/help.title"
+            android:parentActivityName=".view.activities.MainActivity"/>
 
 
         <!-- Intent filter para recibir los mensajes del servidor -->
