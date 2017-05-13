@@ -19,7 +19,7 @@ import es.uam.eps.dadm.model.Preferences;
  * MessagesAdapter manejará la lista de mensajes que se mostrará
  *
  * @author Pablo Manso
- * @version 11/05/2017
+ * @version 13/05/2017
  */
 public class ChatsAdapter extends RecyclerView.Adapter<ChatsAdapter.MessageHolder> {
 
@@ -130,7 +130,7 @@ public class ChatsAdapter extends RecyclerView.Adapter<ChatsAdapter.MessageHolde
      * Holder que se encargará de colocar en la interfaz cada uno de los elementos del item
      *
      * @author Pablo Manso
-     * @version 13/03/2017
+     * @version 13/05/2017
      */
     public class MessageHolder extends RecyclerView.ViewHolder {
         /**
@@ -162,7 +162,7 @@ public class ChatsAdapter extends RecyclerView.Adapter<ChatsAdapter.MessageHolde
         public void bindMessage(Message message) {
             username.setText(message.getFromName());
             if (message.getMessage().length() > 20) message.setMessage(message.getMessage().substring(0,20));
-            if (message.isSelf()) lastmessage.setText(message.getFromName() + ": " + message.getMessage());
+            if (!message.isSelf()) lastmessage.setText(message.getFromName() + ": " + message.getMessage());
             else lastmessage.setText(Preferences.getPlayerName(context) + ": " + message.getMessage());
         }
     }

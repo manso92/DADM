@@ -31,7 +31,7 @@ import es.uam.eps.dadm.view.listeners.RecyclerItemClickListener;
  * RoundListFragment es el fragmento que mostrará la lista de partidas necesarias
  *
  * @author Pablo Manso
- * @version 13/03/2017
+ * @version 13/05/2017
  */
 public class RoundListFragment extends Fragment {
 
@@ -57,11 +57,6 @@ public class RoundListFragment extends Fragment {
      */
     @BindView(R.id.swiperefresh)
     SwipeRefreshLayout refreshLayout;
-
-    /**
-     * Clave del parámetro del repositorio por defecto del que coger los datos
-     */
-    private static final String REPOSITORY_KEY  = "repository_key";
 
     /**
      * Clave del parámetro del filtro de las rondas que queremos dels servidor

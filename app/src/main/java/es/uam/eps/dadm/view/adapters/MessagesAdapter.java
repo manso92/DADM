@@ -16,7 +16,7 @@ import android.widget.TextView;
  * MessagesAdapter manejará la lista de mensajes que se mostrará
  *
  * @author Pablo Manso
- * @version 11/05/2017
+ * @version 13/05/2017
  */
 public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.MessageHolder> {
 
@@ -24,6 +24,13 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Messag
      * Lista de mensajes que se representará en la view
      */
     private List<Message> messages;
+
+    /**
+     * Construye un nuevo adaptador
+     */
+    public MessagesAdapter() {
+        this.messages = new ArrayList<>();
+    }
 
     /**
      * Construye un nuevo adaptador con una lista de mensajes
@@ -105,7 +112,6 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Messag
 
         // Retornamos el objeto que manejará la vista
         return new MessageHolder(view);
-
     }
 
     /**
@@ -117,8 +123,15 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Messag
     public void onBindViewHolder(MessageHolder holder, int position) {
         // Obtenemos la info del mensaje que vamos a cargar
         Message message = messages.get(position);
+
+        boolean user;
+        if (position > 0)
+            user = message.isSelf() != messages.get(position-1).isSelf();
+        else
+            user = true;
+
         // Rellenamos  los datos con el mensaje que acabamos de obtener
-        holder.bindMessage(message);
+        holder.bindMessage(message, user);
     }
 
     /**
@@ -134,9 +147,10 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Messag
      * Holder que se encargará de colocar en la interfaz cada uno de los elementos del item
      *
      * @author Pablo Manso
-     * @version 13/03/2017
+     * @version 13/05/2017
      */
     public class MessageHolder extends RecyclerView.ViewHolder {
+
         /**
          * Etiqueta que indica quién ha mandado el mensaje
          */
@@ -163,9 +177,12 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Messag
          * Coloca los datos de un mensaje en la vista
          * @param message Mensaje que se colocará en la vista
          */
-        public void bindMessage(Message message) {
+        public void bindMessage(Message message, boolean user) {
+            if (user)
+                lblMsgFrom.setText(message.getFromName());
+            else
+                lblMsgFrom.setVisibility(View.GONE);
             txtMsg.setText(message.getMessage());
-            lblMsgFrom.setText(message.getFromName());
         }
     }
 }
