@@ -8,7 +8,7 @@ import  org.greenrobot.eventbus.EventBus;
  * @author Pablo Manso
  * @version 08/05/2017
  */
-public class GreenRobotEventBus{
+public class GREB {
 
     /**
      * Tag para escribir en el log
@@ -18,7 +18,7 @@ public class GreenRobotEventBus{
     /**
      * Instancia del singleton
      */
-    private static GreenRobotEventBus greenRobotEventBus;
+    private static GREB greenRobotEventBus;
 
     /**
      * Instancia de la librería EventBus
@@ -28,7 +28,7 @@ public class GreenRobotEventBus{
     /**
      * Constructor privado de la clase
      */
-    private GreenRobotEventBus() {
+    private GREB() {
         // Cogemos la instancia de la librería
         this.eventBus =  EventBus.getDefault();
     }
@@ -37,8 +37,8 @@ public class GreenRobotEventBus{
      * Función que nos devuleve la instancia del bus para mandar eventos
      * @return Instancia del bus de eventos
      */
-    public static GreenRobotEventBus getInstance() {
-        if (greenRobotEventBus == null) greenRobotEventBus = new GreenRobotEventBus();
+    public static GREB inst() {
+        if (greenRobotEventBus == null) greenRobotEventBus = new GREB();
         return greenRobotEventBus;
     }
 

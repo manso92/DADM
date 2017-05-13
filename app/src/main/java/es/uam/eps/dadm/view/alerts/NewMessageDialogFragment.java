@@ -11,7 +11,7 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 
 import es.uam.eps.dadm.R;
-import es.uam.eps.dadm.events.GreenRobotEventBus;
+import es.uam.eps.dadm.events.GREB;
 import es.uam.eps.dadm.events.NewChatEvent;
 
 /**
@@ -52,7 +52,7 @@ public class NewMessageDialogFragment extends DialogFragment {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 // Enviamos el evento para que se cree la conversación y cerramos el dialog
-                GreenRobotEventBus.getInstance().post(new NewChatEvent(input.getText().toString()));
+                GREB.inst().post(new NewChatEvent(input.getText().toString()));
                 dialog.dismiss();
             }
         });

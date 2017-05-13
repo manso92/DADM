@@ -23,7 +23,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
 import es.uam.eps.dadm.R;
-import es.uam.eps.dadm.events.GreenRobotEventBus;
+import es.uam.eps.dadm.events.GREB;
 import es.uam.eps.dadm.events.NewChatEvent;
 import es.uam.eps.dadm.model.RoundRepositoryFactory;
 import es.uam.eps.dadm.server.ServerRepository;
@@ -32,7 +32,6 @@ import es.uam.eps.dadm.view.adapters.ChatsAdapter;
 import es.uam.eps.dadm.view.adapters.Message;
 import es.uam.eps.dadm.view.alerts.NewMessageDialogFragment;
 import es.uam.eps.dadm.view.listeners.RecyclerItemClickListener;
-import es.uam.eps.multij.ExcepcionJuego;
 
 /**
  * MessageListFragment es un fragmento que mostrará una lista chats disponibles
@@ -110,7 +109,7 @@ public class MessageListFragment extends Fragment {
         super.onStart();
 
         // Empezamos a capturar los eventos
-        GreenRobotEventBus.getInstance().register(this);
+        GREB.inst().register(this);
 
         // Actualizamos la lista de mensajes
         this.updateUI();
@@ -125,7 +124,7 @@ public class MessageListFragment extends Fragment {
         super.onStop();
 
         // Dejamos de campturar eventos
-        GreenRobotEventBus.getInstance().unregister(this);
+        GREB.inst().unregister(this);
     }
 
     /**

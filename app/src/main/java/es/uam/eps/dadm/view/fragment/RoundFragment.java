@@ -22,7 +22,7 @@ import butterknife.OnClick;
 import butterknife.Unbinder;
 
 import es.uam.eps.dadm.R;
-import es.uam.eps.dadm.events.GreenRobotEventBus;
+import es.uam.eps.dadm.events.GREB;
 import es.uam.eps.dadm.events.NewMessageEvent;
 import es.uam.eps.dadm.model.JugadorHumano;
 import es.uam.eps.dadm.model.Preferences;
@@ -156,7 +156,7 @@ public class RoundFragment extends Fragment implements PartidaListener {
         super.onStart();
 
         // Empezamos a capturar los eventos
-        GreenRobotEventBus.getInstance().register(this);
+        GREB.inst().register(this);
         // Comenzamos la partida
         if (this.round.getTipo() == Round.Type.LOCAL)
             startLocalRound();
@@ -172,7 +172,7 @@ public class RoundFragment extends Fragment implements PartidaListener {
         super.onStop();
 
         // Dejamos de campturar eventos
-        GreenRobotEventBus.getInstance().unregister(this);
+        GREB.inst().unregister(this);
     }
     /**
      * Comienza una partida local

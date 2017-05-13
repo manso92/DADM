@@ -6,7 +6,7 @@ import com.google.firebase.messaging.RemoteMessage;
 
 import org.json.JSONObject;
 
-import es.uam.eps.dadm.events.GreenRobotEventBus;
+import es.uam.eps.dadm.events.GREB;
 import es.uam.eps.dadm.events.NewMessageEvent;
 
 /**
@@ -40,7 +40,7 @@ public class MessageReceiver extends FirebaseMessagingService {
                 Log.d(DEBUG, "Message data payload: " + msg.toString());
 
                 // Enviamos el mensaje a EventBus
-                GreenRobotEventBus.getInstance().post(msg);
+                GREB.inst().post(msg);
             } catch (Exception e){}
         }
     }

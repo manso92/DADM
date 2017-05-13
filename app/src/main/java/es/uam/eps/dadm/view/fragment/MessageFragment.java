@@ -22,7 +22,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
 import es.uam.eps.dadm.R;
-import es.uam.eps.dadm.events.GreenRobotEventBus;
+import es.uam.eps.dadm.events.GREB;
 import es.uam.eps.dadm.events.NewMessageEvent;
 import es.uam.eps.dadm.model.Preferences;
 import es.uam.eps.dadm.model.RoundRepository;
@@ -132,7 +132,7 @@ public class MessageFragment extends Fragment {
         super.onStart();
 
         // Empezamos a capturar los eventos
-        GreenRobotEventBus.getInstance().register(this);
+        GREB.inst().register(this);
 
         // Actualizamos la lista de mensajes
         this.updateUI();
@@ -146,7 +146,7 @@ public class MessageFragment extends Fragment {
         super.onStop();
 
         // Dejamos de campturar eventos
-        GreenRobotEventBus.getInstance().unregister(this);
+        GREB.inst().unregister(this);
     }
 
     /**
