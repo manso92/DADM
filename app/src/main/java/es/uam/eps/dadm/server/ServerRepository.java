@@ -625,7 +625,7 @@ public class ServerRepository implements RoundRepository {
         };
 
         // Obtiene los mensajes de la interfaz
-        is.getMessages(Preferences.getPlayerUUID(context), true, responseCallback, errorCallback);
+        is.getMessages(Preferences.getPlayerUUID(context), false, responseCallback, errorCallback);
     }
 
     /**
