@@ -3,7 +3,7 @@ package es.uam.eps.dadm.view.fragment;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
+
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -22,13 +22,14 @@ import butterknife.OnClick;
 import butterknife.Unbinder;
 
 import es.uam.eps.dadm.R;
-import es.uam.eps.dadm.events.GREB;
 import es.uam.eps.dadm.events.NewMessageEvent;
+import es.uam.eps.dadm.events.ShowMsgEvent;
 import es.uam.eps.dadm.model.JugadorHumano;
 import es.uam.eps.dadm.model.Preferences;
 import es.uam.eps.dadm.model.Round;
 import es.uam.eps.dadm.server.LocalServerPlayer;
 import es.uam.eps.dadm.server.RemotePlayer;
+import es.uam.eps.dadm.view.activities.Jarvis;
 import es.uam.eps.dadm.view.views.TableroView;
 import es.uam.eps.multij.*;
 
@@ -156,7 +157,8 @@ public class RoundFragment extends Fragment implements PartidaListener {
         super.onStart();
 
         // Empezamos a capturar los eventos
-        GREB.inst().register(this);
+        Jarvis.event().register(this);
+
         // Comenzamos la partida
         if (this.round.getTipo() == Round.Type.LOCAL)
             startLocalRound();
@@ -172,8 +174,9 @@ public class RoundFragment extends Fragment implements PartidaListener {
         super.onStop();
 
         // Dejamos de campturar eventos
-        GREB.inst().unregister(this);
+        Jarvis.event().unregister(this);
     }
+
     /**
      * Comienza una partida local
      */
@@ -213,10 +216,10 @@ public class RoundFragment extends Fragment implements PartidaListener {
 
         // Miramos quien es el jugador local y quien el servidor y los creamos
         if (this.round.turn(Preferences.getPlayerName(this.getContext())) == 1) {
-            firstPlayer = new LocalServerPlayer(coordinatorRound, round);
+            firstPlayer = new LocalServerPlayer(getContext(), round);
             secondPlayer = new RemotePlayer(round.getSecondUserName());
         } else if (this.round.turn(Preferences.getPlayerName(this.getContext())) == 2) {
-            secondPlayer = new LocalServerPlayer(coordinatorRound, round);
+            secondPlayer = new LocalServerPlayer(getContext(), round);
             firstPlayer = new RemotePlayer(round.getFirstUserName());
         } else {
             this.getActivity().finish();
@@ -266,7 +269,7 @@ public class RoundFragment extends Fragment implements PartidaListener {
                 // Actualizamos el tablero
                 boardView.invalidate();
                 // Indicamos al jugador que la partida ha acabado
-                Snackbar.make(coordinatorRound, R.string.game_game_over_title, Snackbar.LENGTH_SHORT).show();
+                Jarvis.error(ShowMsgEvent.Type.TOAST, R.string.game_game_over_title, getContext());
                 this.getActivity().finish();
                 break;
         }
@@ -280,7 +283,7 @@ public class RoundFragment extends Fragment implements PartidaListener {
     public void onClick(View view) {
         // Si la partida ya ha acabado se lo indicamos al usuario
         if (round.getBoard().getEstado() != Tablero.EN_CURSO) {
-            Snackbar.make(coordinatorRound, R.string.game_round_finished, Snackbar.LENGTH_SHORT).show();
+            Jarvis.error(ShowMsgEvent.Type.TOAST, R.string.game_round_finished, getContext());
             return;
         }
 
@@ -292,7 +295,7 @@ public class RoundFragment extends Fragment implements PartidaListener {
         startLocalRound();
 
         // Llamamos al callback de la actualización y le indicamos al jugador que el cambio de ha hecho
-        Snackbar.make(coordinatorRound, R.string.game_round_restarted, Snackbar.LENGTH_SHORT).show();
+        Jarvis.error(ShowMsgEvent.Type.SNACKBAR, R.string.game_round_restarted, getContext());
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

@@ -1,8 +1,10 @@
 package es.uam.eps.dadm.events;
 
+
 import android.support.design.widget.Snackbar;
 import android.view.View;
 import android.widget.Toast;
+
 
 /**
  * Clase que se encargará de indicar el error que hay que mostrar por pantalla

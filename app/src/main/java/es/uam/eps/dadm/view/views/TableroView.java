@@ -4,7 +4,7 @@ package es.uam.eps.dadm.view.views;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.support.design.widget.Snackbar;
+
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
@@ -12,11 +12,13 @@ import android.view.View;
 import java.util.ArrayList;
 
 import es.uam.eps.dadm.R;
+import es.uam.eps.dadm.events.ShowMsgEvent;
 import es.uam.eps.dadm.model.Casilla;
 import es.uam.eps.dadm.model.ColorManager;
 import es.uam.eps.dadm.model.Ficha;
 import es.uam.eps.dadm.model.MovimientoDamas;
 import es.uam.eps.dadm.model.TableroDamas;
+import es.uam.eps.dadm.view.activities.Jarvis;
 import es.uam.eps.multij.Tablero;
 
 /**
@@ -260,7 +262,7 @@ public class TableroView extends View {
                 // Si no hay un movimiento válido con esa primer casilla, se lo indicamos al usuario y limpiamos el movimiento
                 if (this.board.mismoComienzo(this.movimiento).size() == 0) {
                     this.movimiento = null;
-                    Snackbar.make((View) this.getParent(), R.string.game_move_invalid, Snackbar.LENGTH_SHORT).show();
+                    Jarvis.error(ShowMsgEvent.Type.TOAST, R.string.game_move_invalid, getContext());
                 }
             } else {
                 // Añadimos el nuevo destino

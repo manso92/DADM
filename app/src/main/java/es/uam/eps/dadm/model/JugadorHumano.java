@@ -1,7 +1,7 @@
 package es.uam.eps.dadm.model;
 
 import android.content.Context;
-import android.support.design.widget.Snackbar;
+
 import android.util.Log;
 
 import es.uam.eps.dadm.R;

@@ -11,8 +11,8 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 
 import es.uam.eps.dadm.R;
-import es.uam.eps.dadm.events.GREB;
 import es.uam.eps.dadm.events.NewChatEvent;
+import es.uam.eps.dadm.view.activities.Jarvis;
 
 /**
  * NewMessageDialogFragment es un dialog que mustra un cuadro de texto en el que se purede introducir
@@ -52,7 +52,7 @@ public class NewMessageDialogFragment extends DialogFragment {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 // Enviamos el evento para que se cree la conversación y cerramos el dialog
-                GREB.inst().post(new NewChatEvent(input.getText().toString()));
+                Jarvis.event().post(new NewChatEvent(input.getText().toString()));
                 dialog.dismiss();
             }
         });

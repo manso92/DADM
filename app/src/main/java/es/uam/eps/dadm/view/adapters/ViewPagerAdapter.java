@@ -7,8 +7,6 @@ import android.support.v4.app.FragmentPagerAdapter;
 import java.util.ArrayList;
 import java.util.List;
 
-import es.uam.eps.dadm.R;
-
 /**
  * ViewPagerAdapter manejará las páginas que tendrá nuestro viewpage, permitiento añadir nuevos
  * fragments a nuestro contenedor y poder mostrar las partidas

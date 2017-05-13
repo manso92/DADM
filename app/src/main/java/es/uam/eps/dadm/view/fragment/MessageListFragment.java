@@ -2,7 +2,7 @@ package es.uam.eps.dadm.view.fragment;
 
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
+
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -23,11 +23,12 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
 import es.uam.eps.dadm.R;
-import es.uam.eps.dadm.events.GREB;
 import es.uam.eps.dadm.events.NewChatEvent;
+import es.uam.eps.dadm.events.ShowMsgEvent;
 import es.uam.eps.dadm.model.RoundRepositoryFactory;
 import es.uam.eps.dadm.server.ServerRepository;
 import es.uam.eps.dadm.view.activities.ChatActivity;
+import es.uam.eps.dadm.view.activities.Jarvis;
 import es.uam.eps.dadm.view.adapters.ChatsAdapter;
 import es.uam.eps.dadm.view.adapters.Message;
 import es.uam.eps.dadm.view.alerts.NewMessageDialogFragment;
@@ -109,7 +110,7 @@ public class MessageListFragment extends Fragment {
         super.onStart();
 
         // Empezamos a capturar los eventos
-        GREB.inst().register(this);
+        Jarvis.event().register(this);
 
         // Actualizamos la lista de mensajes
         this.updateUI();
@@ -124,7 +125,7 @@ public class MessageListFragment extends Fragment {
         super.onStop();
 
         // Dejamos de campturar eventos
-        GREB.inst().unregister(this);
+        Jarvis.event().unregister(this);
     }
 
     /**
@@ -208,7 +209,7 @@ public class MessageListFragment extends Fragment {
             @Override
             public void onError(String error) {
                 // Mostramos el error que nos indican al llamar al callback
-                Snackbar.make(chatRecyclerView, error, Snackbar.LENGTH_LONG).show();
+                Jarvis.error(ShowMsgEvent.Type.TOAST, error);
             }
         };
         // Regcargamos la lista de rondas disponibles

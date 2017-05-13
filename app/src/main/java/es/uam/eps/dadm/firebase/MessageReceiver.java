@@ -6,8 +6,8 @@ import com.google.firebase.messaging.RemoteMessage;
 
 import org.json.JSONObject;
 
-import es.uam.eps.dadm.events.GREB;
 import es.uam.eps.dadm.events.NewMessageEvent;
+import es.uam.eps.dadm.view.activities.Jarvis;
 
 /**
  * Clase que se encargará de manejar el itentfilter que detecta los nuevos mensajes que nos manda el
@@ -40,7 +40,7 @@ public class MessageReceiver extends FirebaseMessagingService {
                 Log.d(DEBUG, "Message data payload: " + msg.toString());
 
                 // Enviamos el mensaje a EventBus
-                GREB.inst().post(msg);
+                Jarvis.event().post(msg);
             } catch (Exception e){}
         }
     }

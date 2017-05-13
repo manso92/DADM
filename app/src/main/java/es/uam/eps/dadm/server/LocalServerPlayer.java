@@ -1,6 +1,7 @@
 package es.uam.eps.dadm.server;
 
-import android.support.design.widget.Snackbar;
+
+import android.content.Context;
 import android.util.Log;
 import android.view.View;
 
@@ -10,11 +11,13 @@ import com.android.volley.VolleyError;
 import org.json.JSONObject;
 
 import es.uam.eps.dadm.R;
+import es.uam.eps.dadm.events.ShowMsgEvent;
 import es.uam.eps.dadm.model.MovimientoDamas;
 import es.uam.eps.dadm.model.Preferences;
 import es.uam.eps.dadm.model.Round;
 import es.uam.eps.dadm.model.RoundRepository;
 import es.uam.eps.dadm.model.RoundRepositoryFactory;
+import es.uam.eps.dadm.view.activities.Jarvis;
 import es.uam.eps.dadm.view.views.TableroView;
 import es.uam.eps.multij.*;
 
@@ -37,9 +40,9 @@ public class LocalServerPlayer  implements Jugador, TableroView.OnPlayListener {
     private Round round;
 
     /**
-     * View en el que mostrar las notificaciones
+     * Context desde el que nos ejecutan para poder mostrar errores
      */
-    private View view;
+    private Context context;
 
     /**
      * Repositorio de datos en el que actualizar las partidas
@@ -58,13 +61,13 @@ public class LocalServerPlayer  implements Jugador, TableroView.OnPlayListener {
 
     /**
      * Constructor del jugador de la partida
-     * @param view View en el que mostrar los mensajes
+     * @param context Context para mostrar los mensajes
      * @param round Ronda que se va a jugar
      */
-    public LocalServerPlayer(View view, Round round) {
-        this.view = view;
+    public LocalServerPlayer(Context context, Round round) {
+        this.context = context;
         this.round = round;
-        this.repository = RoundRepositoryFactory.createRepository(view.getContext(),true);
+        this.repository = RoundRepositoryFactory.createRepository(context,true);
     }
 
     /**
@@ -120,7 +123,7 @@ public class LocalServerPlayer  implements Jugador, TableroView.OnPlayListener {
                         } catch (Exception e) {}
                     } else {
                         // Si no es nuestro turno, lo indicamos
-                        Snackbar.make(view, R.string.game_not_turn, Snackbar.LENGTH_SHORT).show();
+                        Jarvis.error(ShowMsgEvent.Type.TOAST, R.string.game_not_turn, context);
                     }
                 } catch (Exception e) {
                     Log.d(DEBUG, "" + e);
@@ -136,8 +139,8 @@ public class LocalServerPlayer  implements Jugador, TableroView.OnPlayListener {
         };
 
         // Preguntamos al servidor si es nuestro turno
-        ServerInterface is = ServerInterface.getServer(view.getContext());
-        is.isMyTurn(Integer.parseInt(round.getId()), Preferences.getPlayerUUID(view.getContext()),
+        ServerInterface is = ServerInterface.getServer(context);
+        is.isMyTurn(Integer.parseInt(round.getId()), Preferences.getPlayerUUID(context),
                 responseListener, errorListener);
     }
 
@@ -173,8 +176,7 @@ public class LocalServerPlayer  implements Jugador, TableroView.OnPlayListener {
             public void onResponse(boolean response) {
                 // Si se produce un error al actualizar la partida, se lo comunicamos al usuario
                 if (!response)
-                    Snackbar.make(view, R.string.repository_round_update_error,
-                            Snackbar.LENGTH_LONG).show();
+                    Jarvis.error(ShowMsgEvent.Type.TOAST, R.string.repository_round_update_error, context);
             }
         };
         // Actualizamos la partida en la base de datos

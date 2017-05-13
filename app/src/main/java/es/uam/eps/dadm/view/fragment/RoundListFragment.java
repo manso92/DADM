@@ -3,7 +3,7 @@ package es.uam.eps.dadm.view.fragment;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
+
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -20,10 +20,12 @@ import butterknife.BindView;
 import butterknife.OnClick;
 import butterknife.Unbinder;
 import es.uam.eps.dadm.R;
+import es.uam.eps.dadm.events.ShowMsgEvent;
 import es.uam.eps.dadm.model.Round;
 import es.uam.eps.dadm.model.RoundRepository;
 import es.uam.eps.dadm.model.RoundRepositoryFactory;
 import es.uam.eps.dadm.model.Preferences;
+import es.uam.eps.dadm.view.activities.Jarvis;
 import es.uam.eps.dadm.view.adapters.RoundAdapter;
 import es.uam.eps.dadm.view.listeners.RecyclerItemClickListener;
 
@@ -131,6 +133,29 @@ public class RoundListFragment extends Fragment {
     }
 
     /**
+     * Ejecución al inicio del fragmento
+     */
+    @Override
+    public void onStart() {
+        // Llamamos al padre
+        super.onStart();
+
+        // Empezamos a capturar los eventos
+        Jarvis.event().register(this);
+    }
+
+    /**
+     * Ejecución con el fin del fragmento
+     */
+    @Override
+    public void onStop() {
+        super.onStop();
+
+        // Dejamos de campturar eventos
+        Jarvis.event().unregister(this);
+    }
+
+    /**
      * Función que se ejecutará cuando se vuelva de una pausa
      */
     @Override
@@ -234,7 +259,7 @@ public class RoundListFragment extends Fragment {
             @Override
             public void onError(String error) {
                 // Mostramos el error que nos indican al llamar al callback
-                Snackbar.make(roundRecyclerView, error, Snackbar.LENGTH_LONG).show();
+                Jarvis.error(ShowMsgEvent.Type.TOAST, error);
             }
         };
         // Regcargamos la lista de rondas disponibles
@@ -279,14 +304,14 @@ public class RoundListFragment extends Fragment {
             public void onResponse(boolean ok) {
                 // Sacamos un Snackbar que muestre el resultado de la operación
                 if (ok) {
-                    Snackbar.make(roundRecyclerView,
-                            R.string.repository_round_create_success, Snackbar.LENGTH_LONG).show();
+                    Jarvis.error(ShowMsgEvent.Type.SNACKBAR,
+                            R.string.repository_round_create_success, getContext());
                     // Si es correcto, también actualizamos la interfaz
                     updateUI();
                 }
                 else
-                    Snackbar.make(roundRecyclerView,
-                            R.string.repository_round_create_error, Snackbar.LENGTH_LONG).show();
+                    Jarvis.error(ShowMsgEvent.Type.TOAST,
+                            R.string.repository_round_create_error, getContext());
             }
         };
 

@@ -1,7 +1,7 @@
 package es.uam.eps.dadm.view.fragment;
 
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
+
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -22,8 +22,8 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
 import es.uam.eps.dadm.R;
-import es.uam.eps.dadm.events.GREB;
 import es.uam.eps.dadm.events.NewMessageEvent;
+import es.uam.eps.dadm.events.ShowMsgEvent;
 import es.uam.eps.dadm.model.Preferences;
 import es.uam.eps.dadm.model.RoundRepository;
 import es.uam.eps.dadm.model.RoundRepositoryFactory;
@@ -132,7 +132,7 @@ public class MessageFragment extends Fragment {
         super.onStart();
 
         // Empezamos a capturar los eventos
-        GREB.inst().register(this);
+        Jarvis.event().register(this);
 
         // Actualizamos la lista de mensajes
         this.updateUI();
@@ -146,7 +146,7 @@ public class MessageFragment extends Fragment {
         super.onStop();
 
         // Dejamos de campturar eventos
-        GREB.inst().unregister(this);
+        Jarvis.event().unregister(this);
     }
 
     /**
@@ -208,7 +208,7 @@ public class MessageFragment extends Fragment {
             @Override
             public void onError(String error) {
                 // Mostramos el error que nos indican al llamar al callback
-                Snackbar.make(messageRecyclerView, error, Snackbar.LENGTH_LONG).show();
+                Jarvis.error(ShowMsgEvent.Type.TOAST, error);
             }
         };
 
@@ -250,8 +250,8 @@ public class MessageFragment extends Fragment {
                 else
                     // TODO change string
                     // Indicamos al usuario que su mensaje no ha podido ser enviado
-                    Snackbar.make(messageRecyclerView.getRootView(), R.string.repository_round_update_error,
-                            Snackbar.LENGTH_LONG).show();
+                    Jarvis.error(ShowMsgEvent.Type.TOAST,
+                            R.string.repository_round_update_error, getContext());
 
             }
         };
