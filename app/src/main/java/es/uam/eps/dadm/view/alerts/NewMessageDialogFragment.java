@@ -41,7 +41,7 @@ public class NewMessageDialogFragment extends DialogFragment {
         builder.setTitle("Title");
 
         // Cargamos el layout y se lo añadimos al builder
-        View viewInflated = LayoutInflater.from(getContext()).inflate(R.layout.messagefragment, (ViewGroup) getView(), false);
+        View viewInflated = LayoutInflater.from(getContext()).inflate(R.layout.fragment_dialog_userchat, (ViewGroup) getView(), false);
         builder.setView(viewInflated);
 
         // Capturamos el EditText que nos dará el usuario con el que chatear
