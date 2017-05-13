@@ -167,7 +167,7 @@ public class RoundListFragment extends Fragment {
             addFoundFab.setVisibility(View.GONE);
 
 
-        // Iniciar la tarea asíncrona al revelar el indicador
+        // Añadimos el listener que recargará la lista mostrada
         refreshLayout.setOnRefreshListener(
                 new SwipeRefreshLayout.OnRefreshListener() {
                     @Override
@@ -269,7 +269,7 @@ public class RoundListFragment extends Fragment {
     }
 
     /**
-     *  el evento click en el botón de añadir ronda
+     * Captura el evento click en el botón de añadir ronda
      * @param v View del botón que se pulsa
      */
     @OnClick(R.id.fab)

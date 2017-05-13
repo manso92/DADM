@@ -37,7 +37,7 @@ import es.uam.eps.multij.ExcepcionJuego;
  * MessageFragment es un fragmento que mostrará una lista de mensajes
  *
  * @author Pablo Manso
- * @version 11/05/2017
+ * @version 13/05/2017
  */
 public class MessageFragment extends Fragment {
 

@@ -12,7 +12,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -25,29 +24,28 @@ import butterknife.OnClick;
 import butterknife.Unbinder;
 import es.uam.eps.dadm.R;
 import es.uam.eps.dadm.events.GreenRobotEventBus;
-import es.uam.eps.dadm.events.NewMessageEvent;
-import es.uam.eps.dadm.model.Preferences;
-import es.uam.eps.dadm.model.RoundRepository;
+import es.uam.eps.dadm.events.NewChatEvent;
 import es.uam.eps.dadm.model.RoundRepositoryFactory;
 import es.uam.eps.dadm.server.ServerRepository;
-import es.uam.eps.dadm.view.activities.Jarvis;
+import es.uam.eps.dadm.view.activities.ChatActivity;
 import es.uam.eps.dadm.view.adapters.ChatsAdapter;
 import es.uam.eps.dadm.view.adapters.Message;
-import es.uam.eps.dadm.view.adapters.MessagesAdapter;
+import es.uam.eps.dadm.view.alerts.NewMessageDialogFragment;
+import es.uam.eps.dadm.view.listeners.RecyclerItemClickListener;
 import es.uam.eps.multij.ExcepcionJuego;
 
 /**
- * RoundFragment es un fragmento que mostrará una lista de mensajes
+ * MessageListFragment es un fragmento que mostrará una lista chats disponibles
  *
  * @author Pablo Manso
- * @version 11/05/2017
+ * @version 13/05/2017
  */
 public class MessageListFragment extends Fragment {
 
     /**
      * Tag para escribir en el log
      */
-    public static final String DEBUG = "Damas.MessageFrag";
+    public static final String DEBUG = "Damas.MessageListFrag";
 
     /**
      * Recyclerview que contendrá la lista de chats
@@ -59,19 +57,13 @@ public class MessageListFragment extends Fragment {
      * Swipe to reload view para recargar la lista
      */
     @BindView(R.id.swiperefresh)
-    SwipeRefreshLayout swiperefresh;
+    SwipeRefreshLayout refreshLayout;
 
     /**
      * Fab para añadir un nuevo chat
      */
     @BindView(R.id.fab)
     FloatingActionButton addFoundFab;
-
-
-    /**
-     * Constante que nos representará de parámetro en el bundle
-     */
-    private static final String ARG_SENDER_ID = "sender";
 
     /**
      * Adaptador donde colocaremos todas nuestros mensajes
@@ -98,26 +90,16 @@ public class MessageListFragment extends Fragment {
 
         // Creamos la instancia del repositorio
         this.serverRepository = (ServerRepository) RoundRepositoryFactory.createRepository(this.getContext(), true);
-    }
 
-    /**
-     * Ejecutará las acciones necesarias para cuando se cree la vista
-     * @param inflater Clase que se encargará de mostrar los elementos del fragment
-     * @param container Contenedor del fragment
-     * @param savedInstanceState Pares clave valor que se nos dan como parámetro
-     * @return View que se acaba de crear
-     */
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Cargamos el layout del fragmento y hacemos binding de las vistas
-        final View view = inflater.inflate(R.layout.fragment_recycler, container, false);
-        this.unbinder = ButterKnife.bind(this, view);
-
-        // Cogemos el layout manager y le ajustamos un linearlayout para la lista
-        this.chatRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        this.chatRecyclerView.setItemAnimator(new DefaultItemAnimator());
-        return view;
+        // Añadimos el listener que recargará la lista mostrada
+        refreshLayout.setOnRefreshListener(
+                new SwipeRefreshLayout.OnRefreshListener() {
+                    @Override
+                    public void onRefresh() {
+                        updateUI();
+                    }
+                }
+        );
     }
 
     /**
@@ -134,22 +116,69 @@ public class MessageListFragment extends Fragment {
         this.updateUI();
     }
 
-    /**
-     * Función que se ejecutará cuando se destruya la view
-     */
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        // Hacemos unbinding de todas las vistas que Butterknife utilizara antes
-        unbinder.unbind();
-    }
 
+    /**
+     * Ejecución al fin del fragmento
+     */
     @Override
     public void onStop() {
         super.onStop();
 
         // Dejamos de campturar eventos
         GreenRobotEventBus.getInstance().unregister(this);
+    }
+
+    /**
+     * Ejecutará las acciones necesarias para cuando se cree la vista
+     * @param inflater Clase que se encargará de mostrar los elementos del fragment
+     * @param container Contenedor del fragment
+     * @param savedInstanceState Pares clave valor que se nos dan como parámetro
+     * @return View que se acaba de crear
+     */
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Cargamos el layout del fragmento y hacemos binding de las vistas
+        final View view = inflater.inflate(R.layout.fragment_recycler, container, false);
+        this.unbinder = ButterKnife.bind(this, view);
+
+        // Configuramos todo lo necesario del recyclerview
+        setupRecyclerView();
+
+        return view;
+    }
+
+    /**
+     * Función que se ejecutará cuando se destruya la view
+     */
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+
+        // Hacemos unbinding de todas las vistas que Butterknife utilizara antes
+        unbinder.unbind();
+    }
+
+    /**
+     * Configura el recyvlerview con la lista de partidas que toque
+     */
+    public void setupRecyclerView(){
+        // Cogemos el layout manager y le ajustamos un linearlayout para la lista
+        this.chatRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        this.chatRecyclerView.setItemAnimator(new DefaultItemAnimator());
+
+        // Añadimos el listener de la lista
+        this.chatRecyclerView.addOnItemTouchListener(new
+                RecyclerItemClickListener(getActivity(), new
+                RecyclerItemClickListener.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(View view, final int position) {
+                        // Arrancamos una conversación con el usuario seleccionado
+                        if (position < adapter.getItemCount())
+                            startActivity(ChatActivity.newIntent(getActivity(),
+                                    adapter.getMessage(position).getFromName()));
+                    }
+                }));
     }
 
     /**
@@ -185,6 +214,25 @@ public class MessageListFragment extends Fragment {
         };
         // Regcargamos la lista de rondas disponibles
         serverRepository.getLastMessages(messagesCallback);
+    }
+
+    /**
+     * Captura el evento click en el botón de empezar chat
+     * @param v View del botón que se pulsa
+     */
+    @OnClick(R.id.fab)
+    public void newRound(View v) {
+        (new NewMessageDialogFragment()).show(getActivity().getSupportFragmentManager(),"User selection");
+    }
+
+    /**
+     * Captura los mensajes que se enviarán para crear una nueva ventana de chat
+     * @param msg Mensaje que contiene todos los datos necesarios para empezar un chat
+     */
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onEvent(NewChatEvent msg) {
+        Log.d(DEBUG, "Mensaje recibido en el roundgrafment: " + msg.toString());
+        startActivity(ChatActivity.newIntent(this.getActivity(),msg.getUser()));
     }
 }
 
