@@ -222,7 +222,7 @@ public class LoginActivity extends AppCompatActivity {
 
         // Cogemos el nombre de usuario y la contraseña que se han introducido
         String user = userEditText.getText().toString();
-        String pass = md5Java(passEditText.getText().toString());
+        String pass = Jarvis.md5Java(passEditText.getText().toString());
 
         // Ocultamos el formulario y mostramos el progress
         showProgress(true);
@@ -305,7 +305,7 @@ public class LoginActivity extends AppCompatActivity {
 
         // Cogemos el nombre de usuario y la contraseña que se han introducido
         String user = userEditText.getText().toString();
-        String pass = md5Java(passEditText.getText().toString());
+        String pass = Jarvis.md5Java(passEditText.getText().toString());
 
         // Si no estamos conectado, indicamos al usuario que no se puede registrar sin internet
         if (!Jarvis.isOnline(this))
@@ -386,26 +386,8 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     /**
-     * Calcula la función hash md5 de una cadena de texto para una contraseña
-     * @param message Mensaje del que calcular el hash
-     * @return Cadena hash del mensaje recibido
+     * Captura los mensajes que se reciben por Firebase para mostrar los mensajes recibidos
+     * @param msg Mensaje que contiene todos los datos necesarios para empezar un chat
      */
-    public String md5Java(String message){
-        String digest = null;
-        MessageDigest md = null;
-        byte[] hash = new byte[0];
-        try {
-            md = MessageDigest.getInstance("MD5");
-            hash = md.digest(message.getBytes("UTF-8"));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        StringBuilder sb = new StringBuilder(2*hash.length);
-        for(byte b : hash) sb.append(String.format("%02x", b&0xff));
-
-        digest = sb.toString();
-        return digest;
-    }
 }
 

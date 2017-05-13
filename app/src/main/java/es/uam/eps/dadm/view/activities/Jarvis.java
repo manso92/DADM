@@ -9,6 +9,8 @@ import android.view.inputmethod.InputMethodManager;
 
 import org.greenrobot.eventbus.EventBus;
 
+import java.security.MessageDigest;
+
 /**
  * Clase con funciones auxiliares que tiene que ver con distintos componentes de los recursos de
  * Android como comprobar conexión con Internet, manejras el teclado...
@@ -30,6 +32,29 @@ public class Jarvis {
      */
     public static EventBus event() {
         return EventBus.getDefault();
+    }
+
+    /**
+     * Calcula la función hash md5 de una cadena de texto para una contraseña
+     * @param message Mensaje del que calcular el hash
+     * @return Cadena hash del mensaje recibido
+     */
+    public static String md5Java(String message){
+        String digest = null;
+        MessageDigest md = null;
+        byte[] hash = new byte[0];
+        try {
+            md = MessageDigest.getInstance("MD5");
+            hash = md.digest(message.getBytes("UTF-8"));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        StringBuilder sb = new StringBuilder(2*hash.length);
+        for(byte b : hash) sb.append(String.format("%02x", b&0xff));
+
+        digest = sb.toString();
+        return digest;
     }
 
 
