@@ -7,6 +7,8 @@ import android.net.NetworkInfo;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
+import org.greenrobot.eventbus.EventBus;
+
 /**
  * Clase con funciones auxiliares que tiene que ver con distintos componentes de los recursos de
  * Android como comprobar conexión con Internet, manejras el teclado...
@@ -20,6 +22,16 @@ public class Jarvis {
      * Tag para escribir en el log
      */
     public static final String DEBUG = "Damas.Jarvis";
+
+
+    /**
+     * Función que nos devuleve la instancia del bus para mandar eventos
+     * @return Instancia del bus de eventos
+     */
+    public static EventBus event() {
+        return EventBus.getDefault();
+    }
+
 
     /**
      * Indica si el móvil tiene conexión con internet o no
