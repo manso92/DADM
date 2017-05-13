@@ -34,7 +34,7 @@ import es.uam.eps.dadm.view.adapters.MessagesAdapter;
 import es.uam.eps.multij.ExcepcionJuego;
 
 /**
- * RoundFragment es un fragmento que mostrará una lista de mensajes
+ * MessageFragment es un fragmento que mostrará una lista de mensajes
  *
  * @author Pablo Manso
  * @version 11/05/2017
@@ -59,9 +59,24 @@ public class MessageFragment extends Fragment {
     EditText editTxtMessage;
 
     /**
-     * Constante que nos representará de parámetro en el bundle
+     * Constante que nos indicará a quién hay que enviar los mensajes
      */
-    private static final String ARG_SENDER_ID = "sender";
+    private static final String ARG_SENDER_ID = "recipient";
+
+    /**
+     * Ronda o UUID del usuario del que enviaremos y recibiremos los mensajes
+     */
+    private String recipient;
+
+    /**
+     * Constante que nos indicará qué tipo de conversación estamos empezando
+     */
+    private static final String ARG_TYPE = "type";
+
+    /**
+     * Nos indica si la conversación se produce en una ronda o con un usuario particular
+     */
+    private boolean round = false;
 
     /**
      * Adaptador donde colocaremos todas nuestros mensajes
@@ -74,24 +89,20 @@ public class MessageFragment extends Fragment {
     private Unbinder unbinder;
 
     /**
-     * Ronda o UUID del usuario del que enviaremos y recibiremos los mensajes
-     */
-    private String recipient;
-
-    /**
      * Repositorio del servidor del que obtendremos y enviaremos los mensajes
      */
     private ServerRepository serverRepository;
 
     /**
      * Crea una instancia del Fragmento con todos los parámetros colocados
-     * @param to Ronda o UUID de usuario del que obtener y enviarm ensajes
+     * @param to Ronda o UUID de usuario del que obtener y enviar mensajes
      * @return Instancia del fragmento
      */
-    public static MessageFragment newInstance(String to) {
+    public static MessageFragment newInstance(String to, boolean round) {
         // Creamos un bundle de argumentos y rellenamos lod datos
         Bundle args = new Bundle();
         args.putString(ARG_SENDER_ID, to);
+        args.putBoolean(ARG_TYPE, round);
 
         // Creamos un fragmento, colocamos los datos y devolvemos el framento
         MessageFragment messageFragment = new MessageFragment();
@@ -109,7 +120,33 @@ public class MessageFragment extends Fragment {
 
         // Coge el parámetro del remitente y creamos el servidor
         this.recipient = getArguments().getString(ARG_SENDER_ID);
+        this.round = getArguments().getBoolean(ARG_TYPE);
         this.serverRepository = (ServerRepository) RoundRepositoryFactory.createRepository(this.getContext(), true);
+    }
+
+    /**
+     * Ejecución al inicio del fragmento
+     */
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        // Empezamos a capturar los eventos
+        GreenRobotEventBus.getInstance().register(this);
+
+        // Actualizamos la lista de mensajes
+        this.updateUI();
+    }
+
+    /**
+     * Ejecución al final del fragmento
+     */
+    @Override
+    public void onStop() {
+        super.onStop();
+
+        // Dejamos de campturar eventos
+        GreenRobotEventBus.getInstance().unregister(this);
     }
 
     /**
@@ -133,35 +170,14 @@ public class MessageFragment extends Fragment {
     }
 
     /**
-     * Ejecución al inicio del fragmento
-     */
-    @Override
-    public void onStart() {
-        super.onStart();
-
-        // Empezamos a capturar los eventos
-        GreenRobotEventBus.getInstance().register(this);
-
-        // Actualizamos la lista de mensajes
-        this.updateUI();
-    }
-
-    /**
      * Función que se ejecutará cuando se destruya la view
      */
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+
         // Hacemos unbinding de todas las vistas que Butterknife utilizara antes
         unbinder.unbind();
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-
-        // Dejamos de campturar eventos
-        GreenRobotEventBus.getInstance().unregister(this);
     }
 
     /**
@@ -195,8 +211,12 @@ public class MessageFragment extends Fragment {
                 Snackbar.make(messageRecyclerView, error, Snackbar.LENGTH_LONG).show();
             }
         };
-        // Regcargamos la lista de rondas disponibles
-        serverRepository.getRoundMessages(this.recipient, messagesCallback);
+
+        // Obtenemos la lista de mensajes del servidor
+        if (this.round)
+            serverRepository.getRoundMessages(this.recipient, messagesCallback);
+        else
+            serverRepository.getUserMessages(this.recipient, messagesCallback);
     }
 
 
@@ -206,34 +226,62 @@ public class MessageFragment extends Fragment {
      */
     @OnClick(R.id.btnSendMessage)
     public void send (View v){
+
+        // Registramos el callback que manejará la respuesta del servidor
         RoundRepository.BooleanCallback booleanCallback = new RoundRepository.BooleanCallback() {
             @Override
             public void onResponse(boolean ok) {
                 if (ok) {
+                    // Si el adapter no está creado, lo creamos
+                    if (adapter == null) adapter = new MessagesAdapter();
+
+                    // Añadimos el adapter al recyclerview
+                    if (messageRecyclerView != null) messageRecyclerView.setAdapter(adapter);
+
+                    // Añadimos todos los mensajes al adapter
                     adapter.addMessage(new Message(Preferences.getPlayerName(getContext()),
                             editTxtMessage.getText().toString(), true));
+
+                    // Hacemos scrollhasta la última posición y limpiamos en mensaje
                     editTxtMessage.setText("");
                     Jarvis.hideKeyboard(getActivity());
                     messageRecyclerView.scrollToPosition(adapter.getItemCount()-1);
                 }
                 else
                     // TODO change string
+                    // Indicamos al usuario que su mensaje no ha podido ser enviado
                     Snackbar.make(messageRecyclerView.getRootView(), R.string.repository_round_update_error,
                             Snackbar.LENGTH_LONG).show();
 
             }
         };
-        serverRepository.sendMessageToRound(Preferences.getPlayerUUID(this.getContext()),
-                this.recipient, editTxtMessage.getText().toString(),booleanCallback);
+
+        // Enviamos al servidor el mensaje
+        if (this.round)
+            serverRepository.sendMessageToRound(Preferences.getPlayerUUID(this.getContext()),
+                    this.recipient, editTxtMessage.getText().toString(),booleanCallback);
+        else
+            serverRepository.sendMessageToUser(Preferences.getPlayerUUID(this.getContext()),
+                    this.recipient, editTxtMessage.getText().toString(),booleanCallback);
     }
 
+    /**
+     * Captura los mensajes que se reciben por Firebase para mostrar los mensajes recibidos
+     * @param msg Mensaje que contiene todos los datos necesarios para empezar un chat
+     */
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEvent(NewMessageEvent msg) throws ExcepcionJuego {
         Log.d(DEBUG, "Mensaje recibido en el roundgrafment: " + msg.toString());
 
-        if ((msg.getMsgtype() == NewMessageEvent.roundMessage) && (msg.getSender().equals(this.recipient))){
+        // Si es un mensaje de ronda y es para la nuestra actualizamos la interfaz
+        if ((this.round) && (msg.getMsgtype() == NewMessageEvent.roundMessage) &&
+                (msg.getSender().equals(this.recipient)))
             updateUI();
-        }
+
+        // Si es un mensaje para un usuario, y es la conversación que tenemos abierta lo mostramos
+        if ((!this.round) && (msg.getMsgtype() == NewMessageEvent.userMessage) &&
+                (msg.getSender().equals(this.recipient)))
+            updateUI();
     }
 }
 
