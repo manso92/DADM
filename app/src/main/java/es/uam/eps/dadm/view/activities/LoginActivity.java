@@ -5,7 +5,6 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
 import android.view.View;
@@ -14,17 +13,19 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.firebase.iid.FirebaseInstanceId;
 
-import java.security.MessageDigest;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+
 import es.uam.eps.dadm.R;
 import es.uam.eps.dadm.database.DataBase;
+import es.uam.eps.dadm.events.ShowMsgEvent;
 import es.uam.eps.dadm.model.Preferences;
 import es.uam.eps.dadm.model.Round;
 import es.uam.eps.dadm.model.RoundRepository;
@@ -35,7 +36,7 @@ import es.uam.eps.dadm.model.RoundRepositoryFactory;
  * si tiene creada una cuenta o para que registre una cuenta nueva en caso de que no tenga cuenta
  *
  * @author Pablo Manso
- * @version 02/05/2017
+ * @version 15/05/2017
  */
 public class LoginActivity extends AppCompatActivity {
 
@@ -120,6 +121,28 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     /**
+     * Ejecución al inicio del fragmento
+     */
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        // Empezamos a capturar los eventos
+        Jarvis.event().register(this);
+    }
+
+    /**
+     * Ejecución al final del fragmento
+     */
+    @Override
+    public void onStop() {
+        super.onStop();
+
+        // Dejamos de campturar eventos
+        Jarvis.event().unregister(this);
+    }
+
+    /**
      * Inicia una instancia de los repositorios de datos, tanto el local como el remoto
      */
     public void setupRepositories() {
@@ -129,19 +152,16 @@ public class LoginActivity extends AppCompatActivity {
             this.serverRepository = RoundRepositoryFactory.createRepository(this, true);
             // Si no se puede conectar se lo indicamos al usuario
             if (this.serverRepository == null)
-                Toast.makeText(LoginActivity.this, R.string.repository_server_notavailable,
-                        Toast.LENGTH_SHORT).show();
+                Jarvis.error(ShowMsgEvent.Type.TOAST, R.string.repository_server_notavailable, this);
         } else
             // Si no hay conexión se lo indicamos al usuario
-            Toast.makeText(LoginActivity.this, R.string.repository_server_internet_needed,
-                    Toast.LENGTH_SHORT).show();
+            Jarvis.error(ShowMsgEvent.Type.TOAST, R.string.repository_server_internet_needed, this);
 
         // Creamos una instancia del repositorio de datos local
         this.localRepository = RoundRepositoryFactory.createRepository(this, false);
         // Si no se puede crear el repositorio local, se lo indicamos al usuario
         if (this.localRepository == null)
-            Toast.makeText(LoginActivity.this, R.string.repository_database_notavailable,
-                    Toast.LENGTH_SHORT).show();
+            Jarvis.error(ShowMsgEvent.Type.TOAST, R.string.repository_database_notavailable, this);
     }
 
     /**
@@ -255,7 +275,7 @@ public class LoginActivity extends AppCompatActivity {
                     @Override
                     public void onError(String error) {
                         // Mostramos el error y volvemos a mostrar el formulario
-                        Snackbar.make(findViewById(R.id.login_form), error, Snackbar.LENGTH_SHORT).show();
+                        Jarvis.error(ShowMsgEvent.Type.TOAST, error);
                         showProgress(false);
                     }
                 };
@@ -283,7 +303,7 @@ public class LoginActivity extends AppCompatActivity {
                     @Override
                     public void onError(String error) {
                         // Mostramos el error y volvemos a mostrar el formulario
-                        Snackbar.make(findViewById(R.id.login_form), error, Snackbar.LENGTH_SHORT).show();
+                        Jarvis.error(ShowMsgEvent.Type.TOAST, error);
                         showProgress(false);
                     }
                 };
@@ -309,8 +329,7 @@ public class LoginActivity extends AppCompatActivity {
 
         // Si no estamos conectado, indicamos al usuario que no se puede registrar sin internet
         if (!Jarvis.isOnline(this))
-            Snackbar.make(findViewById(R.id.login_form), R.string.login_signup_error_nointernet,
-                    Snackbar.LENGTH_SHORT).show();
+            Jarvis.error(ShowMsgEvent.Type.TOAST, R.string.login_signup_error_nointernet, this);
         // Ocultamos el formulario e intentamos registrar al usuario
         else {
             showProgress(true);
@@ -341,8 +360,8 @@ public class LoginActivity extends AppCompatActivity {
                     @Override
                     public void onError(String error) {
                         // Mostramos el error y volvemos a mostrar el formulario
+                        Jarvis.error(ShowMsgEvent.Type.TOAST, error);
                         showProgress(false);
-                        Snackbar.make(findViewById(R.id.login_form), error, Snackbar.LENGTH_SHORT).show();
                     }
                 };
 
@@ -389,5 +408,7 @@ public class LoginActivity extends AppCompatActivity {
      * Captura los mensajes que se reciben por Firebase para mostrar los mensajes recibidos
      * @param msg Mensaje que contiene todos los datos necesarios para empezar un chat
      */
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onEvent(ShowMsgEvent msg){ msg.show(loginForm); }
 }
 

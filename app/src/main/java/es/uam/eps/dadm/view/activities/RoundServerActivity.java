@@ -4,17 +4,19 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import es.uam.eps.dadm.R;
+import es.uam.eps.dadm.events.ShowMsgEvent;
 import es.uam.eps.dadm.model.Round;
 import es.uam.eps.dadm.view.adapters.ViewPagerAdapter;
-import es.uam.eps.dadm.view.fragment.BlankFragment;
 import es.uam.eps.dadm.view.fragment.MessageFragment;
 import es.uam.eps.dadm.view.fragment.RoundFragment;
 
@@ -50,6 +52,9 @@ public class RoundServerActivity extends AppCompatActivity  {
     @BindView(R.id.viewpager)
     ViewPager viewPager;
 
+    /**
+     * Ronda que se va a jugar
+     */
     private Round round;
 
     /**
@@ -75,6 +80,28 @@ public class RoundServerActivity extends AppCompatActivity  {
         viewPager.setPageMargin(64);
         tabLayout.setTabMode(TabLayout.MODE_FIXED);
         tabLayout.setupWithViewPager(viewPager);
+    }
+
+    /**
+     * Ejecución al inicio del fragmento
+     */
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        // Empezamos a capturar los eventos
+        Jarvis.event().register(this);
+    }
+
+    /**
+     * Ejecución al final del fragmento
+     */
+    @Override
+    public void onStop() {
+        super.onStop();
+
+        // Dejamos de campturar eventos
+        Jarvis.event().unregister(this);
     }
 
     /**
@@ -105,4 +132,10 @@ public class RoundServerActivity extends AppCompatActivity  {
         return round.roundToIntent(intent);
     }
 
+    /**
+     * Captura los mensajes que se reciben por Firebase para mostrar los mensajes recibidos
+     * @param msg Mensaje que contiene todos los datos necesarios para empezar un chat
+     */
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onEvent(ShowMsgEvent msg){ msg.show(viewPager); }
 }

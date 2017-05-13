@@ -2,11 +2,7 @@ package es.uam.eps.dadm.view.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -14,12 +10,13 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
-import java.util.ArrayList;
-import java.util.List;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import es.uam.eps.dadm.R;
+import es.uam.eps.dadm.events.ShowMsgEvent;
 import es.uam.eps.dadm.model.Preferences;
 import es.uam.eps.dadm.model.Round;
 import es.uam.eps.dadm.model.RoundRepository;
@@ -84,6 +81,27 @@ public class MainActivity extends AppCompatActivity implements RoundListFragment
         setupViewPager(viewPager);
         viewPager.setPageMargin(64);
         tabLayout.setupWithViewPager(viewPager);
+    }
+    /**
+     * Ejecución al inicio del fragmento
+     */
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        // Empezamos a capturar los eventos
+        Jarvis.event().register(this);
+    }
+
+    /**
+     * Ejecución al final del fragmento
+     */
+    @Override
+    public void onStop() {
+        super.onStop();
+
+        // Dejamos de campturar eventos
+        Jarvis.event().unregister(this);
     }
 
     /**
@@ -165,13 +183,13 @@ public class MainActivity extends AppCompatActivity implements RoundListFragment
                     @Override
                     public void onResponse(boolean ok) {
                         if (ok) {
-                            Snackbar.make(viewPager, R.string.repository_round_add_user_success,
-                                    Snackbar.LENGTH_LONG).show();
+                            Jarvis.error(ShowMsgEvent.Type.SNACKBAR,
+                                    R.string.repository_round_add_user_success, MainActivity.this);
                             ((RoundListFragment) ((ViewPagerAdapter) viewPager.getAdapter()).getItem(1)).updateUI();
                             ((RoundListFragment) ((ViewPagerAdapter) viewPager.getAdapter()).getItem(2)).updateUI();
                         } else
-                            Snackbar.make(viewPager, R.string.repository_round_add_user_success,
-                                    Snackbar.LENGTH_LONG).show();
+                            Jarvis.error(ShowMsgEvent.Type.SNACKBAR,
+                                    R.string.repository_round_add_user_success, MainActivity.this);
                     }
                 };
                 ((ServerRepository) server).addPlayerToRound(round, Preferences.getPlayerUUID(this), callback);
@@ -182,6 +200,12 @@ public class MainActivity extends AppCompatActivity implements RoundListFragment
             case FINISHED:
                 break;
         }
-
     }
+
+    /**
+     * Captura los mensajes que se reciben por Firebase para mostrar los mensajes recibidos
+     * @param msg Mensaje que contiene todos los datos necesarios para empezar un chat
+     */
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onEvent(ShowMsgEvent msg){ msg.show(viewPager); }
 }

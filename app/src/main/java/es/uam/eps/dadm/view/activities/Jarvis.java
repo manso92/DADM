@@ -11,6 +11,9 @@ import org.greenrobot.eventbus.EventBus;
 
 import java.security.MessageDigest;
 
+import es.uam.eps.dadm.R;
+import es.uam.eps.dadm.events.ShowMsgEvent;
+
 /**
  * Clase con funciones auxiliares que tiene que ver con distintos componentes de los recursos de
  * Android como comprobar conexión con Internet, manejras el teclado...
@@ -25,13 +28,31 @@ public class Jarvis {
      */
     public static final String DEBUG = "Damas.Jarvis";
 
-
     /**
      * Función que nos devuleve la instancia del bus para mandar eventos
      * @return Instancia del bus de eventos
      */
     public static EventBus event() {
         return EventBus.getDefault();
+    }
+
+    /**
+     * Envía un mensaje de error para que se muestre por pantalla
+     * @param tipo Forma en la que se mostrará el mensaje
+     * @param message Mensaje a mostrar
+     */
+    public static void error(ShowMsgEvent.Type tipo, String message) {
+        Jarvis.event().post(new ShowMsgEvent(tipo,message));
+    }
+
+    /**
+     * Envía un mensaje de error para que se muestre por pantalla
+     * @param tipo Forma en la que se mostrará el mensaje
+     * @param stringId Id de la cadena que debemos mostrar
+     * @param context Context para poder obtener el string desde el id
+     */
+    public static void error(ShowMsgEvent.Type tipo, int stringId, Context context) {
+        Jarvis.event().post(new ShowMsgEvent(tipo, context.getString(stringId)));
     }
 
     /**
