@@ -459,7 +459,7 @@ public class ServerRepository implements RoundRepository {
             }
         };
         is.newMovement(Integer.parseInt(round.getId()), Preferences.getPlayerUUID(context),
-                round.getBoard().tableroToString(),responseCallback,errorCallback);
+                round.getBoard().tableroToString(), round.isFinished() ,responseCallback,errorCallback);
     }
 
     /**

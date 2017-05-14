@@ -212,6 +212,14 @@ public class Round {
         return round;
     }
 
+    /**
+     * Nos indica si la partida ha terminado o no
+     * @return Si la partida ha terminado o no
+     */
+    public boolean isFinished(){
+        return this.getBoard().movimientosValidos().size() == 0;
+    }
+
 
     // GETTERS Y SETTERS
     public String getId() { return id;}

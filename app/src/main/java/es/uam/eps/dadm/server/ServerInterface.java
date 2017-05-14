@@ -315,16 +315,22 @@ public class ServerInterface {
      * @param roundid Identificador de la ronda
      * @param playerid Identificador del usuario (uuid)
      * @param codedboard Tablero tras el movimiento
+     * @param finished Si la partida se ha terminado o no
      * @param callback Calback a ejecutar en caso de que todo se produzca de forma correcta
      * @param errorCallback Callback a ejecutar en caso de que haya un error al ejecutar la petición
      */
-    public void newMovement(int roundid, String playerid, String codedboard,
+    public void newMovement(int roundid, String playerid, String codedboard, boolean finished,
                             Response.Listener<String> callback, ErrorListener errorCallback) {
         // Creamos la URL con todos los parámetros mediante GET
         String url = GAME_MOVEMENT_PHP + "?" +
                 ROUND_ID_TAG  + "=" + roundid + "&" +
                 PLAYER_ID_TAG + "=" + playerid + "&" +
                 ROUND_CODEBOARD_TAG + "=" + codedboard;
+
+        // Si se ha terminado finalizamos la aplicación
+        if (finished)
+            url += "&finished";
+
         Log.d(DEBUG, url);
 
         // Creamos una request para recibir una cadena con el tablero y añadimos la request a la cola
