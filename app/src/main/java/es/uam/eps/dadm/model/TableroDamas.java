@@ -300,7 +300,7 @@ public class TableroDamas extends Tablero {
      */
     @Override
     public String tableroToString() {
-        String ret = "" + this.getNumJugadas() + "/";
+        String ret = "" + this.size + "/" + this.getNumJugadas() + "/";
         // Para cada celda del tablero
         for(int i=0;i<this.size;i++)
             for (int j = 0; j < this.size; j++)
@@ -332,8 +332,12 @@ public class TableroDamas extends Tablero {
         StringTokenizer stok = new StringTokenizer(cadena, "/");
 
         // Si no hay exáctamente dos parámetros hay algo mal
-        if (stok.countTokens() != 2)
+        if ((stok.countTokens() != 2) && (stok.countTokens() != 3))
             throw new ExcepcionJuego("String no válido para un TableroDamas");
+
+        // Si en el tablero viene también el tamaño lo cambiamos
+        if (stok.countTokens() == 3)
+            this.size = Integer.parseInt(stok.nextToken());
 
         // Copiamos los dos parámetros
         int jugadas = Integer.parseInt(stok.nextToken());
