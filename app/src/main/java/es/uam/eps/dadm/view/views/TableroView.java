@@ -70,6 +70,11 @@ public class TableroView extends View {
     private ArrayList<Casilla> movimientosSugeridos = null;
 
     /**
+     * Turno en el que juega el jugador local en caso de ser una partida de servidor
+     */
+    private int turn = -1;
+
+    /**
      * Interfaz que define como enviaremos los movimientos al controlador
      */
     public interface OnPlayListener {
@@ -99,6 +104,16 @@ public class TableroView extends View {
      */
     public void setBoard(TableroDamas board) {
         this.board = board;
+    }
+
+    /**
+     * Guarda el tablero de la partida que vamos a pintar
+     * @param board Tablero de la partida de las Damas
+     * @param turn Turno en el que juega el jugador local
+     */
+    public void setBoard(TableroDamas board, int turn) {
+        this.board = board;
+        this.turn = turn;
     }
 
     /**
@@ -254,6 +269,10 @@ public class TableroView extends View {
      */
     public void seleccionaCasilla(Casilla casilla){
         if (this.onPlayListener != null) {
+            if ((this.turn != -1) && (this.turn != board.getTurno())){
+                Jarvis.error(ShowMsgEvent.Type.TOAST, "It's not your turn");
+                return;
+            }
             if (this.movimiento == null) {
                 // Creamos un movimiento y le asignamos la casilla de inicio
                 this.movimiento = new MovimientoDamas();

@@ -215,10 +215,10 @@ public class RoundFragment extends Fragment implements PartidaListener {
         Jugador firstPlayer = null, secondPlayer = null;
 
         // Miramos quien es el jugador local y quien el servidor y los creamos
-        if (this.round.turn(Preferences.getPlayerName(this.getContext())) == 1) {
+        if (this.round.turn(Preferences.getPlayerName(this.getContext())) == 0) {
             firstPlayer = new LocalServerPlayer(getContext(), round);
             secondPlayer = new RemotePlayer(round.getSecondUserName());
-        } else if (this.round.turn(Preferences.getPlayerName(this.getContext())) == 2) {
+        } else if (this.round.turn(Preferences.getPlayerName(this.getContext())) == 1) {
             secondPlayer = new LocalServerPlayer(getContext(), round);
             firstPlayer = new RemotePlayer(round.getFirstUserName());
         } else {
@@ -237,8 +237,9 @@ public class RoundFragment extends Fragment implements PartidaListener {
         game.addObservador(this);
 
         // Instanciamos el tablero de juego, le pasamos el tablero y el jugador que jugará la partida
-        this.boardView.setBoard(round.getBoard());
-        if (this.round.turn(Preferences.getPlayerName(this.getContext())) == 1) {
+        this.boardView.setBoard(round.getBoard(), this.round.turn(Preferences.getPlayerName(this.getContext())));
+
+        if (this.round.turn(Preferences.getPlayerName(this.getContext())) == 0) {
             ((LocalServerPlayer) firstPlayer).setPartida(game);
             this.boardView.setOnPlayListener(((LocalServerPlayer) firstPlayer));
         } else {

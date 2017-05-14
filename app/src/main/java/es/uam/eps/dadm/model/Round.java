@@ -238,10 +238,10 @@ public class Round {
 
     public int turn (String username){
         if (this.getFirstUserName().equals(username))
-            return 1;
+            return 0;
         if (this.getSecondUserName().equals(username))
-            return 2;
-        return 0;
+            return 1;
+        return -1;
     }
 
     public String getFirstUserName() {return firstUserName;}
