@@ -40,6 +40,7 @@ dependencies {
     compile "com.google.firebase:firebase-core:$rootProject.ext.firebaseVersion"
     compile "com.google.firebase:firebase-messaging:$rootProject.ext.firebaseVersion"
 
+    compile "com.orhanobut:logger:$rootProject.ext.loggerVersion"
     compile "org.greenrobot:eventbus:$rootProject.ext.eventbusVersion"
     compile "com.jakewharton:butterknife:$rootProject.ext.butterknifeVersion"
     annotationProcessor "com.jakewharton:butterknife-compiler:$rootProject.ext.butterknifeVersion"

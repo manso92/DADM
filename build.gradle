@@ -35,6 +35,7 @@ ext {
     volleyLibraryVersion =  '1.0.0'
     firebaseVersion = '10.2.4'
 
+    loggerVersion = '1.15'
     butterknifeVersion = '8.5.1'
     eventbusVersion = '3.0.0'
     junitVersion = '4.12'
