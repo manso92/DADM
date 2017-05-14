@@ -26,6 +26,7 @@ import butterknife.OnClick;
 import es.uam.eps.dadm.R;
 import es.uam.eps.dadm.database.DataBase;
 import es.uam.eps.dadm.events.ShowMsgEvent;
+import es.uam.eps.dadm.firebase.TokenRefresh;
 import es.uam.eps.dadm.model.Preferences;
 import es.uam.eps.dadm.model.Round;
 import es.uam.eps.dadm.model.RoundRepository;
@@ -102,20 +103,12 @@ public class LoginActivity extends AppCompatActivity {
 
         // Si el usuario está logueado, nos saltamos el paso del login
         if (Preferences.isLoggedIn(this)) {
-            // Si el token de firebase no está actualizado, volvemos a hacer login
-            if (!Preferences.getFirebaseToken(this).equals(FirebaseInstanceId.getInstance().getToken())){
-                Preferences.setFirebaseToken(this,FirebaseInstanceId.getInstance().getToken());
+            // Refrescamos el token en el servidor
+            TokenRefresh.refreshToken(this);
 
-                // Ocultamos el formulario y mostramos el progress
-                showProgress(true);
-
-                // Rehacemos login en el server
-                serverLogin(Preferences.getPlayerName(this), Preferences.getPlayerPassword(this));
-            } else {
-                // Mostramos al usuario su lista de partidas disponibles
-                startActivity(new Intent(LoginActivity.this, MainActivity.class));
-                finish();
-            }
+            // Mostramos al usuario su lista de partidas disponibles
+            startActivity(new Intent(LoginActivity.this, MainActivity.class));
+            finish();
             return;
         }
 
