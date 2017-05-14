@@ -24,7 +24,6 @@ import es.uam.eps.dadm.model.RoundRepository;
 import es.uam.eps.dadm.model.RoundRepositoryFactory;
 import es.uam.eps.dadm.server.ServerRepository;
 import es.uam.eps.dadm.view.adapters.ViewPagerAdapter;
-import es.uam.eps.dadm.view.fragment.BlankFragment;
 import es.uam.eps.dadm.view.fragment.MessageListFragment;
 import es.uam.eps.dadm.view.fragment.RoundListFragment;
 
@@ -121,7 +120,6 @@ public class MainActivity extends AppCompatActivity implements RoundListFragment
         adapter.addFragment(RoundListFragment.newInstance(Round.Type.ACTIVE), "Mis partidas");
         adapter.addFragment(RoundListFragment.newInstance(Round.Type.OPEN), "Partidas abiertas");
         adapter.addFragment(RoundListFragment.newInstance(Round.Type.FINISHED), "Finalizadas");
-        adapter.addFragment(new BlankFragment(), "Estadísticas");
         adapter.addFragment(new MessageListFragment(), "Mensajes");
 
         // Vinculamos el adapter al viewpager
