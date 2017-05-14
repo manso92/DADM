@@ -1,5 +1,6 @@
 package es.uam.eps.dadm.firebase;
 
+import android.content.Context;
 import android.util.Log;
 
 import com.google.firebase.iid.FirebaseInstanceId;
@@ -21,6 +22,24 @@ public class TokenRefresh extends FirebaseInstanceIdService {
      * Tag para escribir en el log
      */
     public static final String DEBUG = "Damas.TokenRefresh";
+
+    /**
+     * Actualiza el token con el que nos registramos en el servidor de forma estática
+     * @param context Contexto desde el que se refresca el token
+     */
+    public static void refreshToken(Context context){
+        String refreshedToken = FirebaseInstanceId.getInstance().getToken();
+        ServerRepository serverRepository = ServerRepository.getInstance(context);
+        RoundRepository.LoginRegisterCallback callback = new RoundRepository.LoginRegisterCallback(){
+            @Override
+            public void onLogin(String playerUuid) {}
+            @Override
+            public void onError(String error) { }
+        };
+        Preferences.setFirebaseToken(context, refreshedToken);
+        serverRepository.login(Preferences.getPlayerName(context),
+                Preferences.getPlayerPassword(context), callback);
+    }
 
     /**
      * Nos indica que el token de Firebase ha cambiado y tenemos que refrescarlo
