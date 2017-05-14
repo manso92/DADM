@@ -59,7 +59,7 @@ public class ShowMsgEvent {
                 Snackbar.make(view, this.getMsg(), this.getDuracion()).show();
                 break;
             case TOAST:
-                Toast.makeText(view.getContext().getApplicationContext(), this.getMsg(), Toast.LENGTH_LONG).show();
+                Toast.makeText(view.getContext().getApplicationContext(), this.getMsg(), Toast.LENGTH_SHORT).show();
                 break;
         }
     }
