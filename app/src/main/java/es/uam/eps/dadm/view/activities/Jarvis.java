@@ -104,7 +104,7 @@ public class Jarvis {
      * @param context Contexto para conseguir el cambio de dp a px
      * @return Píxeles convertidos de dp
      */
-    private int dpToPx(int dp, Context context) {
+    public static int dpToPx(int dp, Context context) {
         Resources r = context.getResources();
         return Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, r.getDisplayMetrics()));
     }

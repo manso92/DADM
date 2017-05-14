@@ -1,15 +1,19 @@
 package es.uam.eps.dadm.view.fragment;
 
 import android.content.Context;
+import android.content.res.Resources;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -96,6 +100,11 @@ public class RoundListFragment extends Fragment {
     private Callbacks callbacks;
 
     /**
+     * Número de columnas que tendrá nuestra aplicación
+     */
+    private int columns;
+
+    /**
      * Interfaz que deberá implementar la clase que quiere que le avisemos de la selección de un item
      */
     public interface Callbacks {
@@ -135,6 +144,9 @@ public class RoundListFragment extends Fragment {
         // Creamos un repositorio en base a lo que nos hayan mandado
         this.repository =
                 RoundRepositoryFactory.createRepository(this.getContext(), this.type != Round.Type.LOCAL);
+
+        // Configuramos el número de columnas que tendrá nuestra vista
+        this.columns = getContext().getResources().getInteger(R.integer.gridlayoutItemCount);
     }
 
     /**
@@ -219,8 +231,9 @@ public class RoundListFragment extends Fragment {
      * Configura el recyvlerview con la lista de partidas que toque
      */
     public void setupRecyclerView(){
-        // Cogemos el layout manager y le ajustamos un linearlayout para la lista
-        this.roundRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        // Cogemos el layout manager y le ajustamos un gridlayout para la lista
+        this.roundRecyclerView.setLayoutManager(new GridLayoutManager(this.getContext(),columns));
+        this.roundRecyclerView.addItemDecoration(new GridSpacingItemDecoration(columns, 10, true));
         this.roundRecyclerView.setItemAnimator(new DefaultItemAnimator());
 
         // Añadimos el listener de la lista
@@ -333,8 +346,76 @@ public class RoundListFragment extends Fragment {
         repository.addRound(round, booleanCallback);
     }
 
+    /**
+     * Clase que gestionará como de muestra el recyclerview de las partidas
+     */
+    private class GridSpacingItemDecoration extends RecyclerView.ItemDecoration {
 
+        /**
+         * Número de columnas
+         */
+        private int spanCount;
 
+        /**
+         * Espaciado entre columnas
+         */
+        private int spacing;
+
+        /**
+         * Si se debe incluir o no spacing en los bordes
+         */
+        private boolean includeEdge;
+
+        /**
+         * Constructor del GridSpacingItemDecoration
+         * @param spanCount Columnas
+         * @param spacing Spacing entre ellas
+         * @param includeEdge si debe haber bordes o no
+         */
+        public GridSpacingItemDecoration(int spanCount, int spacing, boolean includeEdge) {
+            this.spanCount = spanCount;
+            this.spacing = Jarvis.dpToPx(spacing,getContext());
+            this.includeEdge = includeEdge;
+        }
+
+        /**
+         * Define el offset de cada elemento del recyclerview
+         * @param outRect Rectángulo que lo contendrá
+         * @param view View que se va a mostrar
+         * @param parent Recycler view que nos contiene
+         * @param state Cosa que no sé para que es
+         */
+        @Override
+        public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
+            // Cogemos la posición del elemento que es, y de ahí su posición en la columna
+            int position = parent.getChildAdapterPosition(view);
+            int column = position % spanCount;
+
+            // Calculamos los márgenes dependiendo de los parámetros
+            if (includeEdge) {
+                // Calculamos los márgenes izquierdo y derecho
+                outRect.left = spacing - column * spacing / spanCount;
+                outRect.right = (column + 1) * spacing / spanCount;
+
+                // Si es la primera fila le ponemos margen superior
+                if (position < spanCount)
+                    outRect.top = spacing;
+
+                outRect.bottom = spacing;
+            } else {
+                // Calculamos los márgenes izquierdo y derecho
+                outRect.left = column * spacing / spanCount;
+                outRect.right = spacing - (column + 1) * spacing / spanCount;
+
+                // Solo ponemos margen superior a las filas que no sean la primera
+                if (position >= spanCount)
+                    outRect.top = spacing;
+
+            }
+        }
+    }
+
+    
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEvent(RefreshRoundListEvent msg) {
         Log.d(DEBUG, "Mensaje recibido en el roundgrafment: " + msg.toString());
