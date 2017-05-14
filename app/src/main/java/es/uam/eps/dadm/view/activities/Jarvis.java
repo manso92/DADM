@@ -37,6 +37,24 @@ public class Jarvis {
     }
 
     /**
+     * Función que registra una clase como listener de eventbus
+     * @param suscriber Clase a suscribir
+     */
+    public static void eventRegister(Object suscriber) {
+        if(!Jarvis.event().isRegistered(suscriber))
+            Jarvis.event().register(suscriber);
+    }
+
+    /**
+     * Función que desregistra una clase como listener de eventbus
+     * @param suscriber Clase a dessuscribir
+     */
+    public static void eventUnregister(Object suscriber) {
+        if(Jarvis.event().isRegistered(suscriber))
+            Jarvis.event().unregister(suscriber);
+    }
+
+    /**
      * Envía un mensaje de error para que se muestre por pantalla
      * @param tipo Forma en la que se mostrará el mensaje
      * @param message Mensaje a mostrar
