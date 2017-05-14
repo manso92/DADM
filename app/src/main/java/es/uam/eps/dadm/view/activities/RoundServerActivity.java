@@ -68,6 +68,9 @@ public class RoundServerActivity extends AppCompatActivity  {
         setContentView(R.layout.activity_viewpager);
         ButterKnife.bind(this);
 
+        // Empezamos a capturar los eventos
+        Jarvis.eventRegister(this);
+
         // Colocamos el título a la barra superior y la colocamos en la vista
         toolbar.setTitle(getString(R.string.round_title));
         setSupportActionBar(toolbar);
@@ -90,7 +93,7 @@ public class RoundServerActivity extends AppCompatActivity  {
         super.onStart();
 
         // Empezamos a capturar los eventos
-        Jarvis.event().register(this);
+        Jarvis.eventRegister(this);
     }
 
     /**
@@ -100,8 +103,8 @@ public class RoundServerActivity extends AppCompatActivity  {
     public void onStop() {
         super.onStop();
 
-        // Dejamos de campturar eventos
-        Jarvis.event().unregister(this);
+        // Dejamos de capturar los eventos
+        Jarvis.eventUnregister(this);
     }
 
     /**

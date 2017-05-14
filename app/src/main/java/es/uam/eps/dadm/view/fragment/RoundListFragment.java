@@ -133,29 +133,6 @@ public class RoundListFragment extends Fragment {
     }
 
     /**
-     * Ejecución al inicio del fragmento
-     */
-    @Override
-    public void onStart() {
-        // Llamamos al padre
-        super.onStart();
-
-        // Empezamos a capturar los eventos
-        Jarvis.event().register(this);
-    }
-
-    /**
-     * Ejecución con el fin del fragmento
-     */
-    @Override
-    public void onStop() {
-        super.onStop();
-
-        // Dejamos de campturar eventos
-        Jarvis.event().unregister(this);
-    }
-
-    /**
      * Función que se ejecutará cuando se vuelva de una pausa
      */
     @Override

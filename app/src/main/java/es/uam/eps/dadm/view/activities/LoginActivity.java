@@ -90,6 +90,9 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
         ButterKnife.bind(this);
 
+        // Empezamos a capturar los eventos
+        Jarvis.eventRegister(this);
+
         // Arrancamos los repositorios de datos
         setupRepositories();
 
@@ -128,7 +131,7 @@ public class LoginActivity extends AppCompatActivity {
         super.onStart();
 
         // Empezamos a capturar los eventos
-        Jarvis.event().register(this);
+        Jarvis.eventRegister(this);
     }
 
     /**
@@ -139,7 +142,7 @@ public class LoginActivity extends AppCompatActivity {
         super.onStop();
 
         // Dejamos de campturar eventos
-        Jarvis.event().unregister(this);
+        Jarvis.eventUnregister(this);
     }
 
     /**

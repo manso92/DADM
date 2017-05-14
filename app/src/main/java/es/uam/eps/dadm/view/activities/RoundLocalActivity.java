@@ -59,6 +59,9 @@ public class RoundLocalActivity extends AppCompatActivity  {
         // Cargamos el layout de la acitividad
         setContentView(R.layout.activity_fragment);
 
+        // Empezamos a capturar los eventos
+        Jarvis.eventRegister(this);
+
         // Creamos una ronda a través de los datos del intent
         Round round = Round.intentToRound(getIntent());
 
@@ -76,7 +79,7 @@ public class RoundLocalActivity extends AppCompatActivity  {
         super.onStart();
 
         // Empezamos a capturar los eventos
-        Jarvis.event().register(this);
+        Jarvis.eventRegister(this);
     }
 
     /**
@@ -87,7 +90,7 @@ public class RoundLocalActivity extends AppCompatActivity  {
         super.onStop();
 
         // Dejamos de campturar eventos
-        Jarvis.event().unregister(this);
+        Jarvis.eventUnregister(this);
     }
 
     /**

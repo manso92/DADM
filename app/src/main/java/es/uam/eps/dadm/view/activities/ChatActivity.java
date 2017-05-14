@@ -57,6 +57,8 @@ public class ChatActivity extends AppCompatActivity  {
         // Cargamos el layout de la acitividad
         setContentView(R.layout.activity_fragment);
 
+        // Empezamos a capturar los eventos
+        Jarvis.eventRegister(this);
 
         // Cogemos el fragment manager y cargamos el fragment
         FragmentManager fm = getSupportFragmentManager();
@@ -72,7 +74,7 @@ public class ChatActivity extends AppCompatActivity  {
         super.onStart();
 
         // Empezamos a capturar los eventos
-        Jarvis.event().register(this);
+        Jarvis.eventRegister(this);
     }
 
     /**
@@ -83,7 +85,7 @@ public class ChatActivity extends AppCompatActivity  {
         super.onStop();
 
         // Dejamos de campturar eventos
-        Jarvis.event().unregister(this);
+        Jarvis.eventUnregister(this);
     }
 
     /**
