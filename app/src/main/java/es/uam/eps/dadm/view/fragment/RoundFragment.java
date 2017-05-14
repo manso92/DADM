@@ -298,4 +298,13 @@ public class RoundFragment extends Fragment implements PartidaListener {
         Jarvis.error(ShowMsgEvent.Type.SNACKBAR, R.string.game_round_restarted, getContext());
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onEvent(NewMessageEvent msg) throws ExcepcionJuego {
+        Log.d(DEBUG, "Mensaje recibido en el roundgrafment: " + msg.toString());
+
+        if ((msg.getMsgtype() == NewMessageEvent.newMovement) && (msg.getSender().equals(this.round.getId()))){
+            this.round.getBoard().stringToTablero(msg.getContent());
+            boardView.invalidate();
+        }
+    }
 }
