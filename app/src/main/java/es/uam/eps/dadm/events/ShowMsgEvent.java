@@ -34,6 +34,8 @@ public class ShowMsgEvent {
      */
     private int duracion;
 
+    private boolean shown = false;
+
     public ShowMsgEvent(Type tipo, String msg) {
         this.tipo = tipo;
         this.msg = msg;
@@ -54,13 +56,16 @@ public class ShowMsgEvent {
     }
 
     public void show(View view) {
-        switch (this.getTipo()) {
-            case SNACKBAR:
-                Snackbar.make(view, this.getMsg(), this.getDuracion()).show();
-                break;
-            case TOAST:
-                Toast.makeText(view.getContext().getApplicationContext(), this.getMsg(), Toast.LENGTH_SHORT).show();
-                break;
+        if (!this.shown) {
+            switch (this.getTipo()) {
+                case SNACKBAR:
+                    Snackbar.make(view, this.getMsg(), this.getDuracion()).show();
+                    break;
+                case TOAST:
+                    Toast.makeText(view.getContext().getApplicationContext(), this.getMsg(), Toast.LENGTH_SHORT).show();
+                    break;
+            }
+            this.shown = true;
         }
     }
 
