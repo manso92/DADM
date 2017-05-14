@@ -26,9 +26,14 @@ public class HelpActivity extends AppCompatActivity {
     public static final String DEBUG = "Damas.HelpAct";
 
     /**
+     * URL la web de la ayuda
+     */
+    public static final String WEB_URL = "file:///android_asset/help.html";
+
+    /**
      * Ventana emergente que mostrará el mensaje de que la página se está cargando
      */
-    ProgressDialog progressDialog;
+    private ProgressDialog progressDialog;
 
     /**
      * Webview donde se cargará la página de ayuda
@@ -48,7 +53,7 @@ public class HelpActivity extends AppCompatActivity {
         ButterKnife.bind(this);
 
         // Cargamos la página en el webview y le ponemos el focus de la aplicación
-        webview.loadUrl("file:///android_asset/help.html");
+        webview.loadUrl(WEB_URL);
         webview.requestFocus();
 
         // Iniciamos el progres dialog, le colocamos las propiedades y lo mostramos

@@ -16,11 +16,6 @@ import es.uam.eps.dadm.model.Round;
 import es.uam.eps.dadm.view.views.TableroView;
 
 /**
- * @author Pablo Manso
- * @version 11/05/2017
- */
-
-/**
  * Adaptador que se encargará de controlar la interfaz de la lista de partidas
  *
  * @author Pablo Manso

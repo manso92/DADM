@@ -226,7 +226,8 @@ public class MessageListFragment extends Fragment {
      */
     @OnClick(R.id.fab)
     public void newRound(View v) {
-        (new NewMessageDialogFragment()).show(getActivity().getSupportFragmentManager(),"User selection");
+        (new NewMessageDialogFragment()).show(getActivity().getSupportFragmentManager(),
+                getString(R.string.chat_alertdialog_userrequest_title));
     }
 
     /**

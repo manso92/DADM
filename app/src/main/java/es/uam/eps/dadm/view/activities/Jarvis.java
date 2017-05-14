@@ -13,7 +13,6 @@ import org.greenrobot.eventbus.EventBus;
 
 import java.security.MessageDigest;
 
-import es.uam.eps.dadm.R;
 import es.uam.eps.dadm.events.ShowMsgEvent;
 
 /**

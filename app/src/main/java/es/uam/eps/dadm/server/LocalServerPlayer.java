@@ -3,7 +3,6 @@ package es.uam.eps.dadm.server;
 
 import android.content.Context;
 import android.util.Log;
-import android.view.View;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -134,7 +133,7 @@ public class LocalServerPlayer  implements Jugador, TableroView.OnPlayListener {
         Response.ErrorListener errorListener = new Response.ErrorListener(){
             @Override
             public void onErrorResponse(VolleyError error) {
-                // TODO MANEJAR EL ERROR
+                Jarvis.error(ShowMsgEvent.Type.TOAST, R.string.repository_round_update_error, context);
             }
         };
 

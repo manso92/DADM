@@ -116,11 +116,11 @@ public class MainActivity extends AppCompatActivity implements RoundListFragment
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
 
         // Añadimos los fragmentos que vamos a tener en nuestro adapter
-        adapter.addFragment(RoundListFragment.newInstance(Round.Type.LOCAL), "Offline");
-        adapter.addFragment(RoundListFragment.newInstance(Round.Type.ACTIVE), "Mis partidas");
-        adapter.addFragment(RoundListFragment.newInstance(Round.Type.OPEN), "Partidas abiertas");
-        adapter.addFragment(RoundListFragment.newInstance(Round.Type.FINISHED), "Finalizadas");
-        adapter.addFragment(new MessageListFragment(), "Mensajes");
+        adapter.addFragment(RoundListFragment.newInstance(Round.Type.LOCAL), getString(R.string.main_secction_local));
+        adapter.addFragment(RoundListFragment.newInstance(Round.Type.ACTIVE), getString(R.string.main_secction_active));
+        adapter.addFragment(RoundListFragment.newInstance(Round.Type.OPEN), getString(R.string.main_secction_open));
+        adapter.addFragment(RoundListFragment.newInstance(Round.Type.FINISHED), getString(R.string.main_secction_finished));
+        adapter.addFragment(new MessageListFragment(), getString(R.string.main_secction_messages));
 
         // Vinculamos el adapter al viewpager
         viewPager.setAdapter(adapter);
@@ -180,6 +180,7 @@ public class MainActivity extends AppCompatActivity implements RoundListFragment
                 startActivity(RoundLocalActivity.newIntent(this, round));
                 break;
             case OPEN:
+                // TODO comprobar que si le doy a una open mía pues no se hace dos veces
                 RoundRepository server = RoundRepositoryFactory.createRepository(this, true);
                 RoundRepository.BooleanCallback callback = new RoundRepository.BooleanCallback() {
                     @Override

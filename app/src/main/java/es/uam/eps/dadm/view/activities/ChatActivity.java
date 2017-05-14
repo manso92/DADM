@@ -29,6 +29,11 @@ public class ChatActivity extends AppCompatActivity  {
     public static final String DEBUG = "Damas.ChatAct";
 
     /**
+     * Tag para recibir el nombre de usuario
+     */
+    public static final String USER_TAG = "user";
+
+    /**
      * Fragment principal donde cargaremos el contenido
      */
     @BindView(R.id.fragment_container)
@@ -43,7 +48,7 @@ public class ChatActivity extends AppCompatActivity  {
     public static Intent newIntent(Context packageContext, String to) {
         // Creamos un intent entre el contexto que nos pasan y esta clase
         Intent intent = new Intent(packageContext, ChatActivity.class);
-        intent.putExtra("user", to);
+        intent.putExtra(USER_TAG, to);
         return intent;
     }
 
@@ -62,7 +67,7 @@ public class ChatActivity extends AppCompatActivity  {
 
         // Cogemos el fragment manager y cargamos el fragment
         FragmentManager fm = getSupportFragmentManager();
-        MessageFragment messageFragment = MessageFragment.newInstance(getIntent().getStringExtra("user"), false);
+        MessageFragment messageFragment = MessageFragment.newInstance(getIntent().getStringExtra(USER_TAG), false);
         fm.beginTransaction().add(R.id.fragment_container, messageFragment).commit();
     }
 

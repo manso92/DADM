@@ -8,12 +8,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <!-- TODO string replace -->
         <AutoCompleteTextView
             android:id="@+id/input"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Pssword hint"
+            android:hint="@string/chat.alertdialog.userrequest.hint"
             android:imeOptions="actionDone"
             android:inputType="text" />
 

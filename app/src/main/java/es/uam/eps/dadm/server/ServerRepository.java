@@ -16,6 +16,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.StringTokenizer;
 
+import es.uam.eps.dadm.R;
 import es.uam.eps.dadm.model.Preferences;
 import es.uam.eps.dadm.model.Round;
 import es.uam.eps.dadm.model.RoundRepository;
@@ -24,6 +25,9 @@ import es.uam.eps.multij.ExcepcionJuego;
 
 import static es.uam.eps.dadm.model.Round.*;
 import static es.uam.eps.dadm.model.Round.Type.*;
+import static es.uam.eps.dadm.server.ServerInterface.MSG_RESPONSE_DATE_TAG;
+import static es.uam.eps.dadm.server.ServerInterface.MSG_RESPONSE_MSG_TAG;
+import static es.uam.eps.dadm.server.ServerInterface.MSG_RESPONSE_USER_TAG;
 
 /**
  * Clase controladora del servidor de usuarios y partidas. Implementa la interfaz
@@ -166,7 +170,6 @@ public class ServerRepository implements RoundRepository {
                 JSONObject o = response.getJSONObject(i);
 
                 // Cogemos cada uno de sus componentes
-                // TODO ver que ostias se hace con el turn
                 int roundid = o.getInt(ServerInterface.ROUND_ID_TAG);
                 int numberofplayers = o.getInt(ServerInterface.ROUND_PLAYER_NUMBER_TAG);
                 String dateevent = o.getString(ServerInterface.ROUND_DATE_TAG);
@@ -189,7 +192,6 @@ public class ServerRepository implements RoundRepository {
                         round.setSecondUser(stok.nextToken(),"");
                         break;
                 }
-
 
                 if (((player) && (playernames.contains(Preferences.getPlayerName(this.context)))) ||
                         ((!player) && (!playernames.contains(Preferences.getPlayerName(this.context)))))
@@ -265,7 +267,7 @@ public class ServerRepository implements RoundRepository {
             @Override
             public void onErrorResponse(VolleyError error) {
                 // Enviamos un error al callback
-                callback.onError("Error downloading rounds from server");
+                callback.onError(context.getString(R.string.repository_round_downloading_error));
                 Log.d(DEBUG, "Error downloading rounds from server");
             }
         };
@@ -296,7 +298,7 @@ public class ServerRepository implements RoundRepository {
             @Override
             public void onErrorResponse(VolleyError error) {
                 // Enviamos un error al callback
-                callback.onError("Error downloading rounds from server");
+                callback.onError(context.getString(R.string.repository_round_downloading_error));
                 Log.d(DEBUG, "Error downloading rounds from server");
             }
         };
@@ -327,7 +329,7 @@ public class ServerRepository implements RoundRepository {
             @Override
             public void onErrorResponse(VolleyError error) {
                 // Enviamos un error al callback
-                callback.onError("Error downloading rounds from server");
+                callback.onError(context.getString(R.string.repository_round_downloading_error));
                 Log.d(DEBUG, "Error downloading rounds from server");
             }
         };
@@ -358,7 +360,7 @@ public class ServerRepository implements RoundRepository {
             @Override
             public void onErrorResponse(VolleyError error) {
                 // Enviamos un error al callback
-                callback.onError("Error downloading rounds from server");
+                callback.onError(context.getString(R.string.repository_round_downloading_error));
                 Log.d(DEBUG, "Error downloading rounds from server");
             }
         };
@@ -379,9 +381,8 @@ public class ServerRepository implements RoundRepository {
         Response.Listener<String> responseCallback = new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                //TODO comprobar si se ha creado bien la ronda
                 // Enviamos un exito al callback
-                callback.onResponse(true);
+                callback.onResponse(!response.trim().equals("-1"));
                 Log.d(DEBUG, "Round created correctly");
             }
         };
@@ -530,9 +531,9 @@ public class ServerRepository implements RoundRepository {
             try {
                 // Obtenemos el mensaje y sus propiedades
                 JSONObject o = response.getJSONObject(i);
-                String from = o.getString("playername");
-                String message = o.getString("message");
-                String date = o.getString("msgdate");
+                String from = o.getString(MSG_RESPONSE_USER_TAG);
+                String message = o.getString(MSG_RESPONSE_MSG_TAG);
+                String date = o.getString(MSG_RESPONSE_DATE_TAG);
                 boolean self = from.equals(Preferences.getPlayerName(context));
 
                 // Creamos un mensaje y lo añadimos a la lista
@@ -576,7 +577,7 @@ public class ServerRepository implements RoundRepository {
             @Override
             public void onErrorResponse(VolleyError error) {
                 // Enviamos un error al callback
-                callback.onError("Error al obtener los mensajes del servidor.");
+                callback.onError(context.getString(R.string.repository_messages_downloading_error));
                 Log.d(DEBUG, "Error al obtener los mensajes del servidor");
             }
         };
@@ -619,7 +620,7 @@ public class ServerRepository implements RoundRepository {
             @Override
             public void onErrorResponse(VolleyError error) {
                 // Enviamos un error al callback
-                callback.onError("Error al obtener los mensajes del servidor.");
+                callback.onError(context.getString(R.string.repository_messages_downloading_error));
                 Log.d(DEBUG, "Error al obtener los mensajes del servidor");
             }
         };
@@ -661,6 +662,7 @@ public class ServerRepository implements RoundRepository {
                     }
                 });
 
+                // Cogemos solo los mensajes de nuestro usuario
                 messages = usersFromMessages(messages);
 
                 // Enviamos los mensajes al callback
@@ -674,7 +676,7 @@ public class ServerRepository implements RoundRepository {
             @Override
             public void onErrorResponse(VolleyError error) {
                 // Enviamos un error al callback
-                callback.onError("Error al obtener los mensajes del servidor.");
+                callback.onError(context.getString(R.string.repository_messages_downloading_error));
                 Log.d(DEBUG, "Error al obtener los mensajes del servidor");
             }
         };
@@ -691,6 +693,7 @@ public class ServerRepository implements RoundRepository {
     private List<Message> usersFromMessages(List<Message> messages){
         List<String> users = new ArrayList<>();
         List <Message> returned = new ArrayList<>();
+        // Comprobamos si es el primer mensaje del usuario y si ya no lo hemos capturado y lo añadimos
         for (Message m : messages)
             if ((users.indexOf(m.getFromName()) == -1) &&
                     (!m.getFromName().equals(Preferences.getPlayerName(context)))) {

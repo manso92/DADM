@@ -68,4 +68,9 @@ public class NewMessageEvent {
     public void setSender(String sender) { this.sender = sender; }
     public String getContent() { return content; }
     public void setContent(String content) { this.content = content;}
+
+    public String toString(){
+        return "Mensaje de tipo " + this.getMsgtype() + " con destinatario " + this.getSender() +
+                "con el mensaje: " + this.getContent();
+    }
 }

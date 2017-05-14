@@ -37,11 +37,10 @@ public class NewMessageDialogFragment extends DialogFragment {
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         // Creamos un constructor para el dialog y le colocamos el título
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-        // TODO coger el string de propiedades
-        builder.setTitle("Title");
+        builder.setTitle(getString(R.string.chat_alertdialog_userrequest_title));
 
         // Cargamos el layout y se lo añadimos al builder
-        View viewInflated = LayoutInflater.from(getContext()).inflate(R.layout.fragment_dialog_userchat, (ViewGroup) getView(), false);
+        View viewInflated = LayoutInflater.from(getContext()).inflate(R.layout.fragmentdialog_userchat, (ViewGroup) getView(), false);
         builder.setView(viewInflated);
 
         // Capturamos el EditText que nos dará el usuario con el que chatear

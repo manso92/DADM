@@ -53,6 +53,9 @@ public class ServerInterface {
     static final String MSG_TO_ROUND_TAG = "toround";
     static final String MSG_DATA_TAG = "msg";
     static final String MSG_DATE_TAG = "fromdate";
+    static final String MSG_RESPONSE_USER_TAG = "playername";
+    static final String MSG_RESPONSE_MSG_TAG = "message";
+    static final String MSG_RESPONSE_DATE_TAG = "msgdate";
 
     // URL BASE DONDE SE ENCUENTRAN TODOS LOS SCRIPTS
     private static final String BASE_URL = "http://ptha.ii.uam.es/dadm2017/";
@@ -349,6 +352,9 @@ public class ServerInterface {
      */
     public void sendMessages(String from, String to, String msg, boolean round,
                             Response.Listener<String> callback, ErrorListener errorCallback) {
+        // Corregimos los espacios para que no peten en la url
+        msg = msg.replace(" ", "%20");
+
         // Creamos la URL con todos los parámetros mediante GET
         String url = MESSAGE_SEND_PHP + "?" +
                 MSG_FROM_TAG  + "=" + from + "&" +

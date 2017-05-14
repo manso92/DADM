@@ -15,6 +15,7 @@ import java.util.List;
  * @version 11/05/2017
  */
 public class ViewPagerAdapter extends FragmentPagerAdapter {
+
     /**
      * Lista de fragmentos que tendrá nuestro viewpager
      */

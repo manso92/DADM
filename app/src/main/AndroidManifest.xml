@@ -23,7 +23,7 @@
             android:label="@string/login.title" />
         <activity
             android:name=".view.activities.MainActivity"
-            android:label="@string/roundlist.title"
+            android:label="@string/main.title"
             android:theme="@style/AppThemeNoBar"/>
         <activity
             android:name=".view.activities.RoundLocalActivity"

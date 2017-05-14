@@ -116,8 +116,8 @@ public class RoundServerActivity extends AppCompatActivity  {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
 
         // Añadimos los fragmentos que vamos a tener en nuestro adapter
-        adapter.addFragment(RoundFragment.newInstance(this.round), "Partida");
-        adapter.addFragment(MessageFragment.newInstance(this.round.getId(), true), "Mensajes");
+        adapter.addFragment(RoundFragment.newInstance(this.round), getString(R.string.round_secction_game));
+        adapter.addFragment(MessageFragment.newInstance(this.round.getId(), true), getString(R.string.round_secction_messages));
 
         // Vinculamos el adapter al viewpager
         viewPager.setAdapter(adapter);

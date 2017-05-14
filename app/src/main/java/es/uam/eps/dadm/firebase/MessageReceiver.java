@@ -37,7 +37,7 @@ public class MessageReceiver extends FirebaseMessagingService {
                 // Creamos un mensaje eventbus con el mensaje que viene del servidor
                 NewMessageEvent msg =
                         new NewMessageEvent(o.getInt("msgtype"), o.getString("sender"), o.getString("content"));
-                Log.d(DEBUG, "Message data payload: " + msg.toString());
+                Log.d(DEBUG, "Message data: " + msg.toString());
 
                 // Enviamos el mensaje a EventBus
                 Jarvis.event().post(msg);

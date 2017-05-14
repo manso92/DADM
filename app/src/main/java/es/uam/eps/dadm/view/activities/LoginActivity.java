@@ -261,10 +261,14 @@ public class LoginActivity extends AppCompatActivity {
                 new RoundRepository.LoginRegisterCallback() {
                     @Override
                     public void onLogin(String userUUID) {
+                        // Si no existe, registramos el usuario
                         if (!((DataBase)localRepository).existUser(user))
                             ((DataBase) localRepository).register(user, pass, userUUID, null);
+                        // Guardamos el UUID y la contraseña
                         Preferences.setPlayerUUID(LoginActivity.this, userUUID);
                         Preferences.setPlayerName(LoginActivity.this, user);
+                        Preferences.setPlayerPassword(LoginActivity.this, pass);
+                        // Arrancamos la actividad principal
                         startActivity(new Intent(LoginActivity.this, MainActivity.class));
                         finish();
                     }
@@ -290,8 +294,11 @@ public class LoginActivity extends AppCompatActivity {
                 new RoundRepository.LoginRegisterCallback() {
                     @Override
                     public void onLogin(String userUUID) {
+                        // Guardamos el UUID y la contraseña
                         Preferences.setPlayerUUID(LoginActivity.this, userUUID);
                         Preferences.setPlayerName(LoginActivity.this, user);
+                        Preferences.setPlayerPassword(LoginActivity.this, pass);
+                        // Mostramos el error y volvemos a mostrar el formulario
                         startActivity(new Intent(LoginActivity.this, MainActivity.class));
                         finish();
                     }

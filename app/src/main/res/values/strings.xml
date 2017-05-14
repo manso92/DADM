@@ -23,14 +23,21 @@
     <string name="login.signup_error">Username is taken</string>
     <string name="login.signup_error_nointernet">Can\'t register whithout internet.</string>
 
-    <!--  ROUND LIST ACTIVITY  -->
-    <string name="roundlist.title">@string/app.title</string>
-    <string name="roundlist.menu.settings">@string/settings.title</string>
-    <string name="roundlist.menu.help">@string/help.title</string>
-    <string name="roundlist.menu.signout">Sign out</string>
+    <!--  MAIN ACTIVITY  -->
+    <string name="main.title">@string/app.title</string>
+    <string name="main.secction.local">Offline</string>
+    <string name="main.secction.active">My games</string>
+    <string name="main.secction.open">Open games</string>
+    <string name="main.secction.finished">Finished</string>
+    <string name="main.secction.messages">Menssages</string>
+    <string name="main.menu.settings">@string/settings.title</string>
+    <string name="main.menu.help">@string/help.title</string>
+    <string name="main.menu.signout">Sign out</string>
 
     <!--  ROUND ACTIVITY  -->
     <string name="round.title">@string/app.title</string>
+    <string name="round.secction.game">Game</string>
+    <string name="round.secction_messages">@string/main.secction.messages</string>
 
     <!--  HELP ACTIVITY  -->
     <string name="help.title">Help</string>
@@ -50,9 +57,11 @@
     <string name="repository.round.create.success">Round created</string>
     <string name="repository.round.create.error">Error creating round</string>
     <string name="repository.round.update.error">Error updating round</string>
+    <string name="repository.round.downloading.error">Error downloading rounds</string>
     <string name="repository.round.not_founded">No rounds found in database</string>
     <string name="repository.round.add_user.success">You\'ve correctly enter on game</string>
     <string name="repository.round.add_user.error">Error entering game</string>
+    <string name="repository.messages.downloading.error">Error downloading messages from server</string>
     <string name="repository.users.not_founded">No users found in database</string>
     <string name="repository.server.notavailable">Server not available</string>
     <string name="repository.server.internet_needed">Not internet connection. Unable to connect to server</string>
@@ -70,5 +79,7 @@
 
     <!--  Chat  -->
     <string name="chat.sendbutton.description">Icon to send messages</string>
+    <string name="chat.alertdialog.userrequest.title">New chat</string>
+    <string name="chat.alertdialog.userrequest.hint">User to chat</string>
 
 </resources>
