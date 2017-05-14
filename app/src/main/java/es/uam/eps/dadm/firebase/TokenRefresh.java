@@ -5,13 +5,17 @@ import android.util.Log;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.FirebaseInstanceIdService;
 
+import es.uam.eps.dadm.model.Preferences;
+import es.uam.eps.dadm.model.RoundRepository;
+import es.uam.eps.dadm.server.ServerRepository;
+
 /**
  * Clase que se encargará de manejar el itentfilter que detecta el cambio de token de la app
  *
  * @author Pablo Manso
- * @version 08/05/2017
+ * @version 15/05/2017
  */
-public class TokenRefresh  extends FirebaseInstanceIdService {
+public class TokenRefresh extends FirebaseInstanceIdService {
 
     /**
      * Tag para escribir en el log
@@ -31,7 +35,20 @@ public class TokenRefresh  extends FirebaseInstanceIdService {
         sendRegistrationToServer(refreshedToken);
     }
 
+    /**
+     * Actualiza el token con el que registrarse en el servidor
+     * @param token Nuevo token de Firebase
+     */
     private void sendRegistrationToServer(String token) {
-        // TODO guardar el token en las preferencias y volver a hacer login para que lo sepa el servidor
+        ServerRepository serverRepository = ServerRepository.getInstance(getApplicationContext());
+        RoundRepository.LoginRegisterCallback callback = new RoundRepository.LoginRegisterCallback(){
+            @Override
+            public void onLogin(String playerUuid) {}
+            @Override
+            public void onError(String error) { }
+        };
+        Preferences.setFirebaseToken(getApplicationContext(), token);
+        serverRepository.login(Preferences.getPlayerName(getApplicationContext()),
+                Preferences.getPlayerPassword(getApplicationContext()), callback);
     }
 }
