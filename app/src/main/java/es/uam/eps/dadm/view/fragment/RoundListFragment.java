@@ -9,9 +9,13 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.List;
 
@@ -20,6 +24,7 @@ import butterknife.BindView;
 import butterknife.OnClick;
 import butterknife.Unbinder;
 import es.uam.eps.dadm.R;
+import es.uam.eps.dadm.events.RefreshRoundListEvent;
 import es.uam.eps.dadm.events.ShowMsgEvent;
 import es.uam.eps.dadm.model.Round;
 import es.uam.eps.dadm.model.RoundRepository;
@@ -133,6 +138,18 @@ public class RoundListFragment extends Fragment {
     }
 
     /**
+     * Ejecución al inicio del fragmento
+     */
+    @Override
+    public void onStart() {
+        // Llamamos al padre
+        super.onStart();
+
+        // Empezamos a capturar los eventos
+        Jarvis.eventRegister(this);
+    }
+
+    /**
      * Función que se ejecutará cuando se vuelva de una pausa
      */
     @Override
@@ -140,6 +157,17 @@ public class RoundListFragment extends Fragment {
         // Indicamos a la clase padre que hemos vuelto de la pausa y actualizamos la interfaz
         super.onResume();
         this.updateUI();
+    }
+
+    /**
+     * Ejecución con el fin del fragmento
+     */
+    @Override
+    public void onStop() {
+        super.onStop();
+
+        // Dejamos de campturar eventos
+        Jarvis.eventUnregister(this);
     }
 
     /**
@@ -303,5 +331,16 @@ public class RoundListFragment extends Fragment {
 
         // Añadimos la partida al repositorio de datos y actualizamos la interfaz
         repository.addRound(round, booleanCallback);
+    }
+
+
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onEvent(RefreshRoundListEvent msg) {
+        Log.d(DEBUG, "Mensaje recibido en el roundgrafment: " + msg.toString());
+
+        if (msg.getTipo() == this.type){
+            this.updateUI();
+        }
     }
 }

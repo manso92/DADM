@@ -157,7 +157,7 @@ public class RoundFragment extends Fragment implements PartidaListener {
         super.onStart();
 
         // Empezamos a capturar los eventos
-        Jarvis.event().register(this);
+        Jarvis.eventRegister(this);
 
         // Comenzamos la partida
         if (this.round.getTipo() == Round.Type.LOCAL)
@@ -174,7 +174,7 @@ public class RoundFragment extends Fragment implements PartidaListener {
         super.onStop();
 
         // Dejamos de campturar eventos
-        Jarvis.event().unregister(this);
+        Jarvis.eventUnregister(this);
     }
 
     /**
@@ -298,14 +298,4 @@ public class RoundFragment extends Fragment implements PartidaListener {
         Jarvis.error(ShowMsgEvent.Type.SNACKBAR, R.string.game_round_restarted, getContext());
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onEvent(NewMessageEvent msg) throws ExcepcionJuego {
-        Log.d(DEBUG, "Mensaje recibido en el roundgrafment: " + msg.toString());
-
-        if ((msg.getMsgtype() == NewMessageEvent.newMovement) && (msg.getSender().equals(this.round.getId()))){
-            Log.d(DEBUG, msg.toString());
-            this.round.getBoard().stringToTablero(msg.getContent());
-            boardView.invalidate();
-        }
-    }
 }

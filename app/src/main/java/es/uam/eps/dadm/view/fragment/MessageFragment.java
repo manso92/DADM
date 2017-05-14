@@ -132,7 +132,7 @@ public class MessageFragment extends Fragment {
         super.onStart();
 
         // Empezamos a capturar los eventos
-        Jarvis.event().register(this);
+        Jarvis.eventRegister(this);
 
         // Actualizamos la lista de mensajes
         this.updateUI();
@@ -146,7 +146,7 @@ public class MessageFragment extends Fragment {
         super.onStop();
 
         // Dejamos de campturar eventos
-        Jarvis.event().unregister(this);
+        Jarvis.eventUnregister(this);
     }
 
     /**

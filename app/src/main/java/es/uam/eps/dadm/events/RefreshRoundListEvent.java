@@ -7,7 +7,7 @@ import es.uam.eps.dadm.model.Round;
  * @version 10/05/2017
  */
 
-public class RefreshRoundEvent {
+public class RefreshRoundListEvent {
 
     /**
      * Tag para escribir en el log
@@ -23,7 +23,7 @@ public class RefreshRoundEvent {
      * Constructor del evento en el que le indicamos el tipo de rounds que hay que recargar
      * @param tipo Tipo de partida que hay que recargar
      */
-    public RefreshRoundEvent(Round.Type tipo) {
+    public RefreshRoundListEvent(Round.Type tipo) {
         this.tipo = tipo;
     }
 
