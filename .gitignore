@@ -12,3 +12,7 @@ ic_launcher_round\.png
 ic_launcher\.png
 
 memorias/
+
+*.docx
+
+*.pdf
