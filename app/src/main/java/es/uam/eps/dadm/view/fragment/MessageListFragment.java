@@ -90,16 +90,6 @@ public class MessageListFragment extends Fragment {
 
         // Creamos la instancia del repositorio
         this.serverRepository = (ServerRepository) RoundRepositoryFactory.createRepository(this.getContext(), true);
-
-        // Añadimos el listener que recargará la lista mostrada
-        refreshLayout.setOnRefreshListener(
-                new SwipeRefreshLayout.OnRefreshListener() {
-                    @Override
-                    public void onRefresh() {
-                        updateUI();
-                    }
-                }
-        );
     }
 
     /**
@@ -144,6 +134,16 @@ public class MessageListFragment extends Fragment {
 
         // Configuramos todo lo necesario del recyclerview
         setupRecyclerView();
+
+        // Añadimos el listener que recargará la lista mostrada
+        refreshLayout.setOnRefreshListener(
+                new SwipeRefreshLayout.OnRefreshListener() {
+                    @Override
+                    public void onRefresh() {
+                        updateUI();
+                    }
+                }
+        );
 
         return view;
     }
@@ -204,6 +204,10 @@ public class MessageListFragment extends Fragment {
 
                 // Hacemos scrollhasta la última posición
                 chatRecyclerView.scrollToPosition(messages.size()-1);
+
+                // Parar la animación del indicador
+                if (refreshLayout != null)
+                    refreshLayout.setRefreshing(false);
 
             }
             @Override
