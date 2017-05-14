@@ -2,8 +2,10 @@ package es.uam.eps.dadm.view.activities;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.res.Resources;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.util.TypedValue;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
@@ -96,6 +98,16 @@ public class Jarvis {
         return digest;
     }
 
+    /**
+     * Convierte los dp a píxeles
+     * @param dp Dps a convertir
+     * @param context Contexto para conseguir el cambio de dp a px
+     * @return Píxeles convertidos de dp
+     */
+    private int dpToPx(int dp, Context context) {
+        Resources r = context.getResources();
+        return Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, r.getDisplayMetrics()));
+    }
 
     /**
      * Indica si el móvil tiene conexión con internet o no
