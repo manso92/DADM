@@ -33,7 +33,7 @@
     <string name="round.title">@string/app.title</string>
 
     <!--  HELP ACTIVITY  -->
-    <string name="help.title">@string/app.title</string>
+    <string name="help.title">Help</string>
     <string name="help.loading">Loading...</string>
 
     <!--  SETTINGS ACTIVITY  -->
