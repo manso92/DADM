@@ -16,6 +16,7 @@ import org.greenrobot.eventbus.ThreadMode;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import es.uam.eps.dadm.R;
+import es.uam.eps.dadm.events.RefreshRoundListEvent;
 import es.uam.eps.dadm.events.ShowMsgEvent;
 import es.uam.eps.dadm.model.Preferences;
 import es.uam.eps.dadm.model.Round;
@@ -188,8 +189,8 @@ public class MainActivity extends AppCompatActivity implements RoundListFragment
                         if (ok) {
                             Jarvis.error(ShowMsgEvent.Type.SNACKBAR,
                                     R.string.repository_round_add_user_success, MainActivity.this);
-                            ((RoundListFragment) ((ViewPagerAdapter) viewPager.getAdapter()).getItem(1)).updateUI();
-                            ((RoundListFragment) ((ViewPagerAdapter) viewPager.getAdapter()).getItem(2)).updateUI();
+                            Jarvis.event().post(new RefreshRoundListEvent(Round.Type.OPEN));
+                            Jarvis.event().post(new RefreshRoundListEvent(Round.Type.ACTIVE));
                         } else
                             Jarvis.error(ShowMsgEvent.Type.SNACKBAR,
                                     R.string.repository_round_add_user_success, MainActivity.this);
