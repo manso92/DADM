@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <string-array name="colorsArray">
-        <item>Colores de madera</item>
-        <item>Blanco y negro</item>
-        <item>Alto contraste</item>
-    </string-array>
-</resources>

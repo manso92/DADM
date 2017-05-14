@@ -38,7 +38,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/vs" />
-        <es.uam.eps.dadm.view.views.TableroView
+        <com.manso92.damas.view.views.TableroView
             android:id="@+id/tableroViewThumb"
             android:layout_width="@dimen/tableroView.thumbnail"
             android:layout_height="@dimen/tableroView.thumbnail"

@@ -16,3 +16,5 @@ memorias/
 *.docx
 
 *.pdf
+
+app/google-services\.json
