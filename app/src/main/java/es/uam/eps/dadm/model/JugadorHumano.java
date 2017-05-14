@@ -5,6 +5,8 @@ import android.content.Context;
 import android.util.Log;
 
 import es.uam.eps.dadm.R;
+import es.uam.eps.dadm.events.ShowMsgEvent;
+import es.uam.eps.dadm.view.activities.Jarvis;
 import es.uam.eps.dadm.view.views.TableroView;
 import es.uam.eps.multij.*;
 
@@ -127,8 +129,8 @@ public class JugadorHumano implements Jugador, TableroView.OnPlayListener{
             @Override
             public void onResponse(boolean response) {
                 // Si se produce un error al actualizar la partida, se lo comunicamos al usuario
-                if (!response) Log.d("","");
-                    // TODO, evento eventbus para mostrar mensaje
+                if (!response)
+                    Jarvis.error(ShowMsgEvent.Type.TOAST, "Error updating round");
             }
         };
         // Actualizamos la partida en la base de datos

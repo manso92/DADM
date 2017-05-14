@@ -22,14 +22,22 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
-            android:textSize="16sp"
+            android:textSize="20sp"
             android:textStyle="bold"
             android:textColor="@android:color/holo_blue_light"/>
+        <TextView
+            android:id="@+id/vs"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            android:textColor="@color/primary"
+            android:layout_below="@id/list_item_id"/>
         <TextView
             android:id="@+id/list_item_date"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/list_item_id" />
+            android:layout_below="@id/vs" />
         <es.uam.eps.dadm.view.views.TableroView
             android:id="@+id/tableroViewThumb"
             android:layout_width="@dimen/tableroView.thumbnail"

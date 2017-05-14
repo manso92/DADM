@@ -413,9 +413,8 @@ public class ServerRepository implements RoundRepository {
         Response.Listener<String> responseCallback = new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                //TODO comprobar si se ha creado bien la ronda
                 // Enviamos un exito al callback
-                callback.onResponse(true);
+                callback.onResponse(response.trim().equals("2"));
                 Log.d(DEBUG, "Round created correctly");
             }
         };
@@ -443,7 +442,6 @@ public class ServerRepository implements RoundRepository {
         Response.Listener<String> responseCallback = new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                //TODO comprobar si se ha creado bien la ronda
                 // Enviamos un exito al callback
                 callback.onResponse(true);
                 Log.d(DEBUG, "Round updated correctly");

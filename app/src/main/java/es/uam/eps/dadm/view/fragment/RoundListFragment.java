@@ -28,6 +28,7 @@ import butterknife.BindView;
 import butterknife.OnClick;
 import butterknife.Unbinder;
 import es.uam.eps.dadm.R;
+import es.uam.eps.dadm.events.NewMessageEvent;
 import es.uam.eps.dadm.events.RefreshRoundListEvent;
 import es.uam.eps.dadm.events.ShowMsgEvent;
 import es.uam.eps.dadm.model.Round;
@@ -37,6 +38,7 @@ import es.uam.eps.dadm.model.Preferences;
 import es.uam.eps.dadm.view.activities.Jarvis;
 import es.uam.eps.dadm.view.adapters.RoundAdapter;
 import es.uam.eps.dadm.view.listeners.RecyclerItemClickListener;
+import es.uam.eps.multij.ExcepcionJuego;
 
 /**
  * RoundListFragment es el fragmento que mostrará la lista de partidas necesarias
@@ -262,7 +264,7 @@ public class RoundListFragment extends Fragment {
             public void onResponse(List<Round> rounds) {
                 // Si no hay adapter lo creamos, y si lo hay, las añadimos
                 if (roundAdapter == null)
-                    roundAdapter = new RoundAdapter(rounds);
+                    roundAdapter = new RoundAdapter(rounds, getContext());
                 else
                     roundAdapter.addRounds(rounds);
 
@@ -415,13 +417,22 @@ public class RoundListFragment extends Fragment {
         }
     }
 
-    
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEvent(RefreshRoundListEvent msg) {
         Log.d(DEBUG, "Mensaje recibido en el roundgrafment: " + msg.toString());
 
         if (msg.getTipo() == this.type){
             this.updateUI();
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onEvent(NewMessageEvent msg) throws ExcepcionJuego{
+        Log.d(DEBUG, "Mensaje recibido en el roundgrafment: " + msg.toString());
+
+        if ((msg.getMsgtype() == NewMessageEvent.newMovement) && (this.roundAdapter.existsID(msg.getSender()))){
+            this.roundAdapter.getRound(msg.getSender()).getBoard().stringToTablero(msg.getContent());
+            this.roundAdapter.ordena();
         }
     }
 }

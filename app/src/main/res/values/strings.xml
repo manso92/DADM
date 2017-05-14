@@ -25,6 +25,7 @@
 
     <!--  MAIN ACTIVITY  -->
     <string name="main.title">@string/app.title</string>
+    <string name="main.round.join.error">You can\'t enter in this game</string>
     <string name="main.secction.local">Offline</string>
     <string name="main.secction.active">My games</string>
     <string name="main.secction.open">Open games</string>
@@ -79,6 +80,7 @@
 
     <!--  Chat  -->
     <string name="chat.sendbutton.description">Icon to send messages</string>
+    <string name="chat.message.error">Error sending message</string>
     <string name="chat.alertdialog.userrequest.title">New chat</string>
     <string name="chat.alertdialog.userrequest.hint">User to chat</string>
 

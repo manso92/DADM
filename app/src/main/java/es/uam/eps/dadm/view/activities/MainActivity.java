@@ -27,6 +27,8 @@ import es.uam.eps.dadm.view.adapters.ViewPagerAdapter;
 import es.uam.eps.dadm.view.fragment.MessageListFragment;
 import es.uam.eps.dadm.view.fragment.RoundListFragment;
 
+import static es.uam.eps.dadm.model.Round.Type.OPEN;
+
 /**
  * MainActivity es una pantalla que muestra las partidas disponibles para el usuario, de momento
  * tres
@@ -117,10 +119,12 @@ public class MainActivity extends AppCompatActivity implements RoundListFragment
 
         // Añadimos los fragmentos que vamos a tener en nuestro adapter
         adapter.addFragment(RoundListFragment.newInstance(Round.Type.LOCAL), getString(R.string.main_secction_local));
-        adapter.addFragment(RoundListFragment.newInstance(Round.Type.ACTIVE), getString(R.string.main_secction_active));
-        adapter.addFragment(RoundListFragment.newInstance(Round.Type.OPEN), getString(R.string.main_secction_open));
-        adapter.addFragment(RoundListFragment.newInstance(Round.Type.FINISHED), getString(R.string.main_secction_finished));
-        adapter.addFragment(new MessageListFragment(), getString(R.string.main_secction_messages));
+        if (Jarvis.isOnline(this)) {
+            adapter.addFragment(RoundListFragment.newInstance(Round.Type.ACTIVE), getString(R.string.main_secction_active));
+            adapter.addFragment(RoundListFragment.newInstance(OPEN), getString(R.string.main_secction_open));
+            adapter.addFragment(RoundListFragment.newInstance(Round.Type.FINISHED), getString(R.string.main_secction_finished));
+            adapter.addFragment(new MessageListFragment(), getString(R.string.main_secction_messages));
+        }
 
         // Vinculamos el adapter al viewpager
         viewPager.setAdapter(adapter);
@@ -180,7 +184,6 @@ public class MainActivity extends AppCompatActivity implements RoundListFragment
                 startActivity(RoundLocalActivity.newIntent(this, round));
                 break;
             case OPEN:
-                // TODO comprobar que si le doy a una open mía pues no se hace dos veces
                 RoundRepository server = RoundRepositoryFactory.createRepository(this, true);
                 RoundRepository.BooleanCallback callback = new RoundRepository.BooleanCallback() {
                     @Override
@@ -188,7 +191,7 @@ public class MainActivity extends AppCompatActivity implements RoundListFragment
                         if (ok) {
                             Jarvis.error(ShowMsgEvent.Type.SNACKBAR,
                                     R.string.repository_round_add_user_success, MainActivity.this);
-                            Jarvis.event().post(new RefreshRoundListEvent(Round.Type.OPEN));
+                            Jarvis.event().post(new RefreshRoundListEvent(OPEN));
                             Jarvis.event().post(new RefreshRoundListEvent(Round.Type.ACTIVE));
                         } else
                             Jarvis.error(ShowMsgEvent.Type.SNACKBAR,
@@ -198,7 +201,10 @@ public class MainActivity extends AppCompatActivity implements RoundListFragment
                 ((ServerRepository) server).addPlayerToRound(round, Preferences.getPlayerUUID(this), callback);
                 break;
             case ACTIVE:
-                startActivity(RoundServerActivity.newIntent(this, round));
+                if (round.getTipo() == OPEN)
+                    Jarvis.error(ShowMsgEvent.Type.TOAST, R.string.main_round_join_error, this);
+                else
+                    startActivity(RoundServerActivity.newIntent(this, round));
                 break;
             case FINISHED:
                 break;

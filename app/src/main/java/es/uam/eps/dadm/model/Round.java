@@ -65,7 +65,7 @@ public class Round {
     /**
      * Nombre del primer jugador
      */
-    private String firstUserName;
+    private String firstUserName = "";
 
     /**
      * UUID del primer jugador
@@ -75,7 +75,7 @@ public class Round {
     /**
      * Nombre del segundo jugador
      */
-    private String secondUserName;
+    private String secondUserName = "";
 
     /**
      *  UUID del segundo jugador
@@ -148,7 +148,6 @@ public class Round {
      * @return Ronda creada con los datos introducidos
      */
     public static Round intentToRound(Intent intent){
-        // TODO comprobar si tiene todas las claves necesarias
         Round round = new Round(intent.getStringExtra(ARG_ROUND_ID),
                 (Round.Type) intent.getSerializableExtra(ARG_ROUND_TYPE),
                 intent.getStringExtra(ARG_ROUND_DATE),
@@ -218,6 +217,17 @@ public class Round {
      */
     public boolean isFinished(){
         return this.getBoard().movimientosValidos().size() == 0;
+    }
+
+    /**
+     * Devuelve el nombre del rival del usuario indicado
+     * @param user Usuario a mirar su rival
+     * @return Nombre del rival
+     */
+    public String getRivalName(String user){
+        if(this.turn(user) == 0)
+            return this.getSecondUserName();
+        return this.getFirstUserName();
     }
 
 

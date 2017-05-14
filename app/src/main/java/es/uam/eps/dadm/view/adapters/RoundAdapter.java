@@ -1,5 +1,6 @@
 package es.uam.eps.dadm.view.adapters;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -7,11 +8,14 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import es.uam.eps.dadm.R;
+import es.uam.eps.dadm.model.Preferences;
 import es.uam.eps.dadm.model.Round;
 import es.uam.eps.dadm.view.views.TableroView;
 
@@ -21,7 +25,7 @@ import es.uam.eps.dadm.view.views.TableroView;
  * @author Pablo Manso
  * @version 13/03/2017
  */
-public class RoundAdapter extends RecyclerView.Adapter<RoundAdapter.RoundHolder> {
+public class RoundAdapter extends RecyclerView.Adapter<RoundAdapter.RoundHolder> implements Comparator<Round> {
 
     /**
      * Lista de partidas que se vana mostrar
@@ -29,66 +33,19 @@ public class RoundAdapter extends RecyclerView.Adapter<RoundAdapter.RoundHolder>
     private List<Round> rounds;
 
     /**
-     * Holder que se encargará de colocar en la interfaz cada uno de los elementos del item
-     *
-     * @author Pablo Manso
-     * @version 13/03/2017
+     * Nombre del usuario
      */
-    public class RoundHolder extends RecyclerView.ViewHolder {
-
-        /**
-         * Textview que contiene el nombre de la partida
-         */
-        @BindView(R.id.list_item_id)
-        TextView idTextView;
-
-        /**
-         * Textview que contiene una representación del tablero
-         */
-        @BindView(R.id.tableroViewThumb)
-        TableroView tableroView;
-
-        /**
-         * Textview que mostrará la fecha de la partida
-         */
-        @BindView(R.id.list_item_date)
-        TextView dateTextView;
-
-        /**
-         * Partida que representa la partida que queremos indicar en el item
-         */
-        private Round round;
-
-        /**
-         * Constructor del item en base a la vista que nos indican
-         * @param itemView Item al que modificar las views
-         */
-        public RoundHolder(View itemView) {
-            // Llamamos a la clase padre para la construcción y hacemos binding de componentes
-            super(itemView);
-            ButterKnife.bind(this, itemView);
-        }
-
-        /**
-         * Ajusta los datos necesarios para mostrar en la vista
-         * @param round Ronda que contiene los datos a mostrar
-         */
-        public void bindRound(Round round) {
-            // Guardamos la ronda
-            this.round = round;
-            // Mostrarmos en los TextView la info de la partida
-            idTextView.setText(round.getTitle());
-            tableroView.setBoard(round.getBoard());
-            dateTextView.setText(String.valueOf(round.getDate()).substring(0, 19));
-        }
-    }
+    private String username;
 
     /**
      * Constructor del adaptador
      * @param rounds Lista de rondas a mostrar
+     * @param context Contexto en el que se crea
      */
-    public RoundAdapter(List<Round> rounds) {
+    public RoundAdapter(List<Round> rounds, Context context) {
         this.rounds = rounds;
+        this.username = Preferences.getPlayerName(context);
+        this.ordena();
     }
 
     /**
@@ -97,7 +54,7 @@ public class RoundAdapter extends RecyclerView.Adapter<RoundAdapter.RoundHolder>
      */
     public void setRounds(List<Round> rounds) {
         this.rounds = rounds;
-        this.notifyDataSetChanged();
+        this.ordena();
     }
 
     /**
@@ -107,7 +64,7 @@ public class RoundAdapter extends RecyclerView.Adapter<RoundAdapter.RoundHolder>
     public void addRounds(List<Round> rounds) {
         if (this.rounds == null) this.rounds = rounds;
         else this.rounds.addAll(rounds);
-        this.notifyDataSetChanged();
+        this.ordena();
     }
 
     /**
@@ -158,5 +115,140 @@ public class RoundAdapter extends RecyclerView.Adapter<RoundAdapter.RoundHolder>
     @Override
     public int getItemCount() {
         return rounds.size();
+    }
+
+    /**
+     * Nos devuelve una ronda por su id
+     */
+    public Round getRound(String id){
+        for (Round r: this.rounds)
+            if (r.getId().equals(id))
+                return r;
+        return null;
+    }
+
+    /**
+     * Nos indica si hay una ronda en la lista ya cargada
+     */
+    public boolean existsID(String id){
+        for (Round r: this.rounds)
+            if (r.getId().equals(id))
+                return true;
+        return false;
+    }
+
+    /**
+     * Ordena la lista de items
+     */
+    public void ordena(){
+        Collections.sort(this.rounds, this);
+        this.notifyDataSetChanged();
+    }
+
+    /**
+     * Compara dos rondas para indicar cual debe ir antes a la hora de ser mostrada
+     * @param o1 Primera ronda
+     * @param o2 Segunda ronda
+     * @return Comparación de objetos
+     */
+    @Override
+    public int compare(Round o1, Round o2) {
+        // Si las dos son finalizadas o abiertas, las ordenamos por el ID descendente
+        if (((o1.getTipo() == Round.Type.FINISHED) || (o2.getTipo() == Round.Type.FINISHED)) ||
+                ((o1.getTipo() == Round.Type.OPEN) && (o2.getTipo() == Round.Type.OPEN)))
+            return Integer.parseInt(o1.getId()) > Integer.parseInt(o2.getId()) ? -1 : 1;
+        // Si una es activa y la otra abierta indicamos que la activa tiene prioridad
+        if ((o1.getTipo() == Round.Type.ACTIVE) && (o2.getTipo() == Round.Type.OPEN))
+            return -1;
+        if ((o1.getTipo() == Round.Type.OPEN) && (o2.getTipo() == Round.Type.ACTIVE))
+            return 1;
+
+        //Si las dos son activas..
+        if ((o1.getTipo() == Round.Type.ACTIVE) && (o2.getTipo() == Round.Type.ACTIVE)) {
+            // Ponemos primero la que sea nuestro turno
+            if ((o1.turn(this.username) == o1.getBoard().getTurno()) && (o2.turn(this.username) != o2.getBoard().getTurno()))
+                return -1;
+            if ((o1.turn(this.username) != o1.getBoard().getTurno()) && (o2.turn(this.username) == o2.getBoard().getTurno()))
+                return 1;
+            // Y luego las ordenamos por id
+            return Integer.parseInt(o1.getId()) > Integer.parseInt(o2.getId()) ? -1 : 1;
+        }
+        return 0;
+    }
+
+    /**
+     * Holder que se encargará de colocar en la interfaz cada uno de los elementos del item
+     *
+     * @author Pablo Manso
+     * @version 13/03/2017
+     */
+    public class RoundHolder extends RecyclerView.ViewHolder {
+
+        /**
+         * Textview que contiene el nombre de la partida
+         */
+        @BindView(R.id.list_item_id)
+        TextView idTextView;
+
+        /**
+         * Textview que contiene una representación del tablero
+         */
+        @BindView(R.id.tableroViewThumb)
+        TableroView tableroView;
+
+        /**
+         * Textview que mostrará la fecha de la partida
+         */
+        @BindView(R.id.list_item_date)
+        TextView dateTextView;
+
+        /**
+         * Textview que mostrará a quien se enfrenta
+         */
+        @BindView(R.id.vs)
+        TextView vs;
+
+        /**
+         * Partida que representa la partida que queremos indicar en el item
+         */
+        private Round round;
+
+        /**
+         * Constructor del item en base a la vista que nos indican
+         * @param itemView Item al que modificar las views
+         */
+        public RoundHolder(View itemView) {
+            // Llamamos a la clase padre para la construcción y hacemos binding de componentes
+            super(itemView);
+            ButterKnife.bind(this, itemView);
+        }
+
+        /**
+         * Ajusta los datos necesarios para mostrar en la vista
+         * @param round Ronda que contiene los datos a mostrar
+         */
+        public void bindRound(Round round) {
+            // Guardamos la ronda
+            this.round = round;
+            // Mostrarmos en los TextView la info de la partida
+            idTextView.setText(round.getTitle());
+            tableroView.setBoard(round.getBoard());
+            dateTextView.setText(String.valueOf(round.getDate()).substring(0, 19));
+            this.setVs(round);
+        }
+
+        public void setVs(Round round){
+            if ((round.getTipo() == Round.Type.FINISHED) ||
+                    (round.getTipo() == Round.Type.ACTIVE))
+                vs.setText("Rival: " + round.getRivalName(Preferences.getPlayerName(vs.getContext())));
+
+            if (round.getTipo() == Round.Type.OPEN){
+                if (round.turn(Preferences.getPlayerName(vs.getContext())) == 0) {
+                    vs.setText("Waiting oponent");
+                } else {
+                    vs.setText("Rival: " + round.getRivalName(Preferences.getPlayerName(vs.getContext())));
+                }
+            }
+        }
     }
 }

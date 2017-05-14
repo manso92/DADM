@@ -248,10 +248,9 @@ public class MessageFragment extends Fragment {
                     messageRecyclerView.scrollToPosition(adapter.getItemCount()-1);
                 }
                 else
-                    // TODO change string
                     // Indicamos al usuario que su mensaje no ha podido ser enviado
                     Jarvis.error(ShowMsgEvent.Type.TOAST,
-                            R.string.repository_round_update_error, getContext());
+                            R.string.chat_message_error, getContext());
 
             }
         };
